@@ -1,0 +1,24 @@
+1. Register on Admob
+Add a new app on Admob.
+
+2. Set-up Admob
+2.1. Install Android Build Template.
+2.2. Import the Admob plugin.
+2.3. Enable Admob in Project/Project Settigs/Plugins, and enable Admob on export.
+2.4. Paste this on AndroidManifest and substitute the value with your app id:
+<!-- Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713 -->
+<meta-data
+    android:name="com.google.android.gms.ads.APPLICATION_ID"
+    android:value="ca-app-pub-xxxxxxxxxxxxxxxx~yyyyyyyyyy"/>
+
+3. Add Logic
+Add admob to your scene and use the admob signals to reward the user.
+
+You can use the following ids for testing:
+Sample AdMob app ID: ca-app-pub-3940256099942544~3347511713
+Banner: ca-app-pub-3940256099942544/9214589741
+Interstitial: ca-app-pub-3940256099942544/1033173712
+Rewarded Ads: ca-app-pub-3940256099942544/5224354917
+Rewarded Interstitial: ca-app-pub-3940256099942544/5354046379
+
+That's all you have to do.

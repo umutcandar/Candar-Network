@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="candar_daily_channel_name">Daily reminders</string>
+    <string name="candar_daily_channel_description">Notifications when daily points are ready.</string>
+</resources>

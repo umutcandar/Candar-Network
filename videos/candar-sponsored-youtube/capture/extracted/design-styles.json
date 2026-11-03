@@ -1,0 +1,226 @@
+{
+  "typography": [
+    {
+      "role": "display",
+      "fontFamily": "Inter",
+      "fontSize": "74px",
+      "fontWeight": "700",
+      "lineHeight": "71.04px",
+      "letterSpacing": "normal",
+      "color": "#171717",
+      "sampleText": "Bugün katıl.Yarınki Candarağını birlikte kur."
+    },
+    {
+      "role": "heading",
+      "fontFamily": "Inter",
+      "fontSize": "48px",
+      "fontWeight": "700",
+      "lineHeight": "48.96px",
+      "letterSpacing": "normal",
+      "color": "#171717",
+      "sampleText": "Collect today. Be early tomorrow."
+    },
+    {
+      "role": "heading-3",
+      "fontFamily": "Inter",
+      "fontSize": "22px",
+      "fontWeight": "700",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "#171717",
+      "sampleText": "7 Günlük Seri Mücadelesi"
+    },
+    {
+      "role": "heading-2",
+      "fontFamily": "Inter",
+      "fontSize": "20px",
+      "fontWeight": "700",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "#171717",
+      "sampleText": "Erken yerini al"
+    },
+    {
+      "role": "body",
+      "fontFamily": "Inter",
+      "fontSize": "19px",
+      "fontWeight": "400",
+      "lineHeight": "30.78px",
+      "letterSpacing": "normal",
+      "color": "#5F6368",
+      "sampleText": "Candar'a erken katıl, günlük puanını kaçırma, serini koru ve"
+    },
+    {
+      "role": "link",
+      "fontFamily": "Inter",
+      "fontSize": "14px",
+      "fontWeight": "700",
+      "lineHeight": "normal",
+      "letterSpacing": "normal",
+      "color": "#5F6368",
+      "sampleText": "Roadmap"
+    },
+    {
+      "role": "label",
+      "fontFamily": "Inter",
+      "fontSize": "12px",
+      "fontWeight": "800",
+      "lineHeight": "normal",
+      "letterSpacing": "0.96px",
+      "color": "#9A3412",
+      "sampleText": "7 GÜNLÜK PLAN"
+    }
+  ],
+  "spacing": {
+    "observed": [
+      7,
+      8,
+      10,
+      12,
+      14,
+      16,
+      18,
+      20,
+      22,
+      24,
+      28,
+      32,
+      34,
+      126,
+      156
+    ],
+    "baseUnit": 4
+  },
+  "radius": [
+    "8px"
+  ],
+  "shadows": [
+    {
+      "value": "rgba(23, 23, 23, 0.06) 0px 14px 40px 0px",
+      "count": 12
+    }
+  ],
+  "buttons": [
+    {
+      "label": "Hemen İndir",
+      "background": "#F97316",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#FFFFFF",
+      "padding": "0px 18px",
+      "borderRadius": "8px",
+      "border": "1px solid rgb(249, 115, 22)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "800",
+      "height": "46px"
+    },
+    {
+      "label": "Google Play",
+      "background": "#0F766E",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#FFFFFF",
+      "padding": "0px 18px",
+      "borderRadius": "8px",
+      "border": "1px solid rgb(15, 118, 110)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "800",
+      "height": "46px"
+    },
+    {
+      "label": "Destek",
+      "background": "#FFFFFF",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#171717",
+      "padding": "0px 18px",
+      "borderRadius": "8px",
+      "border": "1px solid rgb(233, 225, 214)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "800",
+      "height": "46px"
+    },
+    {
+      "label": "Candar'a Katıl",
+      "background": "#F59E0B",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#171009",
+      "padding": "0px 18px",
+      "borderRadius": "8px",
+      "border": "1px solid rgb(245, 158, 11)",
+      "boxShadow": "none",
+      "fontSize": "16px",
+      "fontWeight": "800",
+      "height": "46px"
+    }
+  ],
+  "cards": [
+    {
+      "label": "card",
+      "background": "#FFFFFF",
+      "backgroundImage": "",
+      "backdropFilter": "",
+      "color": "#171717",
+      "padding": "18px",
+      "borderRadius": "8px",
+      "border": "1px solid rgb(233, 225, 214)",
+      "boxShadow": "rgba(23, 23, 23, 0.06) 0px 14px 40px 0px",
+      "fontSize": "16px",
+      "fontWeight": "400",
+      "height": "165.594px"
+    }
+  ],
+  "nav": {
+    "label": "navigation",
+    "background": "transparent",
+    "backgroundImage": "",
+    "backdropFilter": "",
+    "color": "#171717",
+    "padding": "24px",
+    "borderRadius": "0px",
+    "border": "0px none rgb(23, 23, 23)",
+    "boxShadow": "none",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "height": "88px"
+  },
+  "chips": [
+    {
+      "label": "Early community access",
+      "background": "#FFFFFF",
+      "color": "#5F6368",
+      "padding": "9px 12px",
+      "borderRadius": "999px",
+      "border": "1px solid rgb(233, 225, 214)",
+      "boxShadow": "none",
+      "fontSize": "13px",
+      "fontWeight": "800",
+      "height": "36px"
+    },
+    {
+      "label": "01",
+      "background": "#ECFDF5",
+      "color": "#0F766E",
+      "padding": "0px",
+      "borderRadius": "50%",
+      "border": "0px none rgb(15, 118, 110)",
+      "boxShadow": "none",
+      "fontSize": "13px",
+      "fontWeight": "800",
+      "height": "42px"
+    }
+  ],
+  "statCells": [],
+  "tabs": [],
+  "backgrounds": [
+    {
+      "value": "radial-gradient(circle at 90% 20%, rgba(15, 118, 110, 0.28), rgba(0, 0, 0, 0) 30%), linear-gradient(135deg, rgb(11, 18, 32), rgb(23, 32, 51))",
+      "area": 303024
+    }
+  ],
+  "glass": []
+}

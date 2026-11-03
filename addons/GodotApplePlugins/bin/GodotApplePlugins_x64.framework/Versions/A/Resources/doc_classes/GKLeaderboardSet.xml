@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<class name="GKLeaderboardSet" inherits="RefCounted" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/godotengine/godot/master/doc/class.xsd">
+	<brief_description>
+		Groups related Apple Game Center leaderboards.
+	</brief_description>
+	<description>
+		[code skip-lint]GKLeaderboardSet[/code] mirrors Apple's "leaderboard set" concept. Although the current binding only exposes the opaque object, you can keep references to sets returned by other APIs to organise UI the same way as on iOS. See [url=https://developer.apple.com/documentation/gamekit/gkleaderboardset]Apple's GKLeaderboardSet reference[/url] for the native API guide.
+	</description>
+	<tutorials>
+	</tutorials>
+</class>

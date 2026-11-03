@@ -1,0 +1,136 @@
+<template>
+  <style>
+    @font-face { font-family: "Inter"; src: url("assets/fonts/Inter-Regular.ttf") format("truetype"); font-weight: 100 900; font-style: normal; font-display: block; }
+    #root { position: relative; width: 100%; height: 100%; overflow: hidden; container-type: size; font-family: "Inter", sans-serif; }
+    .je-ground { position: absolute; inset: 0; background: #101211; }
+    .je-grid { position: absolute; inset: 0; opacity: .22; background-image: linear-gradient(rgba(245,158,11,.12) 2px, transparent 2px), linear-gradient(90deg, rgba(245,158,11,.12) 2px, transparent 2px); background-size: 90px 90px; }
+    .je-stage { position: absolute; inset: 0; color: #fff7e6; }
+    .je-scene { position: absolute; inset: 0; }
+    .je-kicker { position: absolute; top: 88px; left: 72px; font-size: 22px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; color: #f59e0b; }
+    .je-hook-copy { position: absolute; top: 300px; left: 72px; width: 920px; font-size: 118px; font-weight: 900; line-height: .9; letter-spacing: -.055em; }
+    .je-hook-copy span { display: block; color: #f59e0b; }
+    .je-orbit { position: absolute; top: 820px; left: 190px; width: 700px; height: 700px; }
+    .je-ring { position: absolute; border: 4px solid rgba(245,158,11,.5); border-radius: 50%; }
+    .je-ring.r1 { inset: 240px; }
+    .je-ring.r2 { inset: 155px; }
+    .je-ring.r3 { inset: 70px; }
+    .je-ring.r4 { inset: -15px; }
+    .je-center-logo { position: absolute; top: 255px; left: 255px; width: 190px; height: 190px; display: grid; place-items: center; border: 5px solid #f59e0b; border-radius: 50%; color: #f59e0b; font-size: 100px; font-weight: 900; }
+    .je-node { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 12px rgba(245,158,11,.14); }
+    .je-node.n1 { top: 30px; left: 330px; } .je-node.n2 { top: 210px; left: 610px; } .je-node.n3 { top: 500px; left: 580px; }
+    .je-node.n4 { top: 640px; left: 325px; } .je-node.n5 { top: 490px; left: 70px; } .je-node.n6 { top: 200px; left: 40px; }
+    .je-title { position: absolute; top: 105px; left: 72px; width: 930px; font-size: 82px; font-weight: 900; line-height: .94; letter-spacing: -.045em; }
+    .je-index { display: block; margin-bottom: 18px; font-size: 21px; font-weight: 900; letter-spacing: .17em; text-transform: uppercase; color: #f59e0b; }
+    .je-phone { position: absolute; top: 330px; left: 180px; width: 720px; height: 1120px; overflow: hidden; border: 4px solid rgba(245,158,11,.65); border-radius: 44px; background: #191d1b; box-shadow: 0 40px 110px rgba(0,0,0,.58); }
+    .je-phone img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+    .je-phone::after { content: ""; position: absolute; inset: 0; border: 10px solid #101211; border-radius: 40px; }
+    .je-ticks { position: absolute; top: 1508px; left: 180px; width: 720px; display: flex; gap: 14px; }
+    .je-tick { height: 12px; flex: 1; background: #f59e0b; transform-origin: left center; }
+    .je-points-card { position: absolute; top: 1040px; left: 74px; width: 930px; padding: 44px 48px; border: 4px solid #f59e0b; background: #101211; }
+    .je-points-label { font-size: 22px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; color: #f59e0b; }
+    .je-points-value { margin-top: 20px; font-size: 104px; font-weight: 900; line-height: .9; letter-spacing: -.055em; }
+    .je-points-note { margin-top: 24px; font-size: 30px; font-weight: 700; color: #b8af9c; }
+    .je-network-phone { left: 255px; width: 570px; }
+    .je-network-line { position: absolute; height: 4px; background: #f59e0b; transform-origin: left center; }
+    .je-network-line.a { top: 570px; left: 45px; width: 290px; } .je-network-line.b { top: 860px; left: 745px; width: 290px; }
+    .je-network-line.c { top: 1210px; left: 45px; width: 290px; }
+    .je-network-dot { position: absolute; width: 34px; height: 34px; border-radius: 50%; background: #f59e0b; box-shadow: 0 0 0 14px rgba(245,158,11,.13); }
+    .je-network-dot.a { top: 553px; left: 45px; } .je-network-dot.b { top: 843px; right: 45px; } .je-network-dot.c { top: 1193px; left: 45px; }
+    .je-final { position: absolute; inset: 0; padding: 230px 70px 0; text-align: center; color: #101211; background: #f59e0b; }
+    .je-final-logo { width: 220px; height: 220px; object-fit: contain; }
+    .je-final h2 { margin: 105px auto 0; max-width: 930px; font-size: 108px; font-weight: 900; line-height: .88; letter-spacing: -.06em; }
+    .je-final-sub { margin-top: 50px; font-size: 32px; font-weight: 800; line-height: 1.3; }
+    .je-platform { margin-top: 55px; font-size: 23px; font-weight: 900; letter-spacing: .2em; text-transform: uppercase; }
+    .je-url { display: inline-block; margin-top: 28px; padding: 23px 30px; border: 4px solid #101211; font-size: 30px; font-weight: 900; }
+    .je-qualifier { margin-top: 24px; font-size: 20px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .78; }
+  </style>
+
+  <div id="root" data-composition-id="01-join-early" data-duration="12" data-width="1080" data-height="1920">
+    <div class="clip je-ground" id="je-ground" data-start="0" data-duration="12" data-track-index="0"></div>
+    <div class="clip je-grid" id="je-grid" data-layout-allow-overflow data-start="0" data-duration="12" data-track-index="1"></div>
+    <div class="clip je-stage" id="je-stage" data-start="0" data-duration="12" data-track-index="2">
+      <section class="je-scene" id="je-hook">
+        <div class="je-kicker">Candar Network / Early signal</div>
+        <div class="je-hook-copy">growing networks remember the people who <span>show up early.</span></div>
+        <div class="je-orbit" id="je-orbit">
+          <i class="je-ring r1"></i><i class="je-ring r2"></i><i class="je-ring r3"></i><i class="je-ring r4"></i>
+          <div class="je-center-logo" id="je-center-logo" aria-label="Candar Network">C</div>
+          <i class="je-node n1"></i><i class="je-node n2"></i><i class="je-node n3"></i><i class="je-node n4"></i><i class="je-node n5"></i><i class="je-node n6"></i>
+        </div>
+      </section>
+
+      <section class="je-scene" id="je-daily">
+        <h2 class="je-title"><span class="je-index">01 / daily participation</span>check in.</h2>
+        <div class="je-phone" id="je-daily-phone"><img src="assets/daily.png" alt="Candar daily rewards"></div>
+        <div class="je-ticks"><i class="je-tick"></i><i class="je-tick"></i><i class="je-tick"></i><i class="je-tick"></i><i class="je-tick"></i><i class="je-tick"></i><i class="je-tick"></i></div>
+      </section>
+
+      <section class="je-scene" id="je-points">
+        <h2 class="je-title"><span class="je-index">app-based progress</span>collect Candar Points.</h2>
+        <div class="je-points-card" id="je-points-card">
+          <div class="je-points-label">Candar Points</div>
+          <div class="je-points-value" id="je-points-value">2,486.75</div>
+          <div class="je-points-note">your in-app progress, visible every day.</div>
+        </div>
+      </section>
+
+      <section class="je-scene" id="je-network">
+        <h2 class="je-title"><span class="je-index">02 / community momentum</span>grow the network.</h2>
+        <div class="je-phone je-network-phone" id="je-network-phone"><img src="assets/network.png" alt="Candar referral network"></div>
+        <i class="je-network-line a"></i><i class="je-network-line b"></i><i class="je-network-line c"></i>
+        <i class="je-network-dot a"></i><i class="je-network-dot b"></i><i class="je-network-dot c"></i>
+      </section>
+
+      <section class="je-final" id="je-final">
+        <img class="je-final-logo" id="je-final-logo" src="assets/logo.png" alt="Candar Network">
+        <h2 id="je-final-title">join Candar early.</h2>
+        <div class="je-final-sub" id="je-final-sub">Be here for what comes next.</div>
+        <div class="je-platform" id="je-platform">iOS + Android</div>
+        <div class="je-url" id="je-url">candarnetwork.com/download</div>
+        <div class="je-qualifier" id="je-qualifier">in-app points experience</div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    window.__timelines = window.__timelines || {};
+    const tl = gsap.timeline({ paused: true });
+    tl.fromTo("#je-grid", { opacity: .1, scale: 1 }, { opacity: .24, scale: 1.06, duration: 12, ease: "none" }, 0);
+    tl.fromTo("#je-hook", { autoAlpha: 1 }, { autoAlpha: 1, duration: .01 }, 0);
+    tl.fromTo("#je-hook .je-hook-copy", { x: -130, opacity: 0 }, { x: 0, opacity: 1, duration: .58, ease: "power4.out" }, .04);
+    tl.fromTo("#je-center-logo", { scale: 0, rotation: -22 }, { scale: 1, rotation: 0, duration: .55, ease: "back.out(1.6)" }, .32);
+    tl.fromTo("#je-orbit .je-ring", { scale: .25, opacity: 0 }, { scale: 1, opacity: 1, duration: .72, stagger: .08, ease: "power4.out" }, .44);
+    tl.fromTo("#je-orbit .je-node", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: .34, stagger: .09, ease: "back.out(1.8)" }, .9);
+    tl.to("#je-hook", { autoAlpha: 0, scale: .86, duration: .2, ease: "power3.in" }, 1.65);
+
+    tl.fromTo("#je-daily", { autoAlpha: 0 }, { autoAlpha: 1, duration: .01 }, 1.9);
+    tl.fromTo("#je-daily .je-title", { x: -110, opacity: 0 }, { x: 0, opacity: 1, duration: .46, ease: "power4.out" }, 1.92);
+    tl.fromTo("#je-daily-phone", { y: 250, scale: .85, opacity: 0 }, { y: 0, scale: 1, opacity: 1, duration: .68, ease: "back.out(1.1)" }, 2.0);
+    tl.fromTo("#je-daily .je-tick", { scaleX: 0 }, { scaleX: 1, duration: .3, stagger: .12, ease: "power3.out" }, 2.75);
+    tl.to("#je-daily", { x: -880, opacity: 0, duration: .54, ease: "power3.inOut" }, 4.18);
+    tl.set("#je-daily", { autoAlpha: 0 }, 4.72);
+
+    tl.fromTo("#je-points", { autoAlpha: 0 }, { autoAlpha: 1, duration: .01 }, 4.45);
+    tl.fromTo("#je-points .je-title", { x: 120, opacity: 0 }, { x: 0, opacity: 1, duration: .48, ease: "power4.out" }, 4.47);
+    tl.fromTo("#je-points-card", { scale: .72, y: 90, opacity: 0 }, { scale: 1, y: 0, opacity: 1, duration: .62, ease: "back.out(1.3)" }, 5.0);
+    tl.fromTo("#je-points-value", { scale: .7, color: "#fff7e6" }, { scale: 1, color: "#f59e0b", duration: .55, ease: "back.out(1.6)" }, 5.55);
+    tl.to("#je-points", { x: -820, opacity: 0, duration: .52, ease: "power3.inOut" }, 6.55);
+    tl.set("#je-points", { autoAlpha: 0 }, 7.07);
+
+    tl.fromTo("#je-network", { autoAlpha: 0 }, { autoAlpha: 1, duration: .01 }, 6.85);
+    tl.fromTo("#je-network .je-title", { y: -80, opacity: 0 }, { y: 0, opacity: 1, duration: .45, ease: "power4.out" }, 6.87);
+    tl.fromTo("#je-network-phone", { x: 820, rotation: 4, opacity: 0 }, { x: 0, rotation: 0, opacity: 1, duration: .64, ease: "power4.out" }, 6.92);
+    tl.fromTo("#je-network .je-network-line", { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .42, stagger: .18, ease: "power3.out" }, 7.65);
+    tl.fromTo("#je-network .je-network-dot", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: .35, stagger: .18, ease: "back.out(1.8)" }, 7.85);
+    tl.to("#je-network", { scale: .65, opacity: 0, duration: .55, ease: "power3.in" }, 9.15);
+
+    tl.fromTo("#je-final", { autoAlpha: 0, scale: 1.18 }, { autoAlpha: 1, scale: 1, duration: .62, ease: "power4.out" }, 9.35);
+    tl.fromTo("#je-final-logo", { scale: 0, rotation: -20 }, { scale: 1, rotation: 0, duration: .6, ease: "back.out(1.7)" }, 9.52);
+    tl.fromTo("#je-final-title", { y: 85, opacity: 0 }, { y: 0, opacity: 1, duration: .48, ease: "power4.out" }, 9.87);
+    tl.fromTo("#je-final-sub", { y: 45, opacity: 0 }, { y: 0, opacity: 1, duration: .38, ease: "power3.out" }, 10.32);
+    tl.fromTo("#je-platform", { opacity: 0 }, { opacity: 1, duration: .3 }, 10.65);
+    tl.fromTo("#je-url", { scaleX: .7, opacity: 0 }, { scaleX: 1, opacity: 1, duration: .42, ease: "back.out(1.25)" }, 10.82);
+    tl.fromTo("#je-qualifier", { opacity: 0 }, { opacity: .78, duration: .32 }, 11.2);
+    window.__timelines["01-join-early"] = tl;
+  </script>
+</template>

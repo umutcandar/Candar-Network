@@ -1,0 +1,149 @@
+[gd_scene load_steps=4 format=3 uid="uid://c4co4ffsa6wcf"]
+
+[ext_resource type="Script" uid="uid://dmbxfllo8n1g4" path="res://market.gd" id="1_qy6h4"]
+[ext_resource type="Script" uid="uid://c1r0vqk72od2q" path="res://localized_label.gd" id="2_xtoqr"]
+[ext_resource type="Script" uid="uid://cm16tx0is08cg" path="res://localized_button.gd" id="3_qd2tk"]
+
+[node name="Market" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_qy6h4")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 0.0
+offset_right = 0.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="TitleLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BoostSection" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="BoostTitleLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_boost_title"
+
+[node name="BoostList" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection"]
+layout_mode = 2
+
+[node name="Boost1Row" type="HBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList"]
+layout_mode = 2
+
+[node name="Boost1Info" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost1Row"]
+layout_mode = 2
+
+[node name="Boost1NameLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost1Row/Boost1Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_boost1_name"
+
+[node name="Boost1DescLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost1Row/Boost1Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_boost1_desc"
+
+[node name="Boost1Button" type="Button" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost1Row"]
+layout_mode = 2
+script = ExtResource("3_qd2tk")
+translation_key = "market_boost1_button"
+
+[node name="Boost3Row" type="HBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList"]
+layout_mode = 2
+
+[node name="Boost3Info" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost3Row"]
+layout_mode = 2
+
+[node name="Boost3NameLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost3Row/Boost3Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_boost3_name"
+
+[node name="Boost3DescLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost3Row/Boost3Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_boost3_desc"
+
+[node name="Boost3Button" type="Button" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost3Row"]
+layout_mode = 2
+script = ExtResource("3_qd2tk")
+translation_key = "market_boost3_button"
+
+[node name="Boost7Row" type="HBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList"]
+layout_mode = 2
+
+[node name="Boost7Info" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost7Row"]
+layout_mode = 2
+
+[node name="Boost7NameLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost7Row/Boost7Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_boost7_name"
+
+[node name="Boost7DescLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost7Row/Boost7Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_boost7_desc"
+
+[node name="Boost7Button" type="Button" parent="PanelContainer/ScrollContainer/VBoxContainer/BoostSection/BoostList/Boost7Row"]
+layout_mode = 2
+script = ExtResource("3_qd2tk")
+translation_key = "market_boost7_button"
+
+[node name="PremiumSection" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="PremiumTitleLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/PremiumSection"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_premium_title"
+
+[node name="PremiumList" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/PremiumSection"]
+layout_mode = 2
+
+[node name="Prem30Row" type="HBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/PremiumSection/PremiumList"]
+layout_mode = 2
+
+[node name="Prem30Info" type="VBoxContainer" parent="PanelContainer/ScrollContainer/VBoxContainer/PremiumSection/PremiumList/Prem30Row"]
+layout_mode = 2
+
+[node name="Prem30NameLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/PremiumSection/PremiumList/Prem30Row/Prem30Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_prem30_name"
+
+[node name="Prem30DescLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer/PremiumSection/PremiumList/Prem30Row/Prem30Info"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_prem30_desc"
+
+[node name="Prem30Button" type="Button" parent="PanelContainer/ScrollContainer/VBoxContainer/PremiumSection/PremiumList/Prem30Row"]
+layout_mode = 2
+script = ExtResource("3_qd2tk")
+translation_key = "market_prem30_button"
+
+[node name="StatusLabel" type="Label" parent="PanelContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_xtoqr")
+translation_key = "market_status"

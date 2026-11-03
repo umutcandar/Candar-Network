@@ -1,0 +1,5 @@
+[config]
+
+name="AdMobAppId"
+binary_type="local"
+binary="libs/admob-app-id-release.aar"

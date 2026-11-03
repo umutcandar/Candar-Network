@@ -1,0 +1,101 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Apple Login</title>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+  <style>
+    body{font-family:-apple-system,system-ui;background:#0f172a;color:#fff;display:flex;min-height:100vh;align-items:center;justify-content:center;margin:0}
+    .card{width:min(520px,92vw);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:18px}
+    button{width:100%;padding:14px 16px;border-radius:12px;border:0;background:#111;color:#fff;font-size:16px}
+    .muted{opacity:.75;margin-top:10px;font-size:13px;line-height:1.35}
+    pre{white-space:pre-wrap;word-break:break-word;background:rgba(0,0,0,.25);padding:10px;border-radius:12px}
+  </style>
+</head>
+<body>
+<div class="card">
+  <button id="btn">Apple ile devam et</button>
+  <div class="muted">Eğer otomatik dönmezse, butona tekrar bas.</div>
+  <pre id="log"></pre>
+</div>
+
+<script>
+  const logEl = document.getElementById('log');
+  const log = (m) => { logEl.textContent += m + "\n"; };
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCikHaR1YfQ5-C2YH-7T8MzjL_HKODyF_Q",
+    authDomain: "candar-network-007.firebaseapp.com",
+    projectId: "candar-network-007"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // iOS’ta state kaybını azaltmak için
+  auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL).catch(()=>{});
+
+  const provider = new firebase.auth.OAuthProvider('apple.com');
+  provider.addScope('email');
+  provider.addScope('name');
+
+  async function finishToApp(user){
+    const idToken = await user.getIdToken();
+    const refreshToken = user.refreshToken || "";
+    const url = `candar://auth?idToken=${encodeURIComponent(idToken)}&refreshToken=${encodeURIComponent(refreshToken)}`;
+    log("APP’e dönülüyor...");
+    location.href = url;
+  }
+
+  // Eğer user zaten oluştuysa (redirect/popup sonrası), buradan yakalar
+  auth.onAuthStateChanged((user)=>{
+    if(user){
+      log("User bulundu, token alınıyor...");
+      finishToApp(user).catch(e=>log("finish hata: "+(e?.message||e)));
+    }
+  });
+
+  // Redirect sonucu varsa dener; hata verirse de sorun değil, onAuthStateChanged yakalayabilir
+  auth.getRedirectResult()
+    .then((res)=>{
+      if(res && res.user){
+        log("RedirectResult user geldi.");
+        finishToApp(res.user);
+      } else {
+        log("RedirectResult boş.");
+      }
+    })
+    .catch((e)=>{
+      log("RedirectResult hata (önemli değil): " + (e?.message||e));
+    });
+
+  async function start(){
+    try{
+      log("Popup deneniyor...");
+      const res = await auth.signInWithPopup(provider);
+      if(res && res.user){
+        log("Popup OK.");
+        await finishToApp(res.user);
+        return;
+      }
+    }catch(e){
+      log("Popup olmadı: " + (e?.message||e));
+    }
+
+    try{
+      log("Redirect’e geçiliyor...");
+      await auth.signInWithRedirect(provider);
+    }catch(e){
+      log("Redirect hata: " + (e?.message||e));
+    }
+  }
+
+  document.getElementById('btn').addEventListener('click', start);
+
+  // Sayfa açılır açılmaz otomatik başlatmak istersen:
+  // start();
+</script>
+</body>
+</html>

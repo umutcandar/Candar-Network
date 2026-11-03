@@ -1,0 +1,88 @@
+[gd_scene load_steps=7 format=3 uid="uid://ckbw1eekel7jg"]
+
+[ext_resource type="Script" uid="uid://b4xbangypvp77" path="res://onboarding.gd" id="1_8g2tn"]
+[ext_resource type="Script" uid="uid://c1r0vqk72od2q" path="res://localized_label.gd" id="2_80sf7"]
+[ext_resource type="Texture2D" uid="uid://c4wi3quf16kov" path="res://assets/logoyazili.png" id="2_hbngn"]
+[ext_resource type="Script" uid="uid://bf6f7ct8wcrkn" path="res://localized_line_edit.gd" id="4_djd43"]
+[ext_resource type="Script" uid="uid://cm16tx0is08cg" path="res://localized_button.gd" id="5_8wujj"]
+[ext_resource type="Script" uid="uid://k2hhkj04j80k" path="res://addons/DeeplinkPlugin/Deeplink.gd" id="6_8wujj"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_8g2tn")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "CANDAR NETWORK"
+script = ExtResource("2_80sf7")
+translation_key = "onboarding_title"
+
+[node name="Logo" type="TextureRect" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+texture = ExtResource("2_hbngn")
+expand_mode = 4
+
+[node name="EmailEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_djd43")
+placeholder_key = "email_placeholder"
+
+[node name="PasswordEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_djd43")
+placeholder_key = "password_placeholder"
+
+[node name="ReferralEdit" type="LineEdit" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_djd43")
+placeholder_key = "referral_placeholder"
+
+[node name="LoginButtonn" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "
+"
+script = ExtResource("5_8wujj")
+translation_key = "login_button"
+
+[node name="ForgotPasswordButton" type="Button" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("5_8wujj")
+translation_key = "forgot_password"
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HTTPRequest" type="HTTPRequest" parent="."]
+
+[node name="Deeplink" type="Node" parent="."]
+script = ExtResource("6_8wujj")
+scheme = "candar"
+host = "auth"
+metadata/_custom_type_script = "uid://k2hhkj04j80k"

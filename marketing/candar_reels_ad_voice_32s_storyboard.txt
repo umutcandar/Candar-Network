@@ -1,0 +1,19 @@
+Candar Network Reels/TikTok ad - voiced detailed version
+Format: 1080x1920, H.264, 30fps
+Audio: Turkish Yelda voiceover + subtitles
+
+Narration:
+Candar Network ile kazım, yani mining deneyimini cebine al. Her gün puanını topla; kazım oranını ve Candar coin ilerlemeni tek ekrandan takip et. Candar Market'te boost paketlerini detaylı gör: Basic x2, Pro x3 ve Ultra x7 kazım hızı. Boost hesaplayıcı, referans ve reklam boost etkisini gösterir; hangi paketle günlük oranın nasıl değişir, net görürsün. Referans ekledikçe mining hızın kişiye özel artar. Reklam izleyerek ekstra oran al; kazım yaptığında ödülün puanına yansısın. Candar AI tarafında sorularını yaz, stratejini hızlandır; mesaj alanı her zaman elinin altında. Candar Network, App Store ve Google Play'de. İndir, puanını topla, kazımını büyüt.
+
+Scenes:
+00.0s - 03.5s: CANDAR NETWORK / Kazım / mining deneyimi cebinde / Kazım / mining deneyimi cebinde
+03.5s - 07.7s: GÜNLÜK KAZIM / Puanını ve oranını tek ekranda gör / Günlük puan + kişisel kazım oranı
+07.7s - 12.3s: CANDAR MARKET / Boost paketleri detaylı görünsün / Market: Basic x2, Pro x3, Ultra x7
+12.3s - 17.2s: BOOST HESAPLAYICI / Oranı önceden gör / Referans + reklam boost = özel mining oranı
+17.2s - 21.0s: REFERANS / Davet ettikçe oran güçlenir / Referans ekle, kazım oranını büyüt
+21.0s - 24.8s: REKLAM BOOST / Reklam izle, ekstra oran al / Reklam izle, ekstra kazım oranı kazan
+24.8s - 28.8s: CANDAR AI / AI ekranı tam kadraj / Candar AI: sor, yaz, stratejini hızlandır
+28.8s - 32.0s: ŞİMDİ KATIL / Candar Network / İndir. Puanını topla. Kazımını büyüt.
+
+Market copy calls out Basic x2, Pro x3, Ultra x7, referral and rewarded-ad boost.
+AI scene keeps the full screenshot visible so the message field is not cropped.

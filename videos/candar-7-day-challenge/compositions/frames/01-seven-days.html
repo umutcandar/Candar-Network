@@ -1,0 +1,435 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400 800;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+    }
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter", sans-serif;
+    }
+
+    .frame-01-seven-days-ground,
+    .frame-01-seven-days-dark {
+      position: absolute;
+      inset: 0;
+    }
+
+    .frame-01-seven-days-ground {
+      z-index: 0;
+      background: #f59e0b;
+    }
+
+    .frame-01-seven-days-dark {
+      z-index: 3;
+      background: #171717;
+      border-top: 1px solid #262828;
+    }
+
+    .frame-01-seven-days-day-stage {
+      position: absolute;
+      z-index: 1;
+      inset: 0;
+      color: #171717;
+    }
+
+    .frame-01-seven-days-kicker {
+      position: absolute;
+      top: 10.5cqh;
+      left: 8cqw;
+      margin: 0;
+      font-size: 2.1cqw;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(17, 17, 17, 0.55);
+    }
+
+    .frame-01-seven-days-lockup {
+      position: absolute;
+      top: 25cqh;
+      left: 8cqw;
+      width: 84cqw;
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 3.2cqw;
+      white-space: nowrap;
+    }
+
+    .frame-01-seven-days-day-word,
+    .frame-01-seven-days-day-number {
+      display: block;
+      margin: 0;
+      font-size: 24cqw;
+      font-weight: 800;
+      line-height: 0.82;
+      letter-spacing: -0.055em;
+      text-transform: lowercase;
+    }
+
+    .frame-01-seven-days-number-wrap {
+      display: inline-flex;
+      min-width: 23cqw;
+      justify-content: flex-start;
+      align-items: baseline;
+    }
+
+    .frame-01-seven-days-progress {
+      position: absolute;
+      top: 51.5cqh;
+      left: 8cqw;
+      width: 84cqw;
+      height: 15.5cqh;
+      display: flex;
+      align-items: flex-end;
+      gap: 2cqw;
+      border-bottom: 1px solid rgba(17, 17, 17, 0.2);
+    }
+
+    .frame-01-seven-days-mark {
+      flex: 1 1 0;
+      height: var(--mark-height);
+      background: #171717;
+      transform-origin: bottom center;
+    }
+
+    .frame-01-seven-days-day-labels {
+      position: absolute;
+      top: 69cqh;
+      left: 8cqw;
+      width: 84cqw;
+      display: flex;
+      justify-content: space-between;
+      font-size: 1.8cqw;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: rgba(17, 17, 17, 0.55);
+    }
+
+    .frame-01-seven-days-final {
+      position: absolute;
+      z-index: 4;
+      top: 18cqh;
+      left: 8cqw;
+      width: 84cqw;
+      color: #ffffff;
+    }
+
+    .frame-01-seven-days-final-rule {
+      width: 11cqw;
+      height: 3px;
+      margin-bottom: 4.5cqh;
+      background: #f59e0b;
+      transform-origin: left center;
+    }
+
+    .frame-01-seven-days-final-line {
+      margin: 0;
+      font-size: 15.4cqw;
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.045em;
+      text-transform: lowercase;
+    }
+
+    .frame-01-seven-days-final-line + .frame-01-seven-days-final-line {
+      margin-top: 1.2cqh;
+    }
+
+    .frame-01-seven-days-final-accent {
+      color: #f59e0b;
+    }
+
+    .frame-01-seven-days-brand {
+      position: absolute;
+      z-index: 4;
+      top: 68.5cqh;
+      left: 8cqw;
+      width: 84cqw;
+      display: flex;
+      align-items: center;
+      gap: 2.8cqw;
+      color: #fbbf24;
+      border-top: 1px solid #262828;
+      padding-top: 2.6cqh;
+    }
+
+    .frame-01-seven-days-logo {
+      width: 10cqw;
+      height: 10cqw;
+      object-fit: contain;
+    }
+
+    .frame-01-seven-days-brand-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 0.7cqh;
+    }
+
+    .frame-01-seven-days-brand-name {
+      font-size: 2.6cqw;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .frame-01-seven-days-brand-meta {
+      font-size: 1.7cqw;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #fbbf24;
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-seven-days" data-duration="3.4" data-width="1080" data-height="1920">
+    <div
+      class="clip frame-01-seven-days-ground"
+      id="frame-01-seven-days-ground"
+      data-start="0"
+      data-duration="3.4"
+      data-track-index="0"
+    ></div>
+
+    <div
+      class="clip frame-01-seven-days-day-stage"
+      id="frame-01-seven-days-day-stage"
+      data-start="0"
+      data-duration="3.4"
+      data-track-index="1"
+    >
+      <p class="frame-01-seven-days-kicker">7 day challenge</p>
+      <div class="frame-01-seven-days-lockup" id="frame-01-seven-days-lockup">
+        <span class="frame-01-seven-days-day-word">day</span>
+        <span class="frame-01-seven-days-number-wrap">
+          <span class="frame-01-seven-days-day-number" id="frame-01-seven-days-number">1</span>
+        </span>
+      </div>
+      <div class="frame-01-seven-days-progress" aria-hidden="true">
+        <i class="frame-01-seven-days-mark" style="--mark-height: 34%"></i>
+        <i class="frame-01-seven-days-mark" style="--mark-height: 43%"></i>
+        <i class="frame-01-seven-days-mark" style="--mark-height: 52%"></i>
+        <i class="frame-01-seven-days-mark" style="--mark-height: 62%"></i>
+        <i class="frame-01-seven-days-mark" style="--mark-height: 74%"></i>
+        <i class="frame-01-seven-days-mark" style="--mark-height: 86%"></i>
+        <i class="frame-01-seven-days-mark" style="--mark-height: 100%"></i>
+      </div>
+      <div class="frame-01-seven-days-day-labels" aria-hidden="true">
+        <span>01</span>
+        <span>07</span>
+      </div>
+    </div>
+
+    <div
+      class="clip frame-01-seven-days-dark"
+      id="frame-01-seven-days-dark"
+      data-start="0"
+      data-duration="3.4"
+      data-track-index="2"
+    ></div>
+
+    <div
+      class="clip frame-01-seven-days-final"
+      id="frame-01-seven-days-final"
+      data-start="0"
+      data-duration="3.4"
+      data-track-index="3"
+    >
+      <div class="frame-01-seven-days-final-rule" id="frame-01-seven-days-final-rule"></div>
+      <p class="frame-01-seven-days-final-line" id="frame-01-seven-days-make">make progress</p>
+      <p
+        class="frame-01-seven-days-final-line frame-01-seven-days-final-accent"
+        id="frame-01-seven-days-visible"
+      >
+        visible.
+      </p>
+    </div>
+
+    <div
+      class="clip frame-01-seven-days-brand"
+      id="frame-01-seven-days-brand"
+      data-start="0"
+      data-duration="3.4"
+      data-track-index="4"
+    >
+      <img
+        class="frame-01-seven-days-logo"
+        src="assets/logo_001.png"
+        alt="Candar Network"
+      />
+      <div class="frame-01-seven-days-brand-copy">
+        <span class="frame-01-seven-days-brand-name">Candar Network</span>
+        <span class="frame-01-seven-days-brand-meta">daily progress</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+    (() => {
+      const SCENE_DURATION = 3;
+      const PULSE = 0.2;
+      const BEATS = [
+        PULSE * 0.4,
+        PULSE * 3.6,
+        PULSE * 4.1,
+        PULSE * 5.3,
+        PULSE * 6.6,
+        PULSE * 8.9,
+        PULSE * 9.7,
+        PULSE * 10.8,
+        PULSE * 11.8,
+      ];
+
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["01-seven-days"] = tl;
+
+      tl.fromTo(
+        "#frame-01-seven-days-lockup",
+        { scale: 1.55, filter: "blur(18px)", opacity: 0 },
+        {
+          scale: 1,
+          filter: "blur(0px)",
+          opacity: 1,
+          duration: 0.5,
+          ease: "power4.out",
+        },
+        BEATS[0],
+      );
+
+      tl.fromTo(
+        ".frame-01-seven-days-kicker",
+        { x: -180, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.42, ease: "expo.out" },
+        BEATS[1],
+      );
+
+      const numberSequence = [
+        { t: 0, text: "1" },
+        { t: BEATS[2], text: "2" },
+        { t: BEATS[3], text: "4" },
+        { t: BEATS[4], text: "7" },
+      ];
+      const numberDriver = { t: 0 };
+      const numberElement = document.querySelector("#frame-01-seven-days-number");
+
+      function numberAt(time) {
+        for (let i = numberSequence.length - 1; i >= 0; i -= 1) {
+          if (time >= numberSequence[i].t) return numberSequence[i].text;
+        }
+        return "1";
+      }
+
+      tl.to(
+        numberDriver,
+        {
+          t: BEATS[4],
+          duration: BEATS[4],
+          ease: "none",
+          onUpdate: () => {
+            numberElement.textContent = numberAt(numberDriver.t);
+          },
+        },
+        0,
+      );
+
+      tl.fromTo(
+        ".frame-01-seven-days-mark",
+        { scaleY: 0, opacity: 0.35 },
+        {
+          scaleY: 1,
+          opacity: 1,
+          duration: 0.4,
+          stagger: 0.11,
+          ease: "power3.out",
+        },
+        BEATS[2],
+      );
+
+      tl.fromTo(
+        ".frame-01-seven-days-day-labels",
+        { y: 42, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.45, ease: "circ.out" },
+        BEATS[3],
+      );
+
+      tl.fromTo(
+        "#frame-01-seven-days-dark",
+        { yPercent: 102, skewY: 4 },
+        { yPercent: 0, skewY: 0, duration: 0.24, ease: "expo.inOut" },
+        BEATS[5],
+      );
+
+      tl.to(
+        ".frame-01-seven-days-day-stage",
+        {
+          y: -90,
+          scale: 1.1,
+          filter: "blur(12px)",
+          opacity: 0,
+          duration: 0.2,
+          ease: "power3.in",
+        },
+        BEATS[5],
+      );
+
+      tl.fromTo(
+        "#frame-01-seven-days-final-rule",
+        { scaleX: 0 },
+        { scaleX: 1, duration: 0.32, ease: "power3.out" },
+        BEATS[6],
+      );
+
+      tl.fromTo(
+        "#frame-01-seven-days-make",
+        { x: -210, opacity: 0 },
+        { x: 0, opacity: 1, duration: 0.44, ease: "expo.out" },
+        BEATS[6],
+      );
+
+      tl.fromTo(
+        "#frame-01-seven-days-visible",
+        { y: 90, rotation: 3, opacity: 0 },
+        { y: 0, rotation: 0, opacity: 1, duration: 0.48, ease: "circ.out" },
+        BEATS[7],
+      );
+
+      tl.fromTo(
+        "#frame-01-seven-days-brand",
+        { y: 72, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.42, ease: "power4.out" },
+        BEATS[8],
+      );
+
+      const holdStart = 2.6;
+      const cycle = 0.7;
+      const holdDuration = SCENE_DURATION - holdStart;
+      tl.to(
+        ".frame-01-seven-days-final",
+        {
+          scale: 1.006,
+          duration: cycle / 2,
+          ease: "sine.inOut",
+          yoyo: true,
+          repeat: Math.max(0, Math.floor(holdDuration / cycle) - 1),
+        },
+        holdStart,
+      );
+    })();
+  </script>
+</template>

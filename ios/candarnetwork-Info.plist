@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+
+    <!-- 📱 GENEL -->
+    <key>CFBundleDevelopmentRegion</key><string>en</string>
+    <key>CFBundleExecutable</key><string>$(EXECUTABLE_NAME)</string>
+    <key>CFBundleIdentifier</key><string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
+    <key>CFBundleDisplayName</key><string>Candar Network</string>
+    <key>CFBundleName</key><string>Candar Network</string>
+    <key>CFBundlePackageType</key><string>APPL</string>
+    <key>CFBundleShortVersionString</key><string>2.0.12</string>
+    <key>CFBundleVersion</key><string>49</string>
+
+    <!-- 🎨 ARAYÜZ / ORYANTASYON -->
+    <key>UILaunchStoryboardName</key><string>Launch Screen</string>
+    <key>UISupportedInterfaceOrientations</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+    </array>
+    <key>UISupportedInterfaceOrientations~ipad</key>
+    <array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationPortraitUpsideDown</string>
+    </array>
+    
+     <!-- SDK -->
+    <key>SKAdNetworkItems</key>
+    <array>
+        <dict>
+            <key>SKAdNetworkIdentifier</key>
+            <string>cstr6suwn9.skadnetwork</string>
+        </dict>
+        </array>
+    
+    <key>GADIsChildDirectedTreatment</key>
+<false/>
+
+
+    <!-- ⚙️ GODOT -->
+    <key>UIApplicationSupportsIndirectInputEvents</key><true/>
+
+    <!-- 🧩 ADMOB -->
+    <key>GADApplicationIdentifier</key>
+    <string>ca-app-pub-3086179575899998~9181087496</string>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+
+    <!-- 🔑 GOOGLE SIGN-IN (URL scheme = REVERSED_CLIENT_ID) -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeRole</key><string>Editor</string>
+            <key>CFBundleURLName</key><string>com.candar.network.oauth</string>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <!-- GoogleService-Info.plist içindeki REVERSED_CLIENT_ID ile AYNI OLMALI -->
+                <string>com.googleusercontent.apps.170015852669-362693n16e88llrtodo6f0b9saem6fp4</string>
+            </array>
+        </dict>
+    </array>
+
+    <!-- (İsteğe bağlı) canOpenURL için sorgulanabilecek şemalar -->
+    <key>LSApplicationQueriesSchemes</key>
+    <array>
+        <string>google</string>
+        <string>comgooglechrome</string>
+    </array>
+
+</dict>
+</plist>

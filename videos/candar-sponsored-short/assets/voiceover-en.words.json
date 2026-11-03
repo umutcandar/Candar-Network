@@ -1,0 +1,452 @@
+[
+  {
+    "id": "w0",
+    "text": "If",
+    "start": 0.119,
+    "end": 0.219
+  },
+  {
+    "id": "w1",
+    "text": "you",
+    "start": 0.299,
+    "end": 0.399
+  },
+  {
+    "id": "w2",
+    "text": "only",
+    "start": 0.479,
+    "end": 0.699
+  },
+  {
+    "id": "w3",
+    "text": "join",
+    "start": 0.779,
+    "end": 0.979
+  },
+  {
+    "id": "w4",
+    "text": "a",
+    "start": 1.019,
+    "end": 1.039
+  },
+  {
+    "id": "w5",
+    "text": "network",
+    "start": 1.12,
+    "end": 1.459
+  },
+  {
+    "id": "w6",
+    "text": "after",
+    "start": 1.519,
+    "end": 1.759
+  },
+  {
+    "id": "w7",
+    "text": "everyone",
+    "start": 1.799,
+    "end": 2.099
+  },
+  {
+    "id": "w8",
+    "text": "is",
+    "start": 2.139,
+    "end": 2.24
+  },
+  {
+    "id": "w9",
+    "text": "talking",
+    "start": 2.299,
+    "end": 2.579
+  },
+  {
+    "id": "w10",
+    "text": "about",
+    "start": 2.639,
+    "end": 2.839
+  },
+  {
+    "id": "w11",
+    "text": "it,",
+    "start": 2.879,
+    "end": 2.96
+  },
+  {
+    "id": "w12",
+    "text": "you",
+    "start": 3.339,
+    "end": 3.419
+  },
+  {
+    "id": "w13",
+    "text": "are",
+    "start": 3.46,
+    "end": 3.559
+  },
+  {
+    "id": "w14",
+    "text": "already",
+    "start": 3.639,
+    "end": 4
+  },
+  {
+    "id": "w15",
+    "text": "late.",
+    "start": 4.059,
+    "end": 4.359
+  },
+  {
+    "id": "w16",
+    "text": "Candar",
+    "start": 4.92,
+    "end": 5.239
+  },
+  {
+    "id": "w17",
+    "text": "is",
+    "start": 5.279,
+    "end": 5.38
+  },
+  {
+    "id": "w18",
+    "text": "still",
+    "start": 5.44,
+    "end": 5.639
+  },
+  {
+    "id": "w19",
+    "text": "early.",
+    "start": 5.719,
+    "end": 6.059
+  },
+  {
+    "id": "w20",
+    "text": "Join",
+    "start": 6.739,
+    "end": 7.019
+  },
+  {
+    "id": "w21",
+    "text": "now",
+    "start": 7.099,
+    "end": 7.419
+  },
+  {
+    "id": "w22",
+    "text": "and",
+    "start": 7.48,
+    "end": 7.579
+  },
+  {
+    "id": "w23",
+    "text": "unlock",
+    "start": 7.719,
+    "end": 8.119
+  },
+  {
+    "id": "w24",
+    "text": "a",
+    "start": 8.199,
+    "end": 8.22
+  },
+  {
+    "id": "w25",
+    "text": "permanent",
+    "start": 8.38,
+    "end": 8.819
+  },
+  {
+    "id": "w26",
+    "text": "Founding",
+    "start": 8.939,
+    "end": 9.3
+  },
+  {
+    "id": "w27",
+    "text": "Member",
+    "start": 9.38,
+    "end": 9.619
+  },
+  {
+    "id": "w28",
+    "text": "role.",
+    "start": 9.739,
+    "end": 10.039
+  },
+  {
+    "id": "w29",
+    "text": "Check",
+    "start": 10.399,
+    "end": 10.539
+  },
+  {
+    "id": "w30",
+    "text": "in",
+    "start": 10.599,
+    "end": 10.68
+  },
+  {
+    "id": "w31",
+    "text": "daily,",
+    "start": 10.76,
+    "end": 11.059
+  },
+  {
+    "id": "w32",
+    "text": "build",
+    "start": 11.699,
+    "end": 11.899
+  },
+  {
+    "id": "w33",
+    "text": "your",
+    "start": 11.939,
+    "end": 12
+  },
+  {
+    "id": "w34",
+    "text": "streak,",
+    "start": 12.099,
+    "end": 12.479
+  },
+  {
+    "id": "w35",
+    "text": "collect",
+    "start": 12.979,
+    "end": 13.319
+  },
+  {
+    "id": "w36",
+    "text": "in-app",
+    "start": 13.359,
+    "end": 13.639
+  },
+  {
+    "id": "w37",
+    "text": "points,",
+    "start": 13.719,
+    "end": 14.099
+  },
+  {
+    "id": "w38",
+    "text": "grow",
+    "start": 14.539,
+    "end": 14.699
+  },
+  {
+    "id": "w39",
+    "text": "your",
+    "start": 14.739,
+    "end": 14.799
+  },
+  {
+    "id": "w40",
+    "text": "referral",
+    "start": 14.859,
+    "end": 15.159
+  },
+  {
+    "id": "w41",
+    "text": "network,",
+    "start": 15.259,
+    "end": 15.619
+  },
+  {
+    "id": "w42",
+    "text": "and",
+    "start": 16.18,
+    "end": 16.239
+  },
+  {
+    "id": "w43",
+    "text": "explore",
+    "start": 16.319,
+    "end": 16.619
+  },
+  {
+    "id": "w44",
+    "text": "with",
+    "start": 16.659,
+    "end": 16.76
+  },
+  {
+    "id": "w45",
+    "text": "Candar",
+    "start": 16.819,
+    "end": 17.119
+  },
+  {
+    "id": "w46",
+    "text": "AI.",
+    "start": 17.239,
+    "end": 17.539
+  },
+  {
+    "id": "w47",
+    "text": "No",
+    "start": 17.94,
+    "end": 18.039
+  },
+  {
+    "id": "w48",
+    "text": "hype,",
+    "start": 18.159,
+    "end": 18.44
+  },
+  {
+    "id": "w49",
+    "text": "no",
+    "start": 18.84,
+    "end": 18.939
+  },
+  {
+    "id": "w50",
+    "text": "investment",
+    "start": 19,
+    "end": 19.42
+  },
+  {
+    "id": "w51",
+    "text": "promises—just",
+    "start": 19.539,
+    "end": 20.579
+  },
+  {
+    "id": "w52",
+    "text": "a",
+    "start": 20.619,
+    "end": 20.699
+  },
+  {
+    "id": "w53",
+    "text": "growing",
+    "start": 20.76,
+    "end": 21.159
+  },
+  {
+    "id": "w54",
+    "text": "digital",
+    "start": 21.199,
+    "end": 21.519
+  },
+  {
+    "id": "w55",
+    "text": "community",
+    "start": 21.579,
+    "end": 22
+  },
+  {
+    "id": "w56",
+    "text": "where",
+    "start": 22.1,
+    "end": 22.26
+  },
+  {
+    "id": "w57",
+    "text": "early",
+    "start": 22.319,
+    "end": 22.579
+  },
+  {
+    "id": "w58",
+    "text": "participation",
+    "start": 22.639,
+    "end": 23.479
+  },
+  {
+    "id": "w59",
+    "text": "is",
+    "start": 23.539,
+    "end": 23.659
+  },
+  {
+    "id": "w60",
+    "text": "remembered.",
+    "start": 23.719,
+    "end": 24.26
+  },
+  {
+    "id": "w61",
+    "text": "Candar",
+    "start": 24.6,
+    "end": 24.939
+  },
+  {
+    "id": "w62",
+    "text": "Network",
+    "start": 25.039,
+    "end": 25.379
+  },
+  {
+    "id": "w63",
+    "text": "is",
+    "start": 25.42,
+    "end": 25.539
+  },
+  {
+    "id": "w64",
+    "text": "free",
+    "start": 25.659,
+    "end": 25.859
+  },
+  {
+    "id": "w65",
+    "text": "on",
+    "start": 25.92,
+    "end": 26
+  },
+  {
+    "id": "w66",
+    "text": "iOS",
+    "start": 26.18,
+    "end": 26.579
+  },
+  {
+    "id": "w67",
+    "text": "and",
+    "start": 26.619,
+    "end": 26.719
+  },
+  {
+    "id": "w68",
+    "text": "Android.",
+    "start": 26.84,
+    "end": 27.279
+  },
+  {
+    "id": "w69",
+    "text": "Start",
+    "start": 27.739,
+    "end": 27.959
+  },
+  {
+    "id": "w70",
+    "text": "your",
+    "start": 28,
+    "end": 28.18
+  },
+  {
+    "id": "w71",
+    "text": "first",
+    "start": 28.219,
+    "end": 28.479
+  },
+  {
+    "id": "w72",
+    "text": "seven-day",
+    "start": 28.519,
+    "end": 28.939
+  },
+  {
+    "id": "w73",
+    "text": "streak",
+    "start": 28.979,
+    "end": 29.26
+  },
+  {
+    "id": "w74",
+    "text": "today.",
+    "start": 29.299,
+    "end": 29.639
+  }
+]

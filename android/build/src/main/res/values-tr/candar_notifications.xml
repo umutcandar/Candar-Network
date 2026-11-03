@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="candar_daily_channel_name">Günlük hatırlatmalar</string>
+    <string name="candar_daily_channel_description">Günlük puan hazır olduğunda bildirim gönderir.</string>
+</resources>

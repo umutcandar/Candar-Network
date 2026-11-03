@@ -1,0 +1,16 @@
+{
+  "applinks": {
+    "details": [
+      {
+        "appIDs": ["ZCC6P3Q2MT.com.candarnetwork.app"],
+        "components": [
+          {
+            "/": "/download",
+            "?": { "ref": "*" },
+            "comment": "Open Candar invite links in the installed app"
+          }
+        ]
+      }
+    ]
+  }
+}

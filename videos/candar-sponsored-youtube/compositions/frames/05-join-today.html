@@ -1,0 +1,351 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+    }
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter";
+      color: #171717;
+    }
+
+    .hf-05-join-today-ground,
+    .hf-05-join-today-atmosphere,
+    .hf-05-join-today-hero,
+    .hf-05-join-today-cta-stage,
+    .hf-05-join-today-cursor-stage,
+    .hf-05-join-today-details,
+    .hf-05-join-today-progress {
+      position: absolute;
+      inset: 0;
+    }
+
+    .hf-05-join-today-ground {
+      background: #FFFFFF;
+    }
+
+    .hf-05-join-today-atmosphere {
+      pointer-events: none;
+    }
+
+    .hf-05-join-today-ring {
+      position: absolute;
+      left: 50%;
+      top: 6.5cqh;
+      width: 41.7cqw;
+      height: 74cqh;
+      margin-left: -20.85cqw;
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 50%;
+    }
+
+    .hf-05-join-today-ring::before,
+    .hf-05-join-today-ring::after {
+      content: "";
+      position: absolute;
+      border: 1.5px solid rgba(249, 115, 22, 0.15);
+      border-radius: 50%;
+    }
+
+    .hf-05-join-today-ring::before {
+      inset: 9.2cqh 5.2cqw;
+    }
+
+    .hf-05-join-today-ring::after {
+      inset: 18.4cqh 10.4cqw;
+      background: rgba(249, 115, 22, 0.04);
+    }
+
+    .hf-05-join-today-hero,
+    .hf-05-join-today-cta-stage,
+    .hf-05-join-today-details {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .hf-05-join-today-official-logo {
+      position: absolute;
+      top: 22cqh;
+      width: 22cqw;
+      height: 34cqh;
+      object-fit: contain;
+      transform-origin: 50% 50%;
+    }
+
+    .hf-05-join-today-cta {
+      position: absolute;
+      top: 33.2cqh;
+      width: 39.6cqw;
+      height: 13cqh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 100px;
+      background: #C2410C;
+      color: #FFFFFF;
+      font-size: 1.72cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.035em;
+      white-space: nowrap;
+      transform-origin: 50% 50%;
+    }
+
+    .hf-05-join-today-cta-separator {
+      width: 0.32cqw;
+      height: 0.32cqw;
+      margin: 0 1.05cqw;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    .hf-05-join-today-cursor {
+      position: absolute;
+      left: 65.8cqw;
+      top: 41.5cqh;
+      width: 3.25cqw;
+      height: 6.1cqh;
+      transform-origin: 22% 18%;
+      z-index: 3;
+    }
+
+    .hf-05-join-today-cursor svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .hf-05-join-today-tail {
+      position: absolute;
+      left: 67.8cqw;
+      top: 45.9cqh;
+      width: 14cqw;
+      height: 0.24cqh;
+      border-radius: 100px;
+      background: linear-gradient(90deg, rgba(249, 115, 22, 0.52), rgba(249, 115, 22, 0));
+      transform-origin: left center;
+    }
+
+    .hf-05-join-today-ripple {
+      position: absolute;
+      left: 65.42cqw;
+      top: 40.8cqh;
+      width: 4.2cqw;
+      height: 7.45cqh;
+      border: 2px solid #F97316;
+      border-radius: 50%;
+      transform-origin: 50% 50%;
+    }
+
+    .hf-05-join-today-detail-stack {
+      position: absolute;
+      top: 51.8cqh;
+      width: 55cqw;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .hf-05-join-today-url {
+      color: #171717;
+      font-size: 2.4cqw;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    .hf-05-join-today-disclaimer {
+      margin-top: 2.8cqh;
+      padding: 2.15cqh 2.35cqw;
+      border-left: 4px solid #F97316;
+      border-radius: 12px;
+      background: rgba(249, 115, 22, 0.08);
+      color: #5F6368;
+      font-size: 1.4cqw;
+      font-weight: 400;
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .hf-05-join-today-supporting-logo {
+      width: 11.5cqw;
+      height: 6.6cqh;
+      margin-top: 2.1cqh;
+      object-fit: contain;
+      opacity: 0.72;
+    }
+
+    .hf-05-join-today-progress-line {
+      position: absolute;
+      left: 5cqw;
+      top: 82cqh;
+      width: 90cqw;
+      height: 3px;
+      border-radius: 0;
+      background: rgba(249, 115, 22, 0.08);
+      overflow: hidden;
+    }
+
+    .hf-05-join-today-progress-fill {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background: #F97316;
+      transform-origin: left center;
+    }
+  </style>
+
+  <div id="root" data-composition-id="05-join-today" data-start="0" data-duration="11.34" data-width="1920" data-height="1080">
+    <div class="clip hf-05-join-today-ground" data-start="0" data-duration="11.34" data-track-index="0"></div>
+
+    <div class="clip hf-05-join-today-atmosphere" data-start="0" data-duration="11.34" data-track-index="1">
+      <div class="hf-05-join-today-ring"></div>
+    </div>
+
+    <div class="clip hf-05-join-today-hero" data-start="0" data-duration="11.34" data-track-index="2">
+      <img class="hf-05-join-today-official-logo" src="assets/candar-logo-official.png" alt="Candar">
+    </div>
+
+    <div class="clip hf-05-join-today-cta-stage" data-start="2.4" data-duration="8.94" data-track-index="3">
+      <div class="hf-05-join-today-cta">
+        <span>ÜCRETSİZ İNDİR</span>
+        <span class="hf-05-join-today-cta-separator"></span>
+        <span>iOS + ANDROID</span>
+      </div>
+    </div>
+
+    <div class="clip hf-05-join-today-cursor-stage" data-start="5" data-duration="6.34" data-track-index="4">
+      <div class="hf-05-join-today-tail"></div>
+      <div class="hf-05-join-today-ripple"></div>
+      <div class="hf-05-join-today-cursor" aria-hidden="true">
+        <svg viewBox="0 0 64 72" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M10 6L52 42L32.5 45.5L23 64L10 6Z" fill="#FFFFFF" stroke="#171717" stroke-width="4" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="clip hf-05-join-today-details" data-start="6.4" data-duration="4.94" data-track-index="5">
+      <div class="hf-05-join-today-detail-stack">
+        <div class="hf-05-join-today-url">candarnetwork.com/download</div>
+        <div class="hf-05-join-today-disclaimer">Puanlar yalnızca uygulama içi ilerleme içindir.</div>
+        <img class="hf-05-join-today-supporting-logo" src="assets/candar-network-logo.png" alt="Candar Network">
+      </div>
+    </div>
+
+    <div class="clip hf-05-join-today-progress" data-start="0" data-duration="11.34" data-track-index="6">
+      <div class="hf-05-join-today-progress-line"><span class="hf-05-join-today-progress-fill"></span></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+    window.__timelines = window.__timelines || {};
+    const timeline = gsap.timeline({ paused: true });
+
+    timeline.fromTo(
+      ".hf-05-join-today-official-logo",
+      { opacity: 1, scale: 1, rotation: -0.55 },
+      { opacity: 1, scale: 1, rotation: 0.55, duration: 1.2, ease: "sine.inOut" },
+      0
+    );
+    timeline.to(
+      ".hf-05-join-today-official-logo",
+      { rotation: -0.4, duration: 1.2, ease: "sine.inOut" },
+      1.2
+    );
+
+    timeline.fromTo(
+      ".hf-05-join-today-official-logo",
+      { opacity: 1, scale: 1, rotation: -0.4, filter: "blur(0px)" },
+      { opacity: 0, scale: 0.72, rotation: 0, filter: "blur(12px)", duration: 0.52, ease: "power3.in" },
+      2.4
+    );
+    timeline.fromTo(
+      ".hf-05-join-today-cta",
+      { opacity: 0, scale: 0.72, filter: "blur(12px)" },
+      { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.62, ease: "power3.out" },
+      2.48
+    );
+
+    timeline.fromTo(
+      ".hf-05-join-today-tail",
+      { opacity: 0, scaleX: 0.15 },
+      { opacity: 1, scaleX: 1, duration: 0.52, ease: "power3.out" },
+      5
+    );
+    timeline.fromTo(
+      ".hf-05-join-today-cursor",
+      { opacity: 0, x: 320, y: 190, scale: 0.78, rotation: -18 },
+      { opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.68, ease: "power4.out" },
+      5
+    );
+    timeline.to(
+      ".hf-05-join-today-tail",
+      { opacity: 0, scaleX: 0.35, duration: 0.22, ease: "power2.out" },
+      5.52
+    );
+    timeline.to(
+      ".hf-05-join-today-cta",
+      { scale: 0.96, duration: 0.13, ease: "power2.in" },
+      5.68
+    );
+    timeline.to(
+      ".hf-05-join-today-cursor",
+      { y: 9, scale: 0.94, duration: 0.13, ease: "power2.in" },
+      5.68
+    );
+    timeline.fromTo(
+      ".hf-05-join-today-ripple",
+      { opacity: 0.8, scale: 0.3 },
+      { opacity: 0, scale: 2.35, duration: 0.52, ease: "power2.out" },
+      5.81
+    );
+    timeline.to(
+      ".hf-05-join-today-cta",
+      { scale: 1, duration: 0.22, ease: "back.out(2)" },
+      5.81
+    );
+    timeline.to(
+      ".hf-05-join-today-cursor",
+      { y: 0, scale: 1, duration: 0.22, ease: "back.out(2)" },
+      5.81
+    );
+
+    timeline.fromTo(
+      ".hf-05-join-today-url",
+      { opacity: 0, y: 18, filter: "blur(8px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.58, ease: "power3.out" },
+      6.4
+    );
+    timeline.fromTo(
+      ".hf-05-join-today-disclaimer",
+      { opacity: 0, y: 18, filter: "blur(8px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.66, ease: "power3.out" },
+      7.18
+    );
+    timeline.fromTo(
+      ".hf-05-join-today-supporting-logo",
+      { opacity: 0, y: 12, scale: 0.94 },
+      { opacity: 0.72, y: 0, scale: 1, duration: 0.68, ease: "power3.out" },
+      8.55
+    );
+    timeline.fromTo(
+      ".hf-05-join-today-progress-fill",
+      { scaleX: 0.82 },
+      { scaleX: 1, duration: 2.79, ease: "power1.inOut" },
+      8.55
+    );
+
+    window.__timelines["05-join-today"] = timeline;
+  </script>
+</template>

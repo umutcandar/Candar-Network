@@ -1,0 +1,423 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+    }
+
+    #root {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter";
+      color: #171717;
+    }
+
+    #hf-04-ecosystem-ground {
+      position: absolute;
+      inset: 0;
+      background: #FFFFFF;
+    }
+
+    #hf-04-ecosystem-stage {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    #hf-04-ecosystem-title {
+      position: absolute;
+      top: 74px;
+      left: 96px;
+      display: flex;
+      gap: 0.72cqw;
+      align-items: baseline;
+      font-size: 2.6cqw;
+      line-height: 1.1;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #171717;
+      white-space: nowrap;
+    }
+
+    .hf-04-ecosystem-title-word {
+      display: inline-block;
+      opacity: 0;
+    }
+
+    #hf-04-ecosystem-title-accent {
+      color: #F97316;
+    }
+
+    #hf-04-ecosystem-field {
+      position: absolute;
+      left: 96px;
+      top: 190px;
+      width: 1728px;
+      height: 570px;
+      transform-origin: 42% 48%;
+    }
+
+    #hf-04-ecosystem-orbit-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+    }
+
+    .hf-04-ecosystem-connector {
+      fill: none;
+      stroke: rgba(249, 115, 22, 0.38);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    #hf-04-ecosystem-ai {
+      position: absolute;
+      left: 380px;
+      top: 132px;
+      width: 340px;
+      height: 340px;
+      display: grid;
+      place-items: center;
+    }
+
+    #hf-04-ecosystem-ai-ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #hf-04-ecosystem-ai-ring circle {
+      fill: none;
+      stroke: #F97316;
+      stroke-width: 4;
+      stroke-linecap: round;
+      transform-origin: 170px 170px;
+      transform: rotate(-90deg);
+    }
+
+    #hf-04-ecosystem-ai-core {
+      width: 242px;
+      height: 242px;
+      border-radius: 50%;
+      background: #F97316;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+
+    #hf-04-ecosystem-logo {
+      display: block;
+      width: 116px;
+      height: 116px;
+      object-fit: contain;
+    }
+
+    #hf-04-ecosystem-ai-label {
+      color: #FFFFFF;
+      font-size: 1.4cqw;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+
+    .hf-04-ecosystem-card {
+      position: absolute;
+      width: 372px;
+      height: 152px;
+      box-sizing: border-box;
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      align-items: center;
+      gap: 24px;
+      padding: 19px 24px;
+      background: rgba(249, 115, 22, 0.04);
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 14px;
+      opacity: 0;
+    }
+
+    #hf-04-ecosystem-card-streak {
+      left: 895px;
+      top: 18px;
+    }
+
+    #hf-04-ecosystem-card-points {
+      left: 1266px;
+      top: 213px;
+    }
+
+    #hf-04-ecosystem-card-referral {
+      left: 860px;
+      top: 408px;
+    }
+
+    .hf-04-ecosystem-proof {
+      width: 112px;
+      height: 112px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border-radius: 10px;
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    .hf-04-ecosystem-proof img {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    #hf-04-ecosystem-points-mark {
+      width: 70px;
+      height: 70px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #F97316;
+      color: #FFFFFF;
+      font-size: 2.1cqw;
+      line-height: 1;
+      font-weight: 700;
+    }
+
+    .hf-04-ecosystem-card-copy {
+      min-width: 0;
+    }
+
+    .hf-04-ecosystem-card-title {
+      margin: 0 0 10px;
+      font-size: 1.4cqw;
+      line-height: 1.15;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: #171717;
+      white-space: nowrap;
+    }
+
+    .hf-04-ecosystem-card-kicker {
+      margin: 0;
+      font-size: 0.8cqw;
+      line-height: 1.4;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #F97316;
+    }
+
+    .hf-04-ecosystem-node {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #F97316;
+      opacity: 0;
+    }
+
+    #hf-04-ecosystem-node-streak {
+      left: 907px;
+      top: 84px;
+    }
+
+    #hf-04-ecosystem-node-points {
+      left: 1277px;
+      top: 280px;
+    }
+
+    #hf-04-ecosystem-node-referral {
+      left: 872px;
+      top: 474px;
+    }
+
+    #hf-04-ecosystem-payoff {
+      position: absolute;
+      left: 96px;
+      top: 770px;
+      margin: 0;
+      font-size: 3cqw;
+      line-height: 1;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #171717;
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    #hf-04-ecosystem-payoff span {
+      color: #F97316;
+    }
+  </style>
+
+  <div
+    id="root"
+    data-composition-id="04-ecosystem"
+    data-start="0"
+    data-duration="7.06"
+    data-width="1920"
+    data-height="1080"
+  >
+    <div id="hf-04-ecosystem-ground" class="clip" data-start="0" data-duration="7.06" data-track-index="0"></div>
+
+    <div id="hf-04-ecosystem-stage" class="clip" data-start="0" data-duration="7.06" data-track-index="1">
+      <div id="hf-04-ecosystem-title" aria-label="Sistemini Anla">
+        <span id="hf-04-ecosystem-title-systemini" class="hf-04-ecosystem-title-word">SİSTEMİNİ</span>
+        <span id="hf-04-ecosystem-title-anla" class="hf-04-ecosystem-title-word"><span id="hf-04-ecosystem-title-accent">ANLA</span></span>
+      </div>
+
+      <div id="hf-04-ecosystem-field">
+        <svg id="hf-04-ecosystem-orbit-svg" viewBox="0 0 1728 570" aria-hidden="true">
+          <path id="hf-04-ecosystem-path-streak" class="hf-04-ecosystem-connector" d="M 705 239 C 790 205, 824 126, 904 96" />
+          <path id="hf-04-ecosystem-path-points" class="hf-04-ecosystem-connector" d="M 718 304 C 865 304, 1078 291, 1275 291" />
+          <path id="hf-04-ecosystem-path-referral" class="hf-04-ecosystem-connector" d="M 684 393 C 748 439, 794 473, 870 485" />
+        </svg>
+
+        <div id="hf-04-ecosystem-ai">
+          <svg id="hf-04-ecosystem-ai-ring" viewBox="0 0 340 340" aria-hidden="true">
+            <circle id="hf-04-ecosystem-ring-path" cx="170" cy="170" r="160" />
+          </svg>
+          <div id="hf-04-ecosystem-ai-core">
+            <img id="hf-04-ecosystem-logo" src="assets/candar-network-logo.png" alt="Candar Network" />
+            <div id="hf-04-ecosystem-ai-label">Candar AI</div>
+          </div>
+        </div>
+
+        <article id="hf-04-ecosystem-card-streak" class="hf-04-ecosystem-card">
+          <div class="hf-04-ecosystem-proof">
+            <img src="assets/candar-daily-streak.png" alt="Günlük seri ekranı" />
+          </div>
+          <div class="hf-04-ecosystem-card-copy">
+            <p class="hf-04-ecosystem-card-kicker">Her gün</p>
+            <h3 class="hf-04-ecosystem-card-title">Günlük Seri</h3>
+          </div>
+        </article>
+
+        <article id="hf-04-ecosystem-card-points" class="hf-04-ecosystem-card">
+          <div class="hf-04-ecosystem-proof">
+            <div id="hf-04-ecosystem-points-mark">P</div>
+          </div>
+          <div class="hf-04-ecosystem-card-copy">
+            <p class="hf-04-ecosystem-card-kicker">Görünür</p>
+            <h3 class="hf-04-ecosystem-card-title">Puanlar</h3>
+          </div>
+        </article>
+
+        <article id="hf-04-ecosystem-card-referral" class="hf-04-ecosystem-card">
+          <div class="hf-04-ecosystem-proof">
+            <img src="assets/candar-referral-network.png" alt="Referans ağı ekranı" />
+          </div>
+          <div class="hf-04-ecosystem-card-copy">
+            <p class="hf-04-ecosystem-card-kicker">Birlikte</p>
+            <h3 class="hf-04-ecosystem-card-title">Referans Ağı</h3>
+          </div>
+        </article>
+
+        <span id="hf-04-ecosystem-node-streak" class="hf-04-ecosystem-node"></span>
+        <span id="hf-04-ecosystem-node-points" class="hf-04-ecosystem-node"></span>
+        <span id="hf-04-ecosystem-node-referral" class="hf-04-ecosystem-node"></span>
+      </div>
+
+      <p id="hf-04-ecosystem-payoff">SIRADAKİ ADIM <span>NET.</span></p>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["04-ecosystem"] = tl;
+
+      var ring = document.querySelector("#hf-04-ecosystem-ring-path");
+      var connectorIds = [
+        "#hf-04-ecosystem-path-streak",
+        "#hf-04-ecosystem-path-points",
+        "#hf-04-ecosystem-path-referral"
+      ];
+
+      var ringLength = ring.getTotalLength();
+      ring.style.strokeDasharray = String(ringLength);
+      ring.style.strokeDashoffset = String(ringLength);
+
+      connectorIds.forEach(function (selector) {
+        var path = document.querySelector(selector);
+        var length = path.getTotalLength();
+        path.style.strokeDasharray = String(length);
+        path.style.strokeDashoffset = String(length);
+      });
+
+      tl.fromTo(
+        "#hf-04-ecosystem-ai-core",
+        { scale: 0.82, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.38, ease: "power3.out" },
+        0.08
+      );
+      tl.to(
+        "#hf-04-ecosystem-ring-path",
+        { strokeDashoffset: 0, duration: 0.72, ease: "power2.out" },
+        0.18
+      );
+
+      tl.set("#hf-04-ecosystem-title-systemini", { opacity: 1, y: 72 }, 0.34);
+      tl.to("#hf-04-ecosystem-title-systemini", { y: 0, duration: 0.19, ease: "power4.out" }, 0.34);
+      tl.set("#hf-04-ecosystem-title-anla", { opacity: 1, y: 48 }, 0.51);
+      tl.to("#hf-04-ecosystem-title-anla", { y: 0, duration: 0.14, ease: "power4.out" }, 0.51);
+
+      tl.fromTo(
+        "#hf-04-ecosystem-card-streak",
+        { x: -58, y: 42, scale: 0.94, opacity: 0 },
+        { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.52, ease: "power3.out" },
+        1.52
+      );
+      tl.fromTo(
+        "#hf-04-ecosystem-card-points",
+        { x: 66, y: -18, scale: 0.94, opacity: 0 },
+        { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.5, ease: "power3.out" },
+        2.18
+      );
+      tl.fromTo(
+        "#hf-04-ecosystem-card-referral",
+        { x: -48, y: -46, scale: 0.94, opacity: 0 },
+        { x: 0, y: 0, scale: 1, opacity: 1, duration: 0.52, ease: "power3.out" },
+        2.86
+      );
+
+      tl.to("#hf-04-ecosystem-path-streak", { strokeDashoffset: 0, duration: 0.58, ease: "power2.out" }, 3.52);
+      tl.to("#hf-04-ecosystem-path-points", { strokeDashoffset: 0, duration: 0.62, ease: "power2.out" }, 3.95);
+      tl.to("#hf-04-ecosystem-path-referral", { strokeDashoffset: 0, duration: 0.52, ease: "power2.out" }, 4.42);
+
+      tl.set("#hf-04-ecosystem-node-streak", { opacity: 1 }, 3.99);
+      tl.fromTo("#hf-04-ecosystem-node-streak", { scale: 0.7 }, { scale: 1.9, duration: 0.16, ease: "power2.out" }, 3.99);
+      tl.to("#hf-04-ecosystem-node-streak", { scale: 1, duration: 0.2, ease: "power2.out" }, 4.15);
+      tl.set("#hf-04-ecosystem-node-points", { opacity: 1 }, 4.46);
+      tl.fromTo("#hf-04-ecosystem-node-points", { scale: 0.7 }, { scale: 1.9, duration: 0.16, ease: "power2.out" }, 4.46);
+      tl.to("#hf-04-ecosystem-node-points", { scale: 1, duration: 0.2, ease: "power2.out" }, 4.62);
+      tl.set("#hf-04-ecosystem-node-referral", { opacity: 1 }, 4.83);
+      tl.fromTo("#hf-04-ecosystem-node-referral", { scale: 0.7 }, { scale: 1.9, duration: 0.16, ease: "power2.out" }, 4.83);
+      tl.to("#hf-04-ecosystem-node-referral", { scale: 1, duration: 0.2, ease: "power2.out" }, 4.99);
+
+      tl.to(
+        "#hf-04-ecosystem-field",
+        { scale: 0.93, x: -24, y: -28, duration: 0.64, ease: "power2.inOut" },
+        5.1
+      );
+      tl.fromTo(
+        "#hf-04-ecosystem-payoff",
+        { y: 54, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.48, ease: "power4.out" },
+        5.24
+      );
+    })();
+  </script>
+</template>

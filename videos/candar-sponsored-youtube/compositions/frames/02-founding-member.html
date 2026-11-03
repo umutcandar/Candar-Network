@@ -1,0 +1,285 @@
+<template>
+  <style>
+    @font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:block;src:url("assets/fonts/Inter-Regular.ttf") format("truetype");}
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter";
+      color: #171717;
+    }
+
+    .hf-02-founding-member-ground {
+      position: absolute;
+      inset: 0;
+      background: #FFFFFF;
+    }
+
+    .hf-02-founding-member-brand {
+      position: absolute;
+      top: 5cqh;
+      right: 5cqw;
+      width: 8.5cqw;
+      height: 5.5cqh;
+      object-fit: contain;
+      object-position: right center;
+      opacity: 0.72;
+    }
+
+    .hf-02-founding-member-copy {
+      position: absolute;
+      left: 5cqw;
+      top: 16cqh;
+      width: 43cqw;
+    }
+
+    .hf-02-founding-member-eyebrow {
+      display: inline-block;
+      margin-bottom: 2.4cqh;
+      color: #F97316;
+      font-size: 1.4cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0;
+    }
+
+    .hf-02-founding-member-title {
+      margin: 0;
+      max-width: 39cqw;
+      font-size: 4.2cqw;
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    .hf-02-founding-member-word {
+      display: inline-block;
+      opacity: 0;
+    }
+
+    .hf-02-founding-member-period {
+      color: #F97316;
+    }
+
+    .hf-02-founding-member-accent {
+      width: 3.125cqw;
+      height: 4px;
+      margin-top: 3.5cqh;
+      border-radius: 2px;
+      background: #F97316;
+      transform-origin: left center;
+    }
+
+    .hf-02-founding-member-stage {
+      position: absolute;
+      left: 52cqw;
+      top: 12cqh;
+      width: 41cqw;
+      height: 66cqh;
+    }
+
+    .hf-02-founding-member-rail {
+      position: absolute;
+      left: 2cqw;
+      right: 2cqw;
+      top: 48cqh;
+      height: 28px;
+      border-radius: 6px;
+      background: rgba(249, 115, 22, 0.08);
+      overflow: hidden;
+    }
+
+    .hf-02-founding-member-fill {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border-radius: 6px;
+      background: #F97316;
+      transform-origin: left center;
+    }
+
+    .hf-02-founding-member-year-start,
+    .hf-02-founding-member-year-end {
+      position: absolute;
+      top: 53cqh;
+      color: #9A9A9A;
+      font-size: 1.4cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.05em;
+    }
+
+    .hf-02-founding-member-year-start { left: 2cqw; }
+    .hf-02-founding-member-year-end { right: 2cqw; color: #F97316; }
+
+    .hf-02-founding-member-date-wrap {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 5cqh;
+      height: 35cqh;
+      display: grid;
+      place-items: center;
+    }
+
+    .hf-02-founding-member-date {
+      position: absolute;
+      color: #F97316;
+      font-size: 8.4cqw;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -0.055em;
+      white-space: nowrap;
+    }
+
+    .hf-02-founding-member-badge {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      gap: 1.15cqw;
+      padding: 1.5cqh 1.45cqw;
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 100px;
+      background: rgba(249, 115, 22, 0.08);
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    .hf-02-founding-member-badge-logo {
+      width: 2.9cqw;
+      height: 2.9cqw;
+      object-fit: contain;
+    }
+
+    .hf-02-founding-member-badge-copy {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45cqh;
+    }
+
+    .hf-02-founding-member-badge-title {
+      color: #171717;
+      font-size: 1.55cqw;
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+
+    .hf-02-founding-member-badge-role {
+      color: #F97316;
+      font-size: 1.4cqw;
+      font-weight: 600;
+      line-height: 1;
+      letter-spacing: 0.08em;
+    }
+
+    .hf-02-founding-member-node {
+      position: absolute;
+      left: calc(50% - 2.25cqw);
+      top: calc(48cqh - 2.25cqw + 14px);
+      display: grid;
+      place-items: center;
+      width: 4.5cqw;
+      height: 4.5cqw;
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 50%;
+      background: #FFFFFF;
+      opacity: 0;
+    }
+
+    .hf-02-founding-member-node img {
+      width: 3.1cqw;
+      height: 3.1cqw;
+      object-fit: contain;
+    }
+
+    .hf-02-founding-member-progress {
+      position: absolute;
+      left: 5cqw;
+      top: 81.5cqh;
+      width: 18cqw;
+      height: 3px;
+      background: #F97316;
+      transform-origin: left center;
+    }
+  </style>
+
+  <div id="root" data-composition-id="02-founding-member" data-start="0" data-duration="6.1" data-width="1920" data-height="1080">
+    <div class="clip hf-02-founding-member-ground" data-start="0" data-duration="6.1" data-track-index="0"></div>
+
+    <img class="clip hf-02-founding-member-brand" data-start="0" data-duration="6.1" data-track-index="1" src="assets/candar-network-logo.png" alt="">
+
+    <section class="clip hf-02-founding-member-copy" data-start="0" data-duration="6.1" data-track-index="2">
+      <div id="hf-02-founding-member-eyebrow" class="hf-02-founding-member-eyebrow">ERKEN KATILIM</div>
+      <h1 class="hf-02-founding-member-title" aria-label="Sadece bir sayı değil.">
+        <span id="hf-02-founding-member-word-1" class="hf-02-founding-member-word">Sadece</span>
+        <span id="hf-02-founding-member-word-2" class="hf-02-founding-member-word">bir sayı</span>
+        <span id="hf-02-founding-member-word-3" class="hf-02-founding-member-word">değil</span><span id="hf-02-founding-member-dot" class="hf-02-founding-member-word hf-02-founding-member-period">.</span>
+      </h1>
+      <div id="hf-02-founding-member-accent" class="hf-02-founding-member-accent"></div>
+    </section>
+
+    <section class="clip hf-02-founding-member-stage" data-start="0" data-duration="6.1" data-track-index="3">
+      <div class="hf-02-founding-member-date-wrap">
+        <div id="hf-02-founding-member-date" class="hf-02-founding-member-date" data-layout-allow-overlap>2027</div>
+        <div id="hf-02-founding-member-badge" class="hf-02-founding-member-badge" data-layout-allow-overlap>
+          <img class="hf-02-founding-member-badge-logo" src="assets/candar-logo-official.png" alt="">
+          <div class="hf-02-founding-member-badge-copy">
+            <span class="hf-02-founding-member-badge-title">KURUCU ÜYE</span>
+            <span class="hf-02-founding-member-badge-role">KALICI ROL</span>
+          </div>
+        </div>
+      </div>
+      <div class="hf-02-founding-member-rail"><span id="hf-02-founding-member-fill" class="hf-02-founding-member-fill"></span></div>
+      <div class="hf-02-founding-member-year-start">2026</div>
+      <div class="hf-02-founding-member-year-end">2027</div>
+      <div id="hf-02-founding-member-node" class="hf-02-founding-member-node"><img src="assets/candar-logo-official.png" alt=""></div>
+    </section>
+
+    <div id="hf-02-founding-member-progress" class="clip hf-02-founding-member-progress" data-start="0" data-duration="6.1" data-track-index="4"></div>
+  </div>
+
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines["02-founding-member"] = tl;
+
+      var F = 1 / 60;
+      var t0 = 0.10;
+      tl.set("#hf-02-founding-member-eyebrow", { opacity: 1, y: 72 }, t0);
+      tl.to("#hf-02-founding-member-eyebrow", { y: 0, duration: 0.19, ease: "power4.out" }, t0);
+
+      var t1 = t0 + 0.19 + 2 * F;
+      tl.set("#hf-02-founding-member-word-1", { opacity: 1, y: 50 }, t1);
+      tl.to("#hf-02-founding-member-word-1", { y: 0, duration: 0.16, ease: "power4.out" }, t1);
+
+      var t2 = t1 + 0.16 - F;
+      tl.set("#hf-02-founding-member-word-2", { opacity: 1, y: 45 }, t2);
+      tl.to("#hf-02-founding-member-word-2", { y: 0, duration: 0.15, ease: "power4.out" }, t2);
+
+      var t3 = t2 + 0.15 - F;
+      tl.set("#hf-02-founding-member-word-3", { opacity: 1, y: 70 }, t3);
+      tl.to("#hf-02-founding-member-word-3", { y: 0, duration: 0.16, ease: "power4.out" }, t3);
+
+      var t4 = t3 + 0.14 - 2 * F;
+      tl.set("#hf-02-founding-member-dot", { opacity: 1, y: 42 }, t4);
+      tl.to("#hf-02-founding-member-dot", { y: 0, duration: 0.12, ease: "power4.out" }, t4);
+      tl.fromTo("#hf-02-founding-member-accent", { scaleX: 0 }, { scaleX: 1, duration: 0.42, ease: "power3.out" }, 0.88);
+
+      tl.fromTo("#hf-02-founding-member-date", { opacity: 0, scale: 0.58 }, { opacity: 1, scale: 1, duration: 1.25, ease: "power3.out" }, 1.60);
+      tl.fromTo("#hf-02-founding-member-fill", { scaleX: 0 }, { scaleX: 1, duration: 1.75, ease: "power2.inOut" }, 1.70);
+      tl.fromTo("#hf-02-founding-member-node", { opacity: 0, scale: 0.45 }, { opacity: 1, scale: 1, duration: 0.48, ease: "back.out(1.7)" }, 3.18);
+
+      tl.to("#hf-02-founding-member-date", { opacity: 0, scale: 0.28, filter: "blur(10px)", duration: 0.34, ease: "power3.in" }, 3.80);
+      tl.fromTo("#hf-02-founding-member-badge", { opacity: 0, scale: 0.72, filter: "blur(10px)" }, { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.52, ease: "power3.out" }, 3.94);
+      tl.to("#hf-02-founding-member-node", { opacity: 0.22, scale: 0.72, duration: 0.44, ease: "power2.out" }, 4.02);
+      tl.fromTo("#hf-02-founding-member-progress", { scaleX: 0 }, { scaleX: 1, duration: 4.9, ease: "none" }, 0.20);
+    }());
+  </script>
+</template>

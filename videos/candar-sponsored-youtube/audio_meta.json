@@ -1,0 +1,452 @@
+{
+  "bgm": {
+    "path": "assets/audio/bgm.mp3",
+    "volume": 1,
+    "query": "Never Coming Down — The Soundlings · YouTube Audio Library",
+    "duration_s": 38
+  },
+  "bgm_pending": false,
+  "voices": [
+    {
+      "frame": 1,
+      "path": "assets/audio/voice-01.wav",
+      "duration_s": 3.12,
+      "words": [
+        {
+          "id": "w-1-1",
+          "text": "Bu",
+          "start": 0.02,
+          "end": 0.19
+        },
+        {
+          "id": "w-1-2",
+          "text": "videonun",
+          "start": 0.19,
+          "end": 0.82
+        },
+        {
+          "id": "w-1-3",
+          "text": "destekçisi",
+          "start": 0.97,
+          "end": 2
+        },
+        {
+          "id": "w-1-4",
+          "text": "Candar",
+          "start": 2,
+          "end": 2.36
+        },
+        {
+          "id": "w-1-5",
+          "text": "Network.",
+          "start": 2.36,
+          "end": 2.97
+        }
+      ]
+    },
+    {
+      "frame": 2,
+      "path": "assets/audio/voice-02.wav",
+      "duration_s": 5.6,
+      "words": [
+        {
+          "id": "w-2-1",
+          "text": "Erken",
+          "start": 0,
+          "end": 0.36
+        },
+        {
+          "id": "w-2-2",
+          "text": "katılanların",
+          "start": 0.36,
+          "end": 1.43
+        },
+        {
+          "id": "w-2-3",
+          "text": "sadece",
+          "start": 1.43,
+          "end": 1.89
+        },
+        {
+          "id": "w-2-4",
+          "text": "bir",
+          "start": 1.89,
+          "end": 2.12
+        },
+        {
+          "id": "w-2-5",
+          "text": "sayı",
+          "start": 2.12,
+          "end": 2.5
+        },
+        {
+          "id": "w-2-6",
+          "text": "olmadığı",
+          "start": 2.5,
+          "end": 3.38
+        },
+        {
+          "id": "w-2-7",
+          "text": "dijital",
+          "start": 3.42,
+          "end": 3.91
+        },
+        {
+          "id": "w-2-8",
+          "text": "bir",
+          "start": 3.91,
+          "end": 4.09
+        },
+        {
+          "id": "w-2-9",
+          "text": "topluluk",
+          "start": 4.19,
+          "end": 4.73
+        },
+        {
+          "id": "w-2-10",
+          "text": "düşün.",
+          "start": 4.73,
+          "end": 5.58
+        }
+      ]
+    },
+    {
+      "frame": 3,
+      "path": "assets/audio/voice-03.wav",
+      "duration_s": 11.38,
+      "words": [
+        {
+          "id": "w-3-1",
+          "text": "2027’den",
+          "start": 0,
+          "end": 1.46
+        },
+        {
+          "id": "w-3-2",
+          "text": "önce",
+          "start": 1.46,
+          "end": 1.93
+        },
+        {
+          "id": "w-3-3",
+          "text": "hesabını",
+          "start": 1.93,
+          "end": 2.54
+        },
+        {
+          "id": "w-3-4",
+          "text": "oluştur,",
+          "start": 3.33,
+          "end": 3.81
+        },
+        {
+          "id": "w-3-5",
+          "text": "kalıcı",
+          "start": 3.81,
+          "end": 4.32
+        },
+        {
+          "id": "w-3-6",
+          "text": "Kurucu",
+          "start": 4.32,
+          "end": 4.7
+        },
+        {
+          "id": "w-3-7",
+          "text": "Üye",
+          "start": 4.7,
+          "end": 4.78
+        },
+        {
+          "id": "w-3-8",
+          "text": "rolünü",
+          "start": 4.9,
+          "end": 5.21
+        },
+        {
+          "id": "w-3-9",
+          "text": "aç.",
+          "start": 5.21,
+          "end": 5.58
+        },
+        {
+          "id": "w-3-10",
+          "text": "Günlük",
+          "start": 5.58,
+          "end": 6.11
+        },
+        {
+          "id": "w-3-11",
+          "text": "serini",
+          "start": 6.11,
+          "end": 6.51
+        },
+        {
+          "id": "w-3-12",
+          "text": "koru,",
+          "start": 6.51,
+          "end": 6.96
+        },
+        {
+          "id": "w-3-13",
+          "text": "uygulama",
+          "start": 6.96,
+          "end": 7.51
+        },
+        {
+          "id": "w-3-14",
+          "text": "içi",
+          "start": 7.62,
+          "end": 7.9
+        },
+        {
+          "id": "w-3-15",
+          "text": "puanlarını",
+          "start": 7.9,
+          "end": 8.67
+        },
+        {
+          "id": "w-3-16",
+          "text": "topla,",
+          "start": 8.8,
+          "end": 9.33
+        },
+        {
+          "id": "w-3-17",
+          "text": "referans",
+          "start": 9.33,
+          "end": 9.79
+        },
+        {
+          "id": "w-3-18",
+          "text": "ağını",
+          "start": 9.89,
+          "end": 10.17
+        },
+        {
+          "id": "w-3-19",
+          "text": "büyüt.",
+          "start": 10.53,
+          "end": 11.36
+        }
+      ]
+    },
+    {
+      "frame": 4,
+      "path": "assets/audio/voice-04.wav",
+      "duration_s": 6.56,
+      "words": [
+        {
+          "id": "w-4-1",
+          "text": "Candar",
+          "start": 0,
+          "end": 0.42
+        },
+        {
+          "id": "w-4-2",
+          "text": "AI",
+          "start": 0.42,
+          "end": 0.71
+        },
+        {
+          "id": "w-4-3",
+          "text": "ile",
+          "start": 0.71,
+          "end": 0.8
+        },
+        {
+          "id": "w-4-4",
+          "text": "sistemi",
+          "start": 0.95,
+          "end": 1.45
+        },
+        {
+          "id": "w-4-5",
+          "text": "anla,",
+          "start": 1.45,
+          "end": 1.89
+        },
+        {
+          "id": "w-4-6",
+          "text": "görevlerini",
+          "start": 1.89,
+          "end": 2.54
+        },
+        {
+          "id": "w-4-7",
+          "text": "takip",
+          "start": 2.95,
+          "end": 3.11
+        },
+        {
+          "id": "w-4-8",
+          "text": "et",
+          "start": 3.11,
+          "end": 3.28
+        },
+        {
+          "id": "w-4-9",
+          "text": "ve",
+          "start": 3.41,
+          "end": 3.43
+        },
+        {
+          "id": "w-4-10",
+          "text": "her",
+          "start": 3.43,
+          "end": 3.61
+        },
+        {
+          "id": "w-4-11",
+          "text": "gün",
+          "start": 3.72,
+          "end": 3.91
+        },
+        {
+          "id": "w-4-12",
+          "text": "görünür",
+          "start": 4,
+          "end": 4.69
+        },
+        {
+          "id": "w-4-13",
+          "text": "ilerleme",
+          "start": 4.69,
+          "end": 5.38
+        },
+        {
+          "id": "w-4-14",
+          "text": "kaydet.",
+          "start": 5.38,
+          "end": 6.54
+        }
+      ]
+    },
+    {
+      "frame": 5,
+      "path": "assets/audio/voice-05.wav",
+      "duration_s": 11.34,
+      "words": [
+        {
+          "id": "w-5-1",
+          "text": "Candar",
+          "start": 0,
+          "end": 0.5
+        },
+        {
+          "id": "w-5-2",
+          "text": "Network,",
+          "start": 0.5,
+          "end": 1.29
+        },
+        {
+          "id": "w-5-3",
+          "text": "iOS",
+          "start": 1.29,
+          "end": 1.55
+        },
+        {
+          "id": "w-5-4",
+          "text": "ve",
+          "start": 1.55,
+          "end": 1.72
+        },
+        {
+          "id": "w-5-5",
+          "text": "Android’de",
+          "start": 1.72,
+          "end": 2.53
+        },
+        {
+          "id": "w-5-6",
+          "text": "ücretsiz.",
+          "start": 2.76,
+          "end": 3.74
+        },
+        {
+          "id": "w-5-7",
+          "text": "İlk",
+          "start": 3.76,
+          "end": 3.99
+        },
+        {
+          "id": "w-5-8",
+          "text": "adımını",
+          "start": 4.01,
+          "end": 4.55
+        },
+        {
+          "id": "w-5-9",
+          "text": "bugün",
+          "start": 4.71,
+          "end": 5.08
+        },
+        {
+          "id": "w-5-10",
+          "text": "at.",
+          "start": 5.17,
+          "end": 5.48
+        },
+        {
+          "id": "w-5-11",
+          "text": "Candar",
+          "start": 5.5,
+          "end": 5.93
+        },
+        {
+          "id": "w-5-12",
+          "text": "puanları",
+          "start": 5.93,
+          "end": 6.55
+        },
+        {
+          "id": "w-5-13",
+          "text": "yalnızca",
+          "start": 6.67,
+          "end": 7.27
+        },
+        {
+          "id": "w-5-14",
+          "text": "uygulama",
+          "start": 7.27,
+          "end": 7.86
+        },
+        {
+          "id": "w-5-15",
+          "text": "içi",
+          "start": 7.86,
+          "end": 8.15
+        },
+        {
+          "id": "w-5-16",
+          "text": "ilerleme",
+          "start": 8.15,
+          "end": 8.75
+        },
+        {
+          "id": "w-5-17",
+          "text": "içindir.",
+          "start": 8.91,
+          "end": 9.59
+        }
+      ]
+    }
+  ],
+  "sfx": [
+    {
+      "frame": 3,
+      "file": "assets/sfx/click-soft.mp3",
+      "offset_s": 0,
+      "duration_s": 0.37,
+      "volume": 0.35
+    },
+    {
+      "frame": 5,
+      "file": "assets/sfx/click-soft.mp3",
+      "offset_s": 0,
+      "duration_s": 0.37,
+      "volume": 0.35
+    }
+  ]
+}

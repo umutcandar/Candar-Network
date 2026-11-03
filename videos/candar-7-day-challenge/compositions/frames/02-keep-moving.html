@@ -1,0 +1,425 @@
+<template>
+  <div id="root" data-composition-id="02-keep-moving" data-duration="4.5" data-width="1080" data-height="1920">
+    <div
+      class="clip"
+      id="f02-keep-moving-ground"
+      data-start="0"
+      data-duration="4.5"
+      data-track-index="0"
+      data-02-keep-moving="ground"
+    ></div>
+
+    <div
+      class="clip"
+      id="f02-keep-moving-content"
+      data-start="0"
+      data-duration="4.5"
+      data-track-index="1"
+      data-02-keep-moving="content"
+    >
+      <div data-02-keep-moving="chrome">
+        <span data-02-keep-moving="kicker">07 DAY / PRODUCT PROOF</span>
+        <span data-02-keep-moving="frame-number">02</span>
+      </div>
+
+      <div data-02-keep-moving="headline-wrap">
+        <div id="f02-keep-moving-headline-check" data-02-keep-moving="headline">
+          check <span>in.</span>
+        </div>
+        <div id="f02-keep-moving-headline-move" data-02-keep-moving="headline">
+          keep <span>moving.</span>
+        </div>
+      </div>
+
+      <div id="f02-keep-moving-device-stage" data-02-keep-moving="device-stage">
+        <div data-02-keep-moving="depth-far"></div>
+        <div data-02-keep-moving="depth-near"></div>
+        <div data-02-keep-moving="device-card">
+          <img
+            src="assets/image_001.png"
+            alt="Candar daily streak screen"
+            data-02-keep-moving="screen"
+          />
+        </div>
+      </div>
+
+      <div data-02-keep-moving="rail-block">
+        <div data-02-keep-moving="rail-label">DAILY STREAK</div>
+        <div data-02-keep-moving="rail">
+          <span data-02-keep-moving="tick"></span>
+          <span data-02-keep-moving="tick"></span>
+          <span data-02-keep-moving="tick"></span>
+          <span data-02-keep-moving="tick"></span>
+          <span data-02-keep-moving="tick"></span>
+          <span data-02-keep-moving="tick"></span>
+          <span data-02-keep-moving="tick"></span>
+          <span id="f02-keep-moving-rail-shimmer" data-02-keep-moving="rail-shimmer"></span>
+        </div>
+        <div data-02-keep-moving="terminal">
+          <span data-02-keep-moving="prompt">/</span>
+          <span data-02-keep-moving="text-wrap">
+            <span id="f02-keep-moving-status" data-02-keep-moving="status"></span>
+            <span id="f02-keep-moving-cursor" data-02-keep-moving="cursor">_</span>
+          </span>
+        </div>
+      </div>
+
+      <div data-02-keep-moving="baseline">
+        <span>CHECK IN</span>
+        <span>PROTECT THE STREAK</span>
+        <span>NEXT STEP</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+    }
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      color: #ffffff;
+      font-family: "Inter";
+    }
+
+    [data-02-keep-moving="ground"] {
+      position: absolute;
+      inset: 0;
+      background: #171717;
+    }
+
+    [data-02-keep-moving="content"] {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    [data-02-keep-moving="chrome"] {
+      position: absolute;
+      top: 4.6cqh;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1.2cqh;
+      border-bottom: 1px solid #262828;
+      font-size: 1.65cqw;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+      color: #f59e0b;
+    }
+
+    [data-02-keep-moving="frame-number"] {
+      color: #8f9694;
+    }
+
+    [data-02-keep-moving="headline-wrap"] {
+      position: absolute;
+      top: 9.4cqh;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      height: 13cqh;
+      overflow: hidden;
+    }
+
+    [data-02-keep-moving="headline"] {
+      position: absolute;
+      inset: 0 auto auto 0;
+      max-width: 78cqw;
+      font-size: 10.5cqw;
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      text-transform: lowercase;
+      white-space: nowrap;
+      color: #ffffff;
+    }
+
+    [data-02-keep-moving="headline"] span {
+      color: #f59e0b;
+    }
+
+    [data-02-keep-moving="device-stage"] {
+      position: absolute;
+      top: 25.2cqh;
+      left: 9.5cqw;
+      width: 50cqw;
+      height: 88.9cqw;
+    }
+
+    [data-02-keep-moving="depth-far"],
+    [data-02-keep-moving="depth-near"],
+    [data-02-keep-moving="device-card"] {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      transform-style: preserve-3d;
+    }
+
+    [data-02-keep-moving="depth-far"] {
+      top: 2.1cqh;
+      left: 3.2cqw;
+      background: #262828;
+      border: 1px solid #48504f;
+    }
+
+    [data-02-keep-moving="depth-near"] {
+      top: 1cqh;
+      left: 1.6cqw;
+      background: #f59e0b;
+    }
+
+    [data-02-keep-moving="device-card"] {
+      inset: 0;
+      background: #181a1a;
+      border: 1px solid #262828;
+      transform: perspective(1600px) rotateY(-6deg) rotateX(2deg);
+      transform-origin: 50% 50%;
+    }
+
+    [data-02-keep-moving="screen"] {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    [data-02-keep-moving="rail-block"] {
+      position: absolute;
+      top: 30cqh;
+      right: 5.5cqw;
+      width: 25cqw;
+    }
+
+    [data-02-keep-moving="rail-label"] {
+      padding-bottom: 1.1cqh;
+      border-bottom: 1px solid #262828;
+      color: #f59e0b;
+      font-size: 1.5cqw;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+    }
+
+    [data-02-keep-moving="rail"] {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 2.1cqh;
+      margin-top: 2.2cqh;
+      padding: 0.5cqh 0 1.4cqh 2.2cqw;
+      border-left: 1px solid #262828;
+      overflow: hidden;
+    }
+
+    [data-02-keep-moving="tick"] {
+      display: block;
+      width: 100%;
+      height: 1.05cqh;
+      background: #f59e0b;
+      transform-origin: left center;
+    }
+
+    [data-02-keep-moving="rail-shimmer"] {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 2px;
+      background: #fbbf24;
+      opacity: 0;
+    }
+
+    [data-02-keep-moving="terminal"] {
+      display: flex;
+      align-items: baseline;
+      gap: 1.2cqw;
+      margin-top: 2.8cqh;
+      padding-top: 1.5cqh;
+      border-top: 1px solid #262828;
+      color: #ffffff;
+      font-size: 2.25cqw;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    [data-02-keep-moving="prompt"] {
+      color: #f59e0b;
+    }
+
+    [data-02-keep-moving="text-wrap"] {
+      display: inline-flex;
+      align-items: baseline;
+      min-width: 20cqw;
+      white-space: nowrap;
+    }
+
+    [data-02-keep-moving="cursor"] {
+      display: inline-block;
+      width: 1.2cqw;
+      color: #f59e0b;
+    }
+
+    [data-02-keep-moving="baseline"] {
+      position: absolute;
+      top: 78.3cqh;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      display: grid;
+      grid-template-columns: 1fr 1.55fr 1fr;
+      gap: 2cqw;
+      padding-top: 1.2cqh;
+      border-top: 1px solid #262828;
+      color: #8f9694;
+      font-size: 1.25cqw;
+      font-weight: 600;
+      letter-spacing: 0.14em;
+    }
+
+    [data-02-keep-moving="baseline"] span:nth-child(2) {
+      color: #f59e0b;
+    }
+  </style>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+    (() => {
+      const frameId = "02-keep-moving";
+      const root = document.querySelector('[data-composition-id="' + frameId + '"]');
+      const select = (value) => root.querySelector('[data-02-keep-moving="' + value + '"]');
+      const selectAll = (value) => root.querySelectorAll('[data-02-keep-moving="' + value + '"]');
+
+      const deviceStage = document.getElementById("f02-keep-moving-device-stage");
+      const headlineCheck = document.getElementById("f02-keep-moving-headline-check");
+      const headlineMove = document.getElementById("f02-keep-moving-headline-move");
+      const statusEl = document.getElementById("f02-keep-moving-status");
+      const cursorEl = document.getElementById("f02-keep-moving-cursor");
+      const shimmer = document.getElementById("f02-keep-moving-rail-shimmer");
+      const ticks = selectAll("tick");
+      const railBlock = select("rail-block");
+      const baseline = select("baseline");
+
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines[frameId] = tl;
+
+      tl.fromTo(
+        deviceStage,
+        { y: "12cqh", opacity: 0.12 },
+        { y: "0cqh", opacity: 1, duration: 0.9, ease: "power3.out" },
+        0
+      );
+      tl.fromTo(
+        headlineCheck,
+        { y: "6cqh", opacity: 0 },
+        { y: "0cqh", opacity: 1, duration: 0.85, ease: "power3.out" },
+        0.06
+      );
+      tl.fromTo(
+        railBlock,
+        { x: "5cqw", opacity: 0 },
+        { x: "0cqw", opacity: 1, duration: 0.7, ease: "power3.out" },
+        0.35
+      );
+      tl.fromTo(
+        baseline,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.5, ease: "power1.out" },
+        0.72
+      );
+
+      const tickStarts = [1.1, 1.32, 1.54, 1.76, 2.0, 2.35, 3.08];
+      ticks.forEach((tick, index) => {
+        tl.fromTo(
+          tick,
+          { scaleX: 0, opacity: 0.28 },
+          {
+            scaleX: 1,
+            opacity: 1,
+            duration: index === 6 ? 0.38 : 0.3,
+            ease: "power3.out"
+          },
+          tickStarts[index]
+        );
+      });
+
+      const sequence = [
+        { t: 0.0, text: "" },
+        { t: 1.16, text: "streak..." },
+        { t: 1.72, text: "streak ready" },
+        { t: 2.42, text: "streak protect" },
+        { t: 2.66, text: "streak protected" }
+      ];
+
+      function textAt(time) {
+        for (let index = sequence.length - 1; index >= 0; index -= 1) {
+          if (time >= sequence[index].t) return sequence[index].text;
+        }
+        return "";
+      }
+
+      const textDriver = { t: 0 };
+      tl.to(
+        textDriver,
+        {
+          t: 4,
+          duration: 4,
+          ease: "none",
+          onUpdate: () => {
+            statusEl.textContent = textAt(textDriver.t);
+          }
+        },
+        0
+      );
+
+      const blinkDriver = { p: 0 };
+      tl.to(
+        blinkDriver,
+        {
+          p: Math.PI * 12,
+          duration: 4,
+          ease: "none",
+          onUpdate: () => {
+            cursorEl.style.opacity = Math.sin(blinkDriver.p) > 0 ? "1" : "0";
+          }
+        },
+        0
+      );
+
+      tl.to(
+        headlineCheck,
+        { y: "-4cqh", opacity: 0, duration: 0.26, ease: "power2.in" },
+        2.54
+      );
+      tl.fromTo(
+        headlineMove,
+        { y: "5cqh", opacity: 0 },
+        { y: "0cqh", opacity: 1, duration: 0.62, ease: "power3.out" },
+        2.7
+      );
+
+      tl.fromTo(
+        shimmer,
+        { x: "0cqw", opacity: 0 },
+        { x: "23cqw", opacity: 1, duration: 0.38, ease: "power2.inOut" },
+        3.48
+      );
+      tl.to(
+        shimmer,
+        { opacity: 0, duration: 0.12, ease: "none" },
+        3.86
+      );
+    })();
+  </script>
+</template>

@@ -1,0 +1,89 @@
+[gd_scene load_steps=5 format=3 uid="uid://jxkx2x30t24g"]
+
+[ext_resource type="Script" uid="uid://drppyemqc71p6" path="res://home.gd" id="1_o1ld7"]
+[ext_resource type="Texture2D" uid="uid://db0r26tsjwfmf" path="res://assets/180x180.png" id="2_2ayvv"]
+[ext_resource type="Script" uid="uid://c1r0vqk72od2q" path="res://localized_label.gd" id="3_2ayvv"]
+[ext_resource type="Script" uid="uid://cm16tx0is08cg" path="res://localized_button.gd" id="4_w1mvj"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o1ld7")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 12.999999
+offset_top = 19.0
+offset_right = -10.000061
+offset_bottom = -19.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+custom_minimum_size = Vector2(88, 88)
+layout_mode = 2
+texture = ExtResource("2_2ayvv")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="WelcomeLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1
+script = ExtResource("3_2ayvv")
+translation_key = "home_welcome"
+
+[node name="PuanLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("3_2ayvv")
+translation_key = "home_points_loading"
+
+[node name="MiningButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_w1mvj")
+translation_key = "home_mining_button_default"
+
+[node name="ChatButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_w1mvj")
+translation_key = "home_btn_ai"
+
+[node name="MarketButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_w1mvj")
+translation_key = "home_btn_market"
+
+[node name="ProfileButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_w1mvj")
+translation_key = "home_btn_profile"
+
+[node name="LogoutButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("4_w1mvj")
+translation_key = "home_btn_logout"

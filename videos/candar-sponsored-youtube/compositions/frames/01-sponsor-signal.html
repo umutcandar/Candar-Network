@@ -1,0 +1,386 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+      font-style: normal;
+      font-weight: 400 800;
+      font-display: swap;
+    }
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter", sans-serif;
+      color: #171717;
+    }
+
+    #hf-01-sponsor-signal-ground,
+    #hf-01-sponsor-signal-stage {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    #hf-01-sponsor-signal-ground {
+      background: #111111;
+    }
+
+    #hf-01-sponsor-signal-warm-field {
+      position: absolute;
+      width: 142cqw;
+      height: 142cqw;
+      left: -21cqw;
+      top: calc(41.5cqh - 71cqw);
+      border-radius: 50%;
+      background: #ffffff;
+      transform-origin: 50% 50%;
+    }
+
+    #hf-01-sponsor-signal-grid {
+      position: absolute;
+      inset: 0 0 17cqh;
+      background-image:
+        linear-gradient(rgba(249, 115, 22, 0.12) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(249, 115, 22, 0.12) 1px, transparent 1px);
+      background-size: 6.25cqw 11.1cqh;
+      -webkit-mask-image: radial-gradient(circle at 50% 45%, #000 0%, rgba(0, 0, 0, 0.82) 34%, transparent 78%);
+      mask-image: radial-gradient(circle at 50% 45%, #000 0%, rgba(0, 0, 0, 0.82) 34%, transparent 78%);
+    }
+
+    .hf-01-sponsor-signal-focus {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      border: 2px solid #f97316;
+      border-radius: 50%;
+    }
+
+    #hf-01-sponsor-signal-focus-a { left: 24.8cqw; top: 24.6cqh; }
+    #hf-01-sponsor-signal-focus-b { right: 24.8cqw; top: 56.4cqh; }
+
+    .hf-01-sponsor-signal-focus::before,
+    .hf-01-sponsor-signal-focus::after {
+      content: "";
+      position: absolute;
+      background: rgba(249, 115, 22, 0.42);
+    }
+
+    .hf-01-sponsor-signal-focus::before {
+      width: 42px;
+      height: 1px;
+      left: -18px;
+      top: 2px;
+    }
+
+    .hf-01-sponsor-signal-focus::after {
+      width: 1px;
+      height: 42px;
+      left: 2px;
+      top: -18px;
+    }
+
+    #hf-01-sponsor-signal-stage {
+      height: 83cqh;
+    }
+
+    #hf-01-sponsor-signal-sponsor {
+      position: absolute;
+      left: 5cqw;
+      top: 5cqh;
+      display: flex;
+      align-items: center;
+      gap: 0.7cqw;
+      padding: 0.74cqh 1.15cqw;
+      border: 1.5px solid rgba(249, 115, 22, 0.46);
+      border-radius: 100px;
+      background: rgba(249, 115, 22, 0.12);
+      color: #f97316;
+      font-size: 0.95cqw;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      line-height: 1;
+      white-space: nowrap;
+      transform-origin: 0 0;
+    }
+
+    #hf-01-sponsor-signal-sponsor-dot {
+      width: 0.48cqw;
+      height: 0.48cqw;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: #f97316;
+    }
+
+    #hf-01-sponsor-signal-type-wrap,
+    #hf-01-sponsor-signal-final-lockup {
+      position: absolute;
+      left: 22cqw;
+      top: 30.5cqh;
+      width: 56cqw;
+      height: 31cqh;
+      transform-origin: 50% 50%;
+    }
+
+    #hf-01-sponsor-signal-type-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #hf-01-sponsor-signal-candar {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 7.75cqw;
+      font-weight: 800;
+      letter-spacing: -0.055em;
+      line-height: 0.9;
+    }
+
+    .hf-01-sponsor-signal-word-part {
+      display: inline-block;
+    }
+
+    #hf-01-sponsor-signal-network {
+      margin-top: 1.9cqh;
+      color: #c2410c;
+      font-size: 1.48cqw;
+      font-weight: 700;
+      letter-spacing: 0.34em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    #hf-01-sponsor-signal-underline {
+      width: 24.5cqw;
+      height: 2.4cqh;
+      margin-top: 0.8cqh;
+      overflow: visible;
+    }
+
+    #hf-01-sponsor-signal-underline-path {
+      fill: none;
+      stroke: #f97316;
+      stroke-width: 4;
+      stroke-linecap: round;
+    }
+
+    #hf-01-sponsor-signal-final-lockup {
+      z-index: 3;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2.2cqw;
+    }
+
+    #hf-01-sponsor-signal-network-logo {
+      width: 9.8cqw;
+      height: 9.8cqw;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    #hf-01-sponsor-signal-lockup-copy {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    #hf-01-sponsor-signal-lockup-name {
+      color: #171717;
+      font-size: 4.25cqw;
+      font-weight: 800;
+      letter-spacing: -0.045em;
+      line-height: 0.96;
+    }
+
+    #hf-01-sponsor-signal-lockup-network {
+      margin-top: 1.25cqh;
+      color: #f97316;
+      font-size: 1.18cqw;
+      font-weight: 700;
+      letter-spacing: 0.29em;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    #hf-01-sponsor-signal-support-mark {
+      position: absolute;
+      right: 5cqw;
+      top: 53cqh;
+      width: 12cqw;
+      height: 12cqw;
+      object-fit: contain;
+      opacity: 0.055;
+    }
+
+    #hf-01-sponsor-signal-progress {
+      position: absolute;
+      left: 5cqw;
+      right: 5cqw;
+      top: 79.2cqh;
+      height: 3px;
+      border-radius: 6px;
+      background: rgba(249, 115, 22, 0.15);
+      overflow: hidden;
+    }
+
+    #hf-01-sponsor-signal-progress-fill {
+      display: block;
+      width: 18%;
+      height: 100%;
+      border-radius: 6px;
+      background: #f97316;
+    }
+  </style>
+
+  <div id="root" data-composition-id="01-sponsor-signal" data-start="0" data-duration="3.62" data-width="1920" data-height="1080">
+    <div id="hf-01-sponsor-signal-ground" class="clip" data-start="0" data-duration="3.62" data-track-index="0">
+      <div id="hf-01-sponsor-signal-grid"></div>
+      <div id="hf-01-sponsor-signal-focus-a" class="hf-01-sponsor-signal-focus"></div>
+      <div id="hf-01-sponsor-signal-focus-b" class="hf-01-sponsor-signal-focus"></div>
+      <div id="hf-01-sponsor-signal-warm-field"></div>
+    </div>
+
+    <div id="hf-01-sponsor-signal-stage" class="clip" data-start="0" data-duration="3.62" data-track-index="1">
+      <div id="hf-01-sponsor-signal-sponsor">
+        <span id="hf-01-sponsor-signal-sponsor-dot"></span>
+        <span>SPONSORLU İÇERİK</span>
+      </div>
+
+      <div id="hf-01-sponsor-signal-type-wrap">
+        <div id="hf-01-sponsor-signal-candar" aria-label="CANDAR">
+          <span id="hf-01-sponsor-signal-can" class="hf-01-sponsor-signal-word-part">CAN</span><span id="hf-01-sponsor-signal-dar" class="hf-01-sponsor-signal-word-part">DAR</span>
+        </div>
+        <div id="hf-01-sponsor-signal-network">Network</div>
+        <svg id="hf-01-sponsor-signal-underline" viewBox="0 0 470 26" aria-hidden="true">
+          <path id="hf-01-sponsor-signal-underline-path" d="M 6 15 C 118 5, 330 5, 464 15" />
+        </svg>
+      </div>
+
+      <div id="hf-01-sponsor-signal-final-lockup">
+        <img id="hf-01-sponsor-signal-network-logo" src="assets/candar-network-logo.png" alt="Candar Network logosu" />
+        <div id="hf-01-sponsor-signal-lockup-copy">
+          <div id="hf-01-sponsor-signal-lockup-name">CANDAR</div>
+          <div id="hf-01-sponsor-signal-lockup-network">Network</div>
+        </div>
+      </div>
+
+      <img id="hf-01-sponsor-signal-support-mark" src="assets/candar-logo-official.png" alt="" aria-hidden="true" />
+
+      <div id="hf-01-sponsor-signal-progress" aria-hidden="true">
+        <span id="hf-01-sponsor-signal-progress-fill"></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const root = document.querySelector('[data-composition-id="01-sponsor-signal"]');
+      const path = root.querySelector("#hf-01-sponsor-signal-underline-path");
+      const pathLength = path.getTotalLength();
+      path.style.strokeDasharray = String(pathLength);
+      path.style.strokeDashoffset = String(pathLength);
+
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo(
+        "#hf-01-sponsor-signal-warm-field",
+        { scale: 0, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.42, ease: "power3.inOut" },
+        1.92
+      );
+      tl.fromTo(
+        "#hf-01-sponsor-signal-grid",
+        { opacity: 0 },
+        { opacity: 1, duration: 0.28, ease: "power1.out" },
+        0.02
+      );
+      tl.fromTo(
+        ["#hf-01-sponsor-signal-focus-a", "#hf-01-sponsor-signal-focus-b"],
+        { opacity: 0, scale: 0.35 },
+        { opacity: 1, scale: 1, duration: 0.24, stagger: 0.08, ease: "back.out(1.8)" },
+        0.08
+      );
+      tl.fromTo(
+        "#hf-01-sponsor-signal-sponsor",
+        { opacity: 0, scale: 1.16, x: "45cqw", y: "15.5cqh", xPercent: -50 },
+        { opacity: 1, scale: 1, x: "45cqw", y: "15.5cqh", xPercent: -50, duration: 0.09, ease: "none" },
+        0.1
+      );
+      tl.fromTo(
+        "#hf-01-sponsor-signal-sponsor-dot",
+        { scale: 0.35 },
+        { scale: 1, duration: 0.28, ease: "back.out(2)" },
+        0.2
+      );
+
+      tl.to(
+        "#hf-01-sponsor-signal-sponsor",
+        { x: 0, y: 0, xPercent: 0, scale: 0.82, duration: 0.42, ease: "power3.inOut" },
+        0.7
+      );
+      tl.fromTo(
+        ["#hf-01-sponsor-signal-can", "#hf-01-sponsor-signal-dar"],
+        { opacity: 0, y: 34, filter: "blur(14px)" },
+        { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.44, stagger: 0.12, ease: "power3.out" },
+        0.82
+      );
+      tl.to(
+        "#hf-01-sponsor-signal-underline-path",
+        { strokeDashoffset: 0, duration: 0.62, ease: "power2.out" },
+        1.28
+      );
+
+      tl.fromTo(
+        "#hf-01-sponsor-signal-network",
+        { opacity: 0, scale: 1.22 },
+        { opacity: 1, scale: 1, duration: 0.1, ease: "none" },
+        2.06
+      );
+      tl.to(
+        "#hf-01-sponsor-signal-candar",
+        { color: "#171717", duration: 0.2, ease: "none" },
+        2.12
+      );
+      tl.to(
+        ["#hf-01-sponsor-signal-grid", "#hf-01-sponsor-signal-focus-a", "#hf-01-sponsor-signal-focus-b"],
+        { opacity: 0, duration: 0.2, ease: "power1.out" },
+        2.12
+      );
+      tl.fromTo(
+        "#hf-01-sponsor-signal-support-mark",
+        { opacity: 0, scale: 0.82 },
+        { opacity: 0.055, scale: 1, duration: 0.38, ease: "power2.out" },
+        2.18
+      );
+
+      tl.to(
+        "#hf-01-sponsor-signal-type-wrap",
+        { scale: 0.72, opacity: 0, duration: 0.34, ease: "power2.in" },
+        2.34
+      );
+      tl.fromTo(
+        "#hf-01-sponsor-signal-final-lockup",
+        { scale: 0.72, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.58, ease: "back.out(1.6)" },
+        2.51
+      );
+      tl.fromTo(
+        "#hf-01-sponsor-signal-progress-fill",
+        { scaleX: 0, transformOrigin: "0% 50%" },
+        { scaleX: 1, duration: 0.5, ease: "power2.out" },
+        2.54
+      );
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["01-sponsor-signal"] = tl;
+    })();
+  </script>
+</template>

@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.candarnetwork.app",
+      "sha256_cert_fingerprints": [
+        "91:6E:1D:3A:75:B3:09:D7:49:8D:FC:23:6D:D5:4F:4F:6B:F0:E5:FD:70:98:36:A9:42:5C:30:7E:9E:68:53:C0"
+      ]
+    }
+  }
+]

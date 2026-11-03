@@ -1,0 +1,63 @@
+# Godot 4+ specific ignores
+.godot/
+/android/*
+!/android/build/
+/android/build/*
+!/android/build/build.gradle
+!/android/build/settings.gradle
+!/android/build/src/
+/android/build/src/*
+!/android/build/src/main/
+/android/build/src/main/*
+!/android/build/src/main/AndroidManifest.xml
+!/android/build/src/main/java/
+/android/build/src/main/java/*
+!/android/build/src/main/java/com/
+/android/build/src/main/java/com/*
+!/android/build/src/main/java/com/godot/
+/android/build/src/main/java/com/godot/*
+!/android/build/src/main/java/com/godot/game/
+!/android/build/src/main/res/
+/android/build/src/main/res/*
+!/android/build/src/main/res/drawable/
+!/android/build/src/main/res/values/
+!/android/build/src/main/res/values-tr/
+
+# Local OS/editor files
+.DS_Store
+.idea/
+.firebase/
+
+# Build/export artifacts
+/build/
+/test-artifacts/
+*.aab
+*.apk
+*.apk.idsig
+*.ipa
+*.xcarchive/
+*.zip
+*.pck
+/candarnetwork.xcframework/
+/ios/candarnetwork.xcframework/
+/ios/build*/
+
+# iOS dependency output
+Pods/
+ios/Pods/
+
+# Firebase / secrets
+functions/node_modules/
+functions/.env
+.env
+.env.local
+.env.*
+!.env.example
+*.jks
+*.keystore
+*.pem
+*.p12
+*.mobileprovision
+KEYSTORE.txt
+google-services.json
+GoogleService-Info.plist

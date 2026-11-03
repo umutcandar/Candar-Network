@@ -1,0 +1,406 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+    }
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter";
+      color: #171717;
+    }
+
+    [class~="hf-03-daily-progress-ground"] {
+      position: absolute;
+      inset: 0;
+      background: #FFFFFF;
+      overflow: hidden;
+    }
+
+    [class~="hf-03-daily-progress-depth-back"],
+    [class~="hf-03-daily-progress-depth-mid"] {
+      position: absolute;
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 14px;
+      background: rgba(249, 115, 22, 0.04);
+    }
+
+    [class~="hf-03-daily-progress-depth-back"] {
+      width: 29cqw;
+      height: 57cqh;
+      top: 16cqh;
+      right: 4.2cqw;
+      opacity: 0.32;
+    }
+
+    [class~="hf-03-daily-progress-depth-mid"] {
+      width: 31cqw;
+      height: 60cqh;
+      top: 13.8cqh;
+      right: 5.5cqw;
+      opacity: 0.55;
+    }
+
+    [class~="hf-03-daily-progress-copy"] {
+      position: absolute;
+      left: 5cqw;
+      top: 16cqh;
+      width: 35cqw;
+      z-index: 6;
+    }
+
+    [class~="hf-03-daily-progress-eyebrow"] {
+      display: inline-flex;
+      align-items: center;
+      min-height: 3.6cqh;
+      padding: 0.5cqh 1.05cqw;
+      border-radius: 100px;
+      background: rgba(249, 115, 22, 0.08);
+      color: #B45309;
+      font-size: 0.8cqw;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    [class~="hf-03-daily-progress-title"] {
+      max-width: 34cqw;
+      margin: 2.2cqh 0 0;
+      color: #171717;
+      font-size: 3.4cqw;
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+    }
+
+    [class~="hf-03-daily-progress-accent"] {
+      width: 3.125cqw;
+      height: 4px;
+      margin-top: 3.2cqh;
+      border-radius: 2px;
+      background: #F97316;
+    }
+
+    [class~="hf-03-daily-progress-stage"] {
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+    }
+
+    [class~="hf-03-daily-progress-device"] {
+      position: absolute;
+      overflow: hidden;
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 14px;
+      background: rgba(249, 115, 22, 0.04);
+    }
+
+    [class~="hf-03-daily-progress-device"]::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      border: 0.45cqw solid #171717;
+      border-radius: 14px;
+      pointer-events: none;
+    }
+
+    [class~="hf-03-daily-progress-device"]::after {
+      content: "";
+      position: absolute;
+      top: 1.2cqh;
+      left: 50%;
+      width: 4.8cqw;
+      height: 0.75cqh;
+      margin-left: -2.4cqw;
+      z-index: 3;
+      border-radius: 100px;
+      background: #171717;
+      pointer-events: none;
+    }
+
+    [class~="hf-03-daily-progress-device-primary"] {
+      width: 31cqw;
+      height: 64cqh;
+      top: 10cqh;
+      left: 62cqw;
+      z-index: 4;
+    }
+
+    [class~="hf-03-daily-progress-device-secondary"] {
+      width: 28cqw;
+      height: 58cqh;
+      top: 13cqh;
+      left: 96cqw;
+      z-index: 3;
+    }
+
+    [class~="hf-03-daily-progress-screen"] {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top center;
+    }
+
+    [class~="hf-03-daily-progress-streak-blur"] {
+      position: absolute;
+      left: 55cqw;
+      top: 18cqh;
+      width: 39cqw;
+      height: 47cqh;
+      z-index: 2;
+      border-radius: 100px;
+      background: linear-gradient(90deg, rgba(249,115,22,0), rgba(249,115,22,0.15), rgba(249,115,22,0));
+      opacity: 0;
+    }
+
+    [class~="hf-03-daily-progress-focus-box"] {
+      position: absolute;
+      left: 69.2cqw;
+      top: 35.5cqh;
+      width: 17.2cqw;
+      height: 15.5cqh;
+      z-index: 8;
+      border: 4px solid #F97316;
+      border-radius: 12px;
+      background: rgba(249, 115, 22, 0.08);
+      opacity: 0;
+    }
+
+    [class~="hf-03-daily-progress-chip"] {
+      position: absolute;
+      z-index: 9;
+      display: inline-flex;
+      align-items: center;
+      min-height: 4.8cqh;
+      padding: 0.4cqh 1.25cqw;
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 100px;
+      background: #FFFFFF;
+      color: #B45309;
+      font-size: 1.4cqw;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    [class~="hf-03-daily-progress-chip-points"] {
+      left: 69cqw;
+      top: 21cqh;
+    }
+
+    [class~="hf-03-daily-progress-chip-referral"] {
+      left: 77cqw;
+      top: 63cqh;
+    }
+
+    [class~="hf-03-daily-progress-finale"] {
+      position: absolute;
+      left: 50%;
+      top: 35.5cqh;
+      z-index: 12;
+      width: 28cqw;
+      margin-left: -14cqw;
+      padding: 2.2cqh 1.6cqw;
+      border: 1.5px solid rgba(249, 115, 22, 0.2);
+      border-radius: 14px;
+      background: #FFFFFF;
+      color: #171717;
+      font-size: 2.1cqw;
+      font-weight: 600;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+
+    [class~="hf-03-daily-progress-glow"] {
+      position: absolute;
+      left: 50%;
+      top: 29cqh;
+      z-index: 11;
+      width: 34cqw;
+      height: 24cqh;
+      margin-left: -17cqw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(249,115,22,0.15) 0%, rgba(249,115,22,0) 70%);
+      opacity: 0;
+    }
+
+    [class~="hf-03-daily-progress-progress"] {
+      position: absolute;
+      left: 5cqw;
+      top: 81.2cqh;
+      z-index: 15;
+      width: 90cqw;
+      height: 3px;
+      overflow: hidden;
+      background: rgba(249, 115, 22, 0.08);
+    }
+
+    [class~="hf-03-daily-progress-progress-fill"] {
+      display: block;
+      width: 52%;
+      height: 100%;
+      background: #F97316;
+    }
+  </style>
+
+  <div id="root" data-composition-id="03-daily-progress" data-start="0" data-duration="11.88" data-width="1920" data-height="1080">
+    <div class="clip hf-03-daily-progress-ground" data-start="0" data-duration="11.88" data-track-index="0"></div>
+
+    <div class="clip hf-03-daily-progress-depth" data-start="0" data-duration="11.88" data-track-index="1">
+      <div class="hf-03-daily-progress-depth-back"></div>
+      <div class="hf-03-daily-progress-depth-mid"></div>
+      <div class="hf-03-daily-progress-streak-blur"></div>
+    </div>
+
+    <div class="clip hf-03-daily-progress-copy-clip" data-start="0" data-duration="11.88" data-track-index="2">
+      <div class="hf-03-daily-progress-copy">
+        <div class="hf-03-daily-progress-eyebrow">2027'DEN ÖNCE</div>
+        <h1 class="hf-03-daily-progress-title">Kurucu Üye rolünü aç</h1>
+        <div class="hf-03-daily-progress-accent"></div>
+      </div>
+    </div>
+
+    <div class="clip hf-03-daily-progress-products" data-start="0" data-duration="11.88" data-track-index="3">
+      <div class="hf-03-daily-progress-stage">
+        <div class="hf-03-daily-progress-device hf-03-daily-progress-device-primary">
+          <img class="hf-03-daily-progress-screen" src="assets/candar-daily-streak.png" alt="" />
+        </div>
+        <div class="hf-03-daily-progress-device hf-03-daily-progress-device-secondary">
+          <img class="hf-03-daily-progress-screen" src="assets/candar-referral-network.png" alt="" />
+        </div>
+        <div class="hf-03-daily-progress-focus-box"></div>
+        <div class="hf-03-daily-progress-chip hf-03-daily-progress-chip-points">PUANLAR</div>
+        <div class="hf-03-daily-progress-chip hf-03-daily-progress-chip-referral">REFERANS AĞI</div>
+      </div>
+    </div>
+
+    <div class="clip hf-03-daily-progress-finale-clip" data-start="0" data-duration="11.88" data-track-index="4">
+      <div class="hf-03-daily-progress-glow"></div>
+      <div class="hf-03-daily-progress-finale">Her gün görünür ilerleme</div>
+    </div>
+
+    <div class="clip hf-03-daily-progress-progress" data-start="0" data-duration="11.88" data-track-index="5">
+      <span class="hf-03-daily-progress-progress-fill"></span>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      var tl = gsap.timeline({ paused: true });
+      window.__timelines = window.__timelines || {};
+      window.__timelines["03-daily-progress"] = tl;
+
+      tl.fromTo('[class~="hf-03-daily-progress-device-primary"]',
+        { x: 250, opacity: 0, filter: "blur(18px)", scale: 0.96 },
+        { x: 0, opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.72, ease: "power4.out" },
+        0.04
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-streak-blur"]',
+        { x: 160, opacity: 0 },
+        { x: -50, opacity: 0.72, duration: 0.38, ease: "power3.out" },
+        0.06
+      );
+      tl.to('[class~="hf-03-daily-progress-streak-blur"]',
+        { x: -190, opacity: 0, duration: 0.5, ease: "power2.out" },
+        0.44
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-eyebrow"]',
+        { y: 22, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, ease: "power3.out" },
+        0.22
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-title"]',
+        { y: 34, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.72, ease: "power3.out" },
+        0.48
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-accent"]',
+        { scaleX: 0, transformOrigin: "left center", opacity: 0 },
+        { scaleX: 1, transformOrigin: "left center", opacity: 1, duration: 0.55, ease: "power3.out" },
+        1.08
+      );
+
+      tl.to('[class~="hf-03-daily-progress-stage"]',
+        { x: -70, y: -14, scale: 1.12, transformOrigin: "78% 40%", duration: 1.15, ease: "power3.inOut" },
+        3.0
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-focus-box"]',
+        { scale: 1.13, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.58, ease: "power3.out" },
+        3.48
+      );
+      tl.to('[class~="hf-03-daily-progress-focus-box"]',
+        { scale: 1.035, duration: 0.7, ease: "power1.inOut" },
+        4.45
+      );
+
+      tl.to('[class~="hf-03-daily-progress-stage"]', { x: -104, duration: 0.18, ease: "power3.in" }, 5.9);
+      tl.to('[class~="hf-03-daily-progress-stage"]', { x: -324, duration: 0.16, ease: "none" }, 6.08);
+      tl.to('[class~="hf-03-daily-progress-stage"]', { x: -408, y: 0, scale: 1, duration: 0.56, ease: "power4.out" }, 6.24);
+      tl.fromTo('[class~="hf-03-daily-progress-device-secondary"]',
+        { opacity: 0 },
+        { opacity: 1, duration: 0.24, ease: "none" },
+        6.1
+      );
+      tl.to('[class~="hf-03-daily-progress-focus-box"]',
+        { opacity: 0, duration: 0.22, ease: "power1.out" },
+        6.08
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-chip-points"]',
+        { scale: 0.5, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.62, ease: "back.out(1.8)" },
+        6.72
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-chip-referral"]',
+        { scale: 0.5, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.62, ease: "back.out(1.8)" },
+        7.72
+      );
+
+      tl.to('[class~="hf-03-daily-progress-copy"]',
+        { x: -150, opacity: 0.16, duration: 0.72, ease: "power3.out" },
+        8.7
+      );
+      tl.to('[class~="hf-03-daily-progress-stage"]',
+        { x: 0, scale: 0.82, transformOrigin: "center center", duration: 0.9, ease: "power3.inOut" },
+        8.7
+      );
+      tl.to('[class~="hf-03-daily-progress-device-primary"]',
+        { x: -480, y: 36, rotation: -3.2, duration: 0.9, ease: "power3.inOut" },
+        8.7
+      );
+      tl.to('[class~="hf-03-daily-progress-device-secondary"]',
+        { x: -66, y: 10, rotation: 3.2, duration: 0.9, ease: "power3.inOut" },
+        8.7
+      );
+      tl.to('[class~="hf-03-daily-progress-chip-points"], [class~="hf-03-daily-progress-chip-referral"]',
+        { opacity: 0.22, duration: 0.5, ease: "power2.out" },
+        8.82
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-glow"]',
+        { scale: 0.55, opacity: 0 },
+        { scale: 1.15, opacity: 1, duration: 0.72, ease: "power3.out" },
+        9.35
+      );
+      tl.fromTo('[class~="hf-03-daily-progress-finale"]',
+        { scale: 0.92, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.62, ease: "power3.out" },
+        9.48
+      );
+      tl.to('[class~="hf-03-daily-progress-glow"]',
+        { scale: 1.28, opacity: 0.42, duration: 0.78, ease: "power2.out" },
+        10.08
+      );
+    })();
+  </script>
+</template>

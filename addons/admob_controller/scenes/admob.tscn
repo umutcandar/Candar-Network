@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=3 uid="uid://b137rcrbp61es"]
+
+[ext_resource type="Script" path="res://addons/admob_controller/scripts/admob.gd" id="1_rlwyo"]
+[ext_resource type="Script" path="res://addons/admob_controller/scripts/main.gd" id="2_1v7dd"]
+[ext_resource type="Script" path="res://addons/admob_controller/scripts/banner.gd" id="2_a1fth"]
+[ext_resource type="Script" path="res://addons/admob_controller/scripts/rewarded.gd" id="3_thdt6"]
+[ext_resource type="Script" path="res://addons/admob_controller/scripts/interstitial.gd" id="4_i5bqf"]
+[ext_resource type="Script" path="res://addons/admob_controller/scripts/rewarded_intertitial.gd" id="5_gnk7d"]
+
+[node name="admob" type="Node"]
+script = ExtResource("1_rlwyo")
+
+[node name="main" type="Node" parent="."]
+script = ExtResource("2_1v7dd")
+
+[node name="banner" type="Node" parent="."]
+script = ExtResource("2_a1fth")
+
+[node name="interstitial" type="Node" parent="."]
+script = ExtResource("4_i5bqf")
+
+[node name="rewarded" type="Node" parent="."]
+script = ExtResource("3_thdt6")
+
+[node name="rewarded_intertitial" type="Node" parent="."]
+script = ExtResource("5_gnk7d")

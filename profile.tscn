@@ -1,0 +1,90 @@
+[gd_scene load_steps=4 format=3 uid="uid://djjc4v0bc2oit"]
+
+[ext_resource type="Script" uid="uid://cqvpalastu47v" path="res://profile.gd" id="1_skihg"]
+[ext_resource type="Script" uid="uid://c1r0vqk72od2q" path="res://localized_label.gd" id="2_k2f8d"]
+[ext_resource type="Script" uid="uid://cm16tx0is08cg" path="res://localized_button.gd" id="3_yghs0"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_skihg")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.008
+anchor_right = 1.0
+anchor_bottom = 0.975
+offset_left = 0.23993874
+offset_top = 30.0
+offset_right = -14.000061
+offset_bottom = -24.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+
+[node name="ProfileTitleLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_k2f8d")
+translation_key = "profile_title"
+
+[node name="EmailLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_k2f8d")
+translation_key = "email_label"
+
+[node name="PuanLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_k2f8d")
+translation_key = "points_label"
+
+[node name="ReferralLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("2_k2f8d")
+translation_key = "referral_label"
+
+[node name="BackButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("3_yghs0")
+translation_key = "back_button"
+
+[node name="DeleteAccountButton" type="Button" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+script = ExtResource("3_yghs0")
+translation_key = "delete_account_button"
+
+[node name="ConfirmDeleteDialog" type="ConfirmationDialog" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+
+[node name="StatusLabel" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer"]
+layout_mode = 2
+horizontal_alignment = 1

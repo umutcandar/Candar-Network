@@ -1,0 +1,1727 @@
+Reading additional input from stdin...
+2026-08-03T13:39:03.801917Z  WARN codex_core_skills::loader: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-08-03T13:39:03.801960Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-08-03T13:39:03.803203Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/macbook/.codex/plugins/cache/openai-primary-runtime/template-creator/26.802.11031/.codex-plugin/plugin.json
+2026-08-03T13:39:03.804450Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/macbook/.codex/plugins/cache/openai-primary-runtime/template-creator/26.802.11031/.codex-plugin/plugin.json
+2026-08-03T13:39:03.828853Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.831432Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.833734Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.835387Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.837609Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.839680Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.841957Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.844462Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.846337Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.848466Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.850605Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.852500Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.855115Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.856572Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.857597Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.859011Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.861913Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.864255Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.867248Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.869177Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.871490Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.873037Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.875207Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.877482Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.879090Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.881571Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.884326Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.886098Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.888898Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+2026-08-03T13:39:03.892676Z  WARN codex_rollout::list: state db discrepancy during find_thread_path_by_id_str_in_subdir: falling_back
+OpenAI Codex v0.146.0
+--------
+workdir: /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+model: gpt-5.6-sol
+provider: openai
+approval: never
+sandbox: danger-full-access
+reasoning effort: medium
+reasoning summaries: none
+session id: 019fc7d9-6fa8-7f90-b353-92477de934b3
+--------
+user
+Önce yalnızca .hyperframes/frame-packets/_role.md, .hyperframes/frame-packets/05-join-today.md ve frame.md dosyalarını oku. Bu belgelerdeki talimatları eksiksiz uygula. Dispatch context: PROJECT_DIR=/Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube; frame_id=05-join-today; confirmed_sketch=no; canvas=1920x1080; captions=enabled; keep_out_band=alt %17. Sadece compositions/frames/05-join-today.html dosyasını yaz; başka hiçbir dosyayı değiştirme.
+2026-08-03T13:39:04.207196Z  WARN codex_core_skills::loader: ignoring interface.icon_small: icon path with '..' must resolve under plugin assets/
+2026-08-03T13:39:04.207225Z  WARN codex_core_skills::loader: ignoring interface.icon_large: icon path with '..' must resolve under plugin assets/
+2026-08-03T13:39:04.207455Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/macbook/.codex/plugins/cache/openai-primary-runtime/template-creator/26.802.11031/.codex-plugin/plugin.json
+2026-08-03T13:39:04.208640Z  WARN codex_core_plugins::manifest: ignoring interface.defaultPrompt: maximum of 3 prompts is supported path=file:///Users/macbook/.codex/plugins/cache/openai-primary-runtime/template-creator/26.802.11031/.codex-plugin/plugin.json
+codex
+Codex Reflex+ protokolüyle çalışıyorum. Önce yalnızca belirttiğiniz üç belgeyi okuyacağım; ardından onların yönlendirmesine göre sadece hedef kompozisyon dosyasını yazıp gerekli doğrulamayı yapacağım.
+exec
+/bin/zsh -lc "sed -n '1,240p' .hyperframes/frame-packets/_role.md && sed -n '1,260p' .hyperframes/frame-packets/05-join-today.md && sed -n '1,320p' frame.md" in /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+ succeeded in 0ms:
+# Frame worker — core contract (shared by the narrative video workflows)
+
+The workflow-agnostic half of every frame worker's role. Each workflow's packet builder (`scripts/frame-packets.mjs`) prepends this file to that workflow's `sub-agents/frame-worker.md` (the **delta**) to form `.hyperframes/frame-packets/_role.md` — a worker reads the two as one role. Editing guidance: a rule that applies to any frame worker belongs here, once; a workflow-specific rule belongs in that workflow's delta. (`music-to-video` has its own composition model and does not use this contract.)
+
+You build the frame composition file(s) assigned in your dispatch and nothing else — sibling workers build the other frames. The structural law behind the constraints and self-check below (sub-composition shape, timeline registration, clip attrs, transform-only motion, determinism, root sizing) lives in `hyperframes-core` (`references/sub-compositions.md`, `references/determinism-rules.md`, `references/data-attributes.md`); everything you must enforce is restated below — open one of those only when a rule here is unclear. This role + your packet also **supersede the skill catalog's own imperatives**: do not open `hyperframes/SKILL.md` or `hyperframes-core/SKILL.md` ("read this first" is for fresh requests — that routing already happened upstream, and its output is this dispatch).
+
+**INPUT** — your dispatch provides this role, your frame packet(s), and:
+
+- `PROJECT_DIR` — the project root; all paths are relative to it.
+- `frame_id` — e.g. `03-feature`. Use it **verbatim** as the composition id, the `window.__timelines` key, and the file name (`compositions/frames/03-feature.html`) — that path **is** the frame's `src` in `STORYBOARD.md` (the orchestrator derived `frame_id` from it), so writing there is how the assembler finds your frame.
+- Your **packet** (`.hyperframes/frame-packets/<frame_id>.md`) — everything selected upstream for this frame. You never open the shared `STORYBOARD.md` (see below); the packet carries your exact **`## Frame N` block**:
+  - `scene` — a one-line contact-sheet caption. **Design intent, never visible DOM text.**
+  - `voiceover` — the narration line. **Timing reference only** (sync entrances to the voice); **never** rendered as text — captions are a separate root track (see constraints).
+  - `duration` — your render length in seconds. **Fixed upstream; never change it or tween to fill a different length.**
+  - `transition_in` — informational. The injector stamps it at the root; **you do not author transitions.**
+  - the **time-coded shot sequence** — your build spec. A sequence of Scene lines (`Scene 1 (0.0–Xs): … → Scene 2: … → Scene N`), each stating what's on screen, what enters / moves / reveals, and the layout inline. Build it faithfully, beat for beat — every Scene window is a phase you must realize, and each reveal lands on its `voiceover` cue (this is what keeps the shot from freezing).
+  - `blueprint:` — an id (or the literal `compose`): the shot template this frame instantiates — the overall shape + its signature move. Its body is inlined in your packet (`## Selected blueprint`); `compose` means there's no template — sequence the shot from the Scene lines directly.
+  - `focal:` / `roles:` — which element is the hero and what each element is. **Semantics are workflow-specific — see the delta.**
+  - `sfx:` — the orchestrator's; you mount no audio.
+- The packet also inlines the **rule recipe** (`## Selected motion rule: <id>`) for each named motion the Scene lines cite — the mechanics for that motion, which you reproduce, **never name-guess** (a guess loses the signature move). If a cited motion's recipe is missing from your packet, read `RULES_DIR/<id>.md` (`RULES_DIR` is in the packet header); a few recipes link an optional runnable demo in the shared `../hyperframes-animation/examples/<id>.html` — open it only when a recipe is unclear.
+- `frame.md` (project root) — the **design-truth**: palette, type ramp, components, composition rules. The LOOK. Pull every visual token from here. This is the one file you read outside your packet.
+- `../references/cut-catalog.md` (the workflow's own copy) — the **cut catalog** (zoom-through / inverse / cut-the-curve / waterfall). When a Scene seam is a within-scene swap, a scene-to-scene cut, or a text-to-text line change, build it INSIDE your composition per this catalog (Z-scale + blur + opacity, or per-word x-staggers). You never author the between-frame transition — story's `transition_in` + the injector own that.
+- Canvas `<width>×<height>` and `Captions: <enabled | disabled>` (+ the keep-out cutoff when enabled).
+
+**Retry** — if your context carries `lint` / `check` feedback from a prior pass, read it first and re-author so none of those findings recur; treat each as a hard constraint.
+
+**OUTPUT** — `compositions/frames/<frame_id>.html` for each assigned packet: exactly one bare `<template>…</template>` fragment. The first non-whitespace bytes are `<template`; the last are `</template>`. Never emit `<!doctype>`, `<html>`, `<head>`, `<body>`, or any markup outside that single template. Writing your assigned file(s) (past the self-check below) is your **terminal action** — you do not edit `STORYBOARD.md`, mint audio, assemble the index, run the CLI, or report back. The orchestrator picks up the file and marks the frame's `status`.
+
+## When a confirmed sketch exists
+
+In collaborative runs the orchestrator wireframes the board first, so your target file may already exist as the frame's **user-confirmed wireframe** — your dispatch says whether it does (a file found on a retry is your own prior output, not a sketch). Read it first and **keep its composition**: the placement, hierarchy, and copy were approved — don't move or drop them. Everything else is yours to finish: the full `frame.md` treatment (the sketch is deliberately unstyled), the finished content where the sketch used stand-in blocks (what that content is — real assets, invented visuals, a code block — is the delta's call), and the motion — map each Scene onto a timeline phase, reveal each piece on its `voiceover` cue with `fromTo` entrances, adding DOM only where a phase needs it. The frame's landed state must still read as the approved wireframe, fully dressed.
+
+## You do NOT decide
+
+These belong to other steps — touching them collides with a sibling or breaks an upstream contract:
+
+- **What is SAID** — narration is locked in `SCRIPT.md` / the `voiceover` line. You only show; you never write or restate narration text.
+- **Duration** — fixed from real voice timing. Build your shot to land within it; don't stretch or trim it.
+- **Transitions between frames** — the injector stamps them onto the root timeline. You author the shot itself (the VO-paced reveal sequence) but **never an exit** — the root transition IS the exit; a settle / fade-out only if you are the final frame.
+- **Audio** (narration / BGM / SFX) — assembled at the root by the orchestrator. **No `<audio>` element in your composition.**
+- **Design tokens** — palette / fonts / components come from `frame.md`. Don't invent them, and **never lift a word, label, or wordmark out of `frame.md` as your copy** — it is a style spec, not content. Visible text comes from your frame's `scene` / narrative.
+- **Which motions / assets exist** — named upstream in your block (the shot sequence's motion verbs + `blueprint:` + the delta's own vocabularies). Implement them; don't fetch or invent new ones (you have no asset-fetch tool — never fabricate an asset URL or reference a file the dispatch didn't name).
+- **The shared `STORYBOARD.md`** — your packet carries your block; never open or write the file itself. N siblings edit nothing there concurrently; the orchestrator owns its state.
+
+## Frame constraints
+
+Shared law for every narrative frame, each load-bearing; your workflow's delta adds its own on top:
+
+- **Caption keep-out — all content in the top ~83%.** A karaoke caption pill owns the bottom ~17% of the canvas. Keep every element (headline, cards, code panel, diagram, stats, brand mark) above `y ≈ 0.83 × height` — compute the pixel cutoff from your canvas (e.g. `≤ 900` on a 1080-tall frame, `≤ 1600` on a 1920-tall portrait). Holds **even when `Captions: disabled`** (bottom-edge consistency across frames).
+- **Fill the content area — especially portrait.** Compose the whole top-83% region; don't float one small cluster mid-frame. Anchor the hero high (~0.2–0.35 × height), flow supporting elements down with rhythm, scale the hero toward full-bleed. (Landscape's region is short, so vertical centering near 0.42 × height is fine.)
+- **Visible text is short motion-graphics copy** — a hero word / stat / one-word emphasis (`"$83K"`, `"2× faster"`, `"INSTANT"`), never a sentence from the narration. The root caption track already shows the spoken words synced to voice; repeating them double-prints on screen. (The delta may name exceptions — e.g. real code inside a code block is content, not narration.)
+- **Build the whole shot — reveal across the full `duration`, never front-load.** Dumping the whole canvas in the first ~25% then holding it is exactly what reads as a PowerPoint slide. Instead reveal each piece — a line, a card, a node, a stat — **as the `voiceover` reaches it** (on a silent frame, on the beat), sequencing reveals across the shot and especially the back ~50%, with the macro camera move running underneath. **Only EXITS are banned** — a non-final frame unmounts mid-frame, so an exit tween truncates and reads as a glitch (the root transition IS the exit); mid-shot reveals are free and seek-safe. The lone exception is a note marked as a deliberate hold / stillness frame: there, an entrance + a quiet settle is right (a held read beats bad motion).
+- **Implement the shot sequence faithfully — every Scene is a timeline phase.** The Scene lines ARE the build: map each Scene onto a phase of the one timeline, each piece revealing as the `voiceover` reaches it. For each **named motion** in a Scene, reproduce the mechanics of its inlined rule recipe — **never name-guess**. The inlined **`blueprint:` template** gives the overall shape; keep its **signature move** recognizable, then instantiate it with this frame's content / assets / timing. `compose` → no template; sequence the shot straight from the Scene lines. Whichever, never front-load the whole sequence at `t=0` — pace the reveals to the voiceover.
+
+## Workflow
+
+1. **Read** — your packet top to bottom (your frame block, the inlined blueprint, the inlined rule recipes), then `frame.md` (the look). Internalize the self-check codes below before you write — most lethal is **template transport**: every `<style>` + `<script>` (including the gsap load) must live INSIDE `<template>`, because the runtime only clones template contents and the assembled-project `lint` / `check` gate can miss an unwired blank sub-composition.
+2. **Design** — turn the time-coded shot sequence into a timeline using `frame.md`'s components and type ramp: each Scene window becomes a phase revealed on its `voiceover` cue, each named motion built from the recipe in your packet, the blueprint's signature move kept recognizable. Find a visual idea that reinforces the beat, not a literal restyle of the words.
+3. **Author** — write the full sub-composition to `compositions/frames/<frame_id>.html` (rewrite to iterate; last write wins). `<template>`-wrapped root carrying `data-composition-id="<frame_id>"` and styled via `#root` (not a class on that element — see the self-check below), exactly one `gsap.timeline({ paused: true })` registered at `window.__timelines["<frame_id>"]`, built synchronously.
+   Prefix authored ids and globally reusable class names with `<frame_id>-` so sibling frames assembled from parallel workers cannot collide. Contract selectors such as `#root` and `.clip` are the only exceptions.
+4. **Self-check, then finish** — re-read your file against the checklist below and fix in place; then continue to your next assigned packet, if any. You do **not** run the CLI.
+
+## Self-check before finishing (you do NOT run the CLI)
+
+You **can't** meaningfully run `hyperframes lint` / `check` here: they operate on the **assembled project** (the `index.html` graph / bundle), and your frame isn't wired in yet — so they report on _other_ files, not yours (a false green). The **orchestrator** runs them after assembly (the correct unit), and **re-dispatches you with the finding** if your frame fails (see **Retry** above). So get it right on write: re-read your file against this checklist before finishing — the codes in parens are `hyperframes lint`'s and what the orchestrator may cite back:
+
+- `missing_template_wrapper` / `missing_composition_id` — the entire file is exactly one bare `<template>…</template>` fragment (no DOCTYPE / full document); root carries `data-composition-id="<frame_id>"`.
+- **Template transport** — every `<style>` and `<script>` block, including the GSAP load, lives inside `<template>`.
+- `subcomposition_root_styled_by_class` — **style the frame root via `#root`, never a class on the `data-composition-id` element**: at render a class on the root gets scoped to a descendant selector that can't match it, so the **whole scene renders unstyled** (Studio preview still looks right — trust this rule, not the preview). Descendants use plain selectors.
+- **Full-bleed background on a `class="clip"` layer, never `#root`** — author a frame's full-bleed ground (color field / gradient / grid) as a dedicated full-duration `class="clip"` background element on the lowest content track, **not** as a `background` on the `#root` / `data-composition-id` element. At assembly the frame root is clip-gated to its scene window, so a background painted on the root is not a dependable full-frame ground — dark content can end up over the host `body` (black) and render invisible. The video's base ground is painted separately by the assembler from `frame.md`'s `canvas` color onto the index `#root`; your full-bleed clip rides on top of it.
+- `clip_missing_data_attrs` — every `class="clip"` element has `data-start` / `data-duration` / `data-track-index`.
+- `timeline_not_paused` / `timeline_not_registered` — one paused timeline, registered at `window.__timelines["<frame_id>"]`.
+- `css_transition_used` + repeat / yoyo / non-deterministic logic — none present (the renderer seeks frame-by-frame).
+- `gsap_css_transform_conflict` — never put a CSS `transform` (e.g. `translateY(-50%)` centering) on an element you then GSAP-animate a transform prop on (`x` / `y` / `scale` / `rotation`): GSAP overwrites the whole `transform` and silently drops the CSS centering (the element jumps). Center with `margin` / `inset` (or `top`/`left` + offset), fold the offset into the tween via `xPercent` / `yPercent`, or use `fromTo` (the rule exempts it).
+- **Hero visibility** — the main subject is visible by `t <= 0.5s`; entrance tweens use `fromTo` instead of CSS-hidden starting states.
+- `exit_animation_on_non_final_scene` — no exit tween unless you are the final frame.
+- **No front-loading (not a slide)** — the shot's pieces reveal on their `voiceover` cues across the duration, not all fired at `t=0`; a non-still frame keeps content arriving rather than holding a full canvas from ~25%.
+- **Shot-sequence fidelity** — every Scene in the time-coded sequence is realized as a phase, the blueprint's signature move (unless `compose`) is present and recognizable, and the shot reveals to the voiceover (never front-loaded at `t=0`).
+- `font_family_without_font_face` — every font you name has a matching `@font-face` **inside this file**. **Only use fonts that ship as files** with the project: the families declared in `frame.md` (their `.woff2` live in `assets/fonts/` or `capture/assets/fonts/` — point the `@font-face` `src` at the real file you find there). **Never name a font that has no file**, including system CJK / Japanese / Devanagari families (`Hiragino Sans`, `Yu Gothic`, `Noto Sans CJK`, `Noto Sans Devanagari`, …): the render machine is a clean headless Chrome with none of them installed, so the text silently falls back to a generic font and the typography is wrong in the MP4. For non-Latin or multilingual visible text, either use a shipped font that covers the script, or romanize / transliterate it (e.g. `日本語` → `Japanese`); if neither is possible it is out of scope for this frame — do not invent a font name.
+- **Keep-out + no-narration-text** (eyeball, no code) — nothing sits below the 83% cutoff; no narration sentence is rendered as visible text.
+
+---
+
+# Frame worker — product-launch delta
+
+> The shared law is the core contract above (the packet builder prepends `../hyperframes-core/references/frame-worker-core.md` to this file as `_role.md`) — read the two as one role. This file carries only what's specific to a product-launch frame; you run N-up, **one frame each** — your dispatch carries exactly one packet. Tempted to add a generic GSAP / timeline rule here? Wrong home — it belongs in the core contract or `hyperframes-core`.
+
+## Your `focal:` / `roles:` — real captured media
+
+- `focal:` — which candidate is the hero.
+- `roles:` — each candidate's role: `cutout` foreground / `background` full-bleed / supporting — plus the real media available (each `public/<basename> — description`; a **`[video]`** tag marks a `.mp4` motion source that cannot be mounted by this sub-composition worker).
+- **Asset paths are project-root relative everywhere.** This includes HTML attributes and CSS `url(...)` values such as `@font-face src`: use `assets/...` (or the supplied `capture/assets/...` path), never `../` or `../../`. Shared fonts are staged before dispatch so every parallel frame resolves the same local files; never fall back to a network `@import`.
+
+## Placing candidates (product-launch constraint)
+
+**Place each candidate by its `roles`** (the `focal` is the hero): a `cutout` is a foreground subject — respect the 83% keep-out, lay text around it, not over its face; a `background` is full-bleed and dimmed ~30–50% so foreground content stays legible. Frame files are sub-compositions. Audio remains orchestrator-owned: never author `<audio>` in a frame. An approved `[video]` candidate may be declared as a frame-local `<video data-frame-video="approved" data-start="..." data-duration="..." data-track-index="...">`; `assemble-index.mjs` hoists it to the host root and translates its timing. Give every approved video explicit host geometry with numeric `data-frame-video-x`, `data-frame-video-y`, `data-frame-video-width`, and `data-frame-video-height`; optionally set `data-frame-video-fit="cover|contain|fill|none|scale-down"` (default `cover`). The assembler converts only those values to host CSS: frame-local classes and inline styles do not cross the hoist boundary. Do not use this declaration for audio, unapproved URLs, or videos without explicit timing and geometry. If no approved video is supplied, use an explicitly supplied static still/key art (`[video-still]` or another image candidate) as `<img>`; do not extract a frame, fabricate a URL, or silently embed an unapproved clip.
+
+When a frame showcases a captured website, use the supplied screenshot as the page. Do not rebuild the full site in HTML: even a close recreation can change the real layout, spacing, or branding. If the shot needs motion inside the page, overlay the supplied real assets at measured positions or rebuild only the moving component.
+
+Brand text comes from your frame's `scene` / narrative — never from `frame.md` (a style spec, not the product's content). Place the named assets, and never invent new ones.
+
+## Cross-frame handoffs
+
+If the packet includes `handoff_in:` or `handoff_out:`, treat those values as a hard boundary contract. Start or end the named element at the exact x/y position, scale, opacity, and motion direction/speed provided; a field the packet states as unchanged is still binding, not optional. Do not restyle or reinterpret that boundary state. The neighboring frame is being built by another worker and will use the matching values.
+# Frame packet: 05-join-today
+
+## Project inputs
+
+- Project: /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+- Design tokens: /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube/frame.md
+- RULES_DIR: /Users/macbook/.agents/skills/hyperframes-animation/rules
+
+## Assigned storyboard block
+
+## Frame 5 — Join Today
+
+- status: outline
+- src: compositions/frames/05-join-today.html
+- duration: 11.34s
+- transition_in: crossfade
+- scene: Candar logosu mağaza çağrısına dönüşür; URL ve risk açıklaması okunaklı biçimde tutulur.
+- voiceover: "Candar Network, iOS ve Android'de ücretsiz. İlk adımını bugün at. Candar puanları yalnızca uygulama içi ilerleme içindir."
+- poster: 7.4s
+- type: cta
+- blueprint: cta-morph-press (Reproduce)
+- asset_candidates: assets/candar-network-logo.png; assets/candar-logo-official.png
+- focal: assets/candar-logo-official.png
+- roles: assets/candar-network-logo.png = supporting; assets/candar-logo-official.png = cutout
+- sfx: click-soft, release-glow
+
+Tek eylemle kapanır: candarnetwork.com/download. Uygulama içi puanların finansal ürün olmadığını aynı karede açıkça belirtir.
+
+Scene 1 (0.0–2.4s): resmi Candar logosu merkezde büyük, sakin ve yüksek kontrastlı bir marka kilidi olarak tutulur; yalnız markada düşük genlikli rotation-only resting breath vardır.
+Scene 2 (2.4–5.0s): logo aynı ekran merkezinde “ÜCRETSİZ İNDİR · iOS + ANDROID” CTA pill'ine scale-swap transition ile yoğunlaşır; turuncu buton tek dolu öğedir.
+Scene 3 (5.0–6.4s): sade imleç sahne dışından power-tail yaklaşımıyla CTA'ya gelir; buton ve imleç lockstep press compression yapar, tek bir cursor-click ripple çıkar.
+Scene 4 (6.4–11.2s): tıklanan CTA yukarı taşınmadan hold eder; altında candarnetwork.com/download ve “Puanlar yalnızca uygulama içi ilerleme içindir.” açıklaması görünür, alt altyazı bandının üstünde güvenli kalır.
+---
+version: alpha
+name: Blue Professional — Frame (video / frame layer)
+description: >
+  Video-first companion to Blue Professional's design.md. The unit is the frame (1920×1080). Atoms
+  are identical and sacred — the warm cream canvas, a single saturated cobalt (#1e2bfa) as the only
+  accent, the three-step gray text ladder, Inter (display/numerals/chrome) + Inter (body),
+  soft cobalt-tinted cards (4% fill / 20% border / 10–14px radius) with NO shadows, pill chrome, and
+  the cobalt progress bar. Composition + frame scale rewritten. Motion out of scope.
+unit: the frame — 1920×1080 primary; 9:16 and 1:1 documented
+principle: atoms are sacred · composition is free · numbers come from the script
+
+colors:
+  bg: "#FFFFFF"
+  primary: "#F97316"
+  text: "#171717"
+  text-muted: "#5F6368"
+  text-light: "#9A9A9A"
+  accent-light: "rgba(249, 115, 22, 0.08)"
+  accent-medium: "rgba(249, 115, 22, 0.15)"
+  border: "rgba(249, 115, 22, 0.2)"
+  card-bg: "rgba(249, 115, 22, 0.04)"
+  positive: "#0F766E"
+  negative: "#dc2626"
+
+radii:
+  pill: "100px"
+  card-lg: "14px"
+  card-md: "12px"
+  card-sm: "10px"
+  bar: "6px"
+  circle: "50%"
+
+typography:
+  # — reading ramp (Inter body + Inter chrome) —
+  body:    { fontFamily: "Inter", cqw: 0.85, weight: 400, lineHeight: 1.6, color: "text-muted" }
+  h4-eyebrow:{ fontFamily: "Inter", cqw: 0.8, weight: 600, tracking: "0.08em", upper: true, color: "primary" }
+  tag:     { fontFamily: "Inter", px: 12, weight: 600, color: "primary" }
+  counter: { fontFamily: "Inter", px: 13, weight: 600, tracking: "0.05em", color: "text-muted" }
+  # — display / numerical ramp (Inter, near-black headings / cobalt numerals) —
+  h3:      { fontFamily: "Inter", cqw: 1.25, weight: 600, lineHeight: 1.3, tracking: "-0.02em", color: "text" }
+  stat-num:{ fontFamily: "Inter", cqw: 1.9, weight: 700, lineHeight: 1.0, color: "primary" }
+  blockquote:{ fontFamily: "Inter", cqw: 2.4, weight: 600, lineHeight: 1.35, color: "text" }
+  h2:      { fontFamily: "Inter", cqw: 2.6, weight: 600, lineHeight: 1.1, tracking: "-0.02em", color: "text" }
+  metric-value:{ fontFamily: "Inter", cqw: 3.0, weight: 700, lineHeight: 1.0, color: "primary" }
+  h1:      { fontFamily: "Inter", cqw: 4.2, weight: 700, lineHeight: 1.08, tracking: "-0.02em", color: "text" }
+  quote-mark:{ fontFamily: "Inter", cqw: 8.0, weight: 700, lineHeight: 0.5, color: "primary", opacity: 0.15 }
+
+spacing:
+  pad-x: "5cqw"
+  pad-y-top: "5cqw"
+  gap-cards: "1.4cqw"
+  accent-line: "60px × 4px"
+
+components:
+  card-tinted:
+    backgroundColor: "{colors.card-bg}"
+    border: "1.5px solid {colors.border}"
+    rounded: "{radii.card-lg}"
+    shadow: "none"
+    description: "Universal content card. Never solid-colored, never opaque-bordered, NO shadow."
+  metric-card:
+    backgroundColor: "{colors.card-bg}"
+    border: "1.5px solid {colors.border}"
+    rounded: "{radii.card-lg}"
+    typography: "{typography.metric-value} ({colors.primary}) + {typography.metric-label} + {typography.metric-desc}"
+    description: "+ optional inline ↑/↓ change chip ({colors.positive}/{colors.negative} text, no fill)."
+  tag-pill:
+    backgroundColor: "{colors.accent-light}"
+    textColor: "{colors.primary}"
+    rounded: "{radii.pill}"
+    typography: "{typography.tag}"
+    description: "Top-right of the slide-header."
+  cta-button:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.bg}"
+    rounded: "{radii.pill}"
+    typography: "Inter 600"
+    shadow: "soft cobalt on hover only — the system's only shadow"
+    description: "The one solid element."
+  accent-line:
+    backgroundColor: "{colors.primary}"
+    size: "60×4, 2px radius"
+    description: "Above cover titles / eyebrow separators."
+  bar-track:
+    backgroundColor: "{colors.accent-light}"
+    fill: "{colors.primary} (display:block so width resolves)"
+    rounded: "{radii.bar}"
+    description: "28px track; fill carries the value."
+  step-circle:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.bg}"
+    rounded: "50%"
+    size: "56px"
+    description: "Sequential steps fade opacity 1.0→0.85→0.7→0.55."
+  split-highlight:
+    backgroundColor: "{colors.accent-light}"
+    borderLeft: "4px solid {colors.primary}"
+    rounded: "{radii.card-md}"
+    description: "Inline pull-quote callout."
+  slide-header:
+    typography: "{typography.h4-eyebrow} (cobalt) left, tag-pill right; {typography.h2} below"
+    description: "Top band of every content frame."
+  atmosphere:
+    elements: "clipped diagonal cobalt-tint panel, 3×3 cobalt dot grid, concentric closing rings"
+    description: "Cover/closing only. Never on content frames."
+  progress-bar:
+    backgroundColor: "{colors.primary}"
+    size: "3px tall, bottom edge, width grows with index"
+    description: "Persistent progress strip."
+---
+
+# Blue Professional — Frame (video / frame layer)
+
+## Brand adaptation (READ FIRST — the frontmatter is the source of truth)
+
+This is the **blue-professional** preset remixed onto the captured brand. The YAML frontmatter above (colors · typography · components) is **normative and already correct — use it verbatim.** The prose below is the ORIGINAL preset's intent; read it THROUGH the frontmatter:
+
+- **Fonts** — already set to **Inter** (display) / **Inter** (body); ignore any preset font name lingering in prose.
+- **Weights** — the brand font ships `{400, 600, 700, 800}` only; every weight is clamped to these — ignore higher preset weights (e.g. 600/700) in prose.
+- **Colors** — use the frontmatter hex; preset color NAMES in prose (e.g. "cobalt", "cream") mean the remapped brand values.
+
+
+## Overview
+
+Blue Professional at frame scale is a **consulting-grade system: restraint with one strong
+commitment.** A warm cream canvas and a single saturated cobalt that carries every accent —
+eyebrow, metric, CTA, chart fill, progress bar. No secondary brand color, no pastels, just cream,
+cobalt, and a tight ladder of grays. The register is investment-research / McKinsey briefing:
+measured, data-dense without crowding, executive-readable at distance.
+
+The voice is two faces in fixed roles: **Inter** (display, every numeral, all chrome —
+eyebrows uppercase 0.08em) and **Inter** (body, muted gray, line 1.6). Headlines are near-black;
+cobalt is reserved for accent moments. Depth is **soft and tinted** — 4% cobalt card fills with 20%
+cobalt borders and 10–14px radii — never shadowed. The lack of harsh shadows is the premium signal.
+
+**Key characteristics at frame scale:**
+
+- **Warm cream ground** on every frame; **single cobalt** as the only accent.
+- **Inter** (display/numerals/chrome) + **Inter** (body) — near-black headlines, cobalt numerals.
+- **Tinted cards** — cobalt 4% fill, cobalt 20% 1.5px border, 10–14px radius, **no shadow**.
+- **Pill chrome** (100px) — tag pills + the one solid cobalt CTA; cobalt **progress bar**.
+- **Soft rounded corners everywhere** (no square corners save the progress bar).
+- **Atmosphere** (diagonal panel, dot grid, concentric rings) on cover/closing only.
+
+## The Frame
+
+### Frame Craft Bar
+
+Three eyeball tests gate every frame before any structural check:
+
+- **Squint** — one **near-black headline or cobalt numeral** dominates at 3–6× its neighbor.
+- **Silence** — content frames read **balanced, not crowded**; the **dashboard is the one dense exception**.
+- **Restraint** — a **single cobalt accent** carries everything; headlines stay near-black (never cobalt); no shadows (tinted cards do the lift); positive/negative inline-text only.
+- **Reference** — aim at an **investment-research / McKinsey quarterly briefing**; failure looks like a **heavy-outlined, multi-color dashboard**.
+
+- **Primary:** 1920×1080 (16:9). Display authored in **`cqw`** (`px ÷ 1920 × 100 = cqw`).
+- **Vertical:** 1080×1920 (9:16). **Square:** 1080×1080 (1:1).
+- **Safe area:** `pad-x` 5cqw; bottom reserves room for the counter + progress bar.
+
+**The container law (load-bearing).** Every frame ground sets `container-type: size`; ALL
+frame-relative units are `cqw`/`cqh` against it — never `vw`. Card radii stay px (10–14px); the
+pill radius stays 100px; borders stay 1–1.5px.
+
+## Colors
+
+Tokens identical to the source. `{colors.bg}` cream is the universal ground; `{colors.primary}`
+cobalt is the **only** accent — every eyebrow, numeral, CTA, chart fill, progress bar, and the 4px
+highlight left-rule. Headlines are `{colors.text}` near-black (never cobalt); body is
+`{colors.text-muted}`; tertiary is `{colors.text-light}`. Cards fill `{colors.card-bg}` (4%) with
+`{colors.border}` (20%) borders. `{colors.positive}`/`{colors.negative}` appear **only inline** on
+directional change chips — never as fills. **No second accent color.**
+
+## Typography
+
+Two ramps. The **reading ramp** (Inter body 0.85cqw muted; Inter eyebrow uppercase 0.08em
+cobalt) carries copy + chrome; the **display/numerical ramp** (Inter `h3` 1.25cqw → `h1`
+4.2cqw near-black; numerals `stat-num`/`metric-value` in cobalt) carries headings and figures.
+
+- **Legibility floor:** any load-bearing line ≥ **1.4cqw**; px chrome (tag/counter) is colophon only.
+- **Fit-to-measure:** size the headline to its length. Cap the block at **≤ 78cqw**; ≤3 words → `h1`; 4–6 → `h2`; 7+ → `h3`. Cobalt numerals scale `metric-value`→`stat-num` by card size.
+- **Headlines near-black, −0.02em**; **eyebrows cobalt, uppercase, 0.08em**; **numerals cobalt 600–700**; **body Inter 400 muted, line 1.6**. No italic, no uppercase body, no cobalt headline.
+
+## Depth & Surface
+
+Soft and tinted — never offset. Depth from:
+
+- **Tinted cards** — 4% cobalt fill + 20% cobalt 1.5px border + 10–14px radius reads as lifted without offset.
+- **Border-left accent** — the 4px cobalt rule on split-highlight blocks pulls a callout forward.
+- **Rounded corners** — the 10–14px radius is part of the softness; square corners break it.
+
+**Ceiling:** zero box-shadow on content (the only shadow is a soft cobalt CTA _hover_); no opaque cobalt borders; no harsh outlines.
+
+## Shapes
+
+- **100px** — tag pills, CTA, nav buttons (pill chrome).
+- **14/12/10px** — cards by size (large metric / standard stat / detail + mini).
+- **6px** — bar tracks + fills. **50%** — step circles, nav circles, dots, closing rings.
+- **0** — only the progress bar. No square-cornered content.
+
+## Components
+
+- **card-tinted / metric-card** — the universal soft-tint content cards (no shadow).
+- **tag-pill / cta-button / accent-line** — the cobalt pill chrome + the one solid CTA + the 60×4 rule.
+- **bar-track / step-circle / split-highlight** — cobalt data + sequence + callout patterns.
+- **slide-header** (eyebrow + tag pill) — the structural rhythm; **atmosphere** (diagonal/dots/rings) on cover/closing only; **progress-bar** on every frame.
+
+## Frame Treatments
+
+> Recipe: ground · container · composes · focal · chrome · accent · silence · Fixed/Free · density.
+> Atmosphere only on cover/closing; content frames carry the slide-header rhythm.
+
+### 1 · Cover (identity · move: diagonal accent · left)
+
+**Ground** cream + the clipped diagonal cobalt-tint panel (right ~36%) + a 3×3 cobalt dot grid.
+**Composes** accent-line, meta, h1, body sub. **Focal** a 2-line Inter `h1` near-black, left,
+under a cobalt accent-line + meta. **Chrome** counter + progress bar. **Accent** the cobalt line +
+diagonal panel. **Silence** the diagonal panel holds the right third. **Fixed** near-black h1, cobalt
+accents, atmosphere here only. **Free** title, meta. **Density** low.
+
+### 2 · Dashboard (data · move: 3-up metric grid · the dense frame)
+
+**Ground** cream, `pad-x`. **Composes** slide-header (eyebrow + tag-pill), h2, 3× metric/tinted card.
+**Focal** a row of tinted cards — cobalt `metric-value` + Inter label + muted desc + optional
+green/red change chip. **Chrome** eyebrow left, tag-pill right; progress bar. **Accent** the cobalt
+numerals. **Silence** tight — the density exception. **Fixed** 4% tint cards, 20% borders, no shadow,
+cobalt numerals. **Free** figures (from script), labels. **Density** dense-exception.
+
+### 3 · Bar Ranking (data · move: cobalt bars · left)
+
+**Ground** cream, `pad-x`. **Composes** eyebrow, h2, bar-track rows. **Focal** 3–5 labeled
+cobalt-fill bars on cobalt-8% tracks with cobalt percentages. **Chrome** eyebrow; progress bar.
+**Accent** the cobalt fills + figures. **Silence** moderate. **Fixed** 6px tracks, cobalt fills.
+**Free** rows, values (from script). **Density** standard.
+
+### 4 · Pull Quote (quote · move: concentric rings · centered)
+
+**Ground** cream, centered, with faint concentric closing-rings behind. **Composes** quote-mark,
+blockquote, cite. **Focal** a Inter `blockquote` near-black under a 15%-opacity cobalt
+quote-mark; an uppercase cobalt-muted cite beneath. **Accent** the faint rings + quote-mark. **Silence**
+~55%. **Fixed** near-black quote, soft rings. **Free** quote, cite. **Density** low.
+
+### 5 · Split + Highlight (content · move: asymmetric split · left)
+
+**Ground** cream, two columns. **Composes** eyebrow, h2, body, split-highlight block. **Focal** an
+Inter body column beside a cobalt-8% highlight block (4px cobalt left rule) carrying an inline pull
+quote. **Accent** the highlight's left rule. **Silence** generous gutter. **Fixed** tinted highlight,
+4px cobalt rule. **Free** body, callout. **Density** standard.
+
+### 6 · Closing / CTA (closer · move: centered rings + CTA)
+
+**Ground** cream + concentric closing-rings. **Composes** accent-line, h1, body, cta-button. **Focal**
+a Inter `h1` near-black, centered, with the one solid cobalt `cta-button` pill below. **Accent**
+the CTA + rings. **Silence** ~60%. **Fixed** one CTA, near-black h1, soft rings. **Free** sign-off, CTA
+label. **Density** low.
+
+## Composition Rules
+
+### Do
+
+- Start every frame on **warm cream**; let **cobalt carry every accent** (eyebrow, numeral, CTA, bar, progress).
+- Set headlines **near-black, −0.02em**; eyebrows **cobalt uppercase 0.08em**; numerals **cobalt 600–700**.
+- Use **tinted cards** (4% fill, 20% border, 10–14px radius, no shadow); body Inter 400 muted, line 1.6.
+- Keep all chrome **pill-shaped (100px)**; one solid cobalt CTA per closing frame.
+- Reserve **atmosphere** (diagonal panel, dots, rings) for cover/closing; content frames keep the slide-header rhythm.
+- Lean left on cover/dashboard/split, centered on quote/closer.
+
+### Don't
+
+- No second accent color; no cobalt headlines.
+- No drop shadows on content (only the soft cobalt CTA hover); no opaque cobalt borders.
+- No square corners (save the progress bar); no font substitutes; no uppercase body.
+- Don't use the green/red change chips as general accents — directional comparisons only.
+- Don't fill space with heavier borders — add substance; don't blow a headline edge-to-edge.
+
+## Aspect-Ratio Behavior
+
+| Treatment         | 16:9                       | 9:16                           | 1:1                      |
+| ----------------- | -------------------------- | ------------------------------ | ------------------------ |
+| Cover             | title left, diagonal right | title top, diagonal band below | title upper, dots corner |
+| Dashboard         | 3 cards across             | 3 stacked                      | 2×2                      |
+| Bar Ranking       | 3–5 bars                   | 3–5 bars (tighter)             | 3 bars                   |
+| Pull Quote        | centered, rings behind     | centered, taller               | centered                 |
+| Split + Highlight | side-by-side               | stacked                        | stacked                  |
+| Closing / CTA     | centered + CTA             | centered + CTA                 | centered + CTA           |
+
+`pad-x` holds on the short edge; re-step display above the 1.4cqw floor. The diagonal cover panel
+becomes a top/bottom band on 9:16. Numerals stay Latin Arabic digits in CJK builds.
+
+## Approved Entities
+
+No real customers, logos, or vendors are defined in the source — render any such mark as a
+placeholder. Figures, metrics, and quotes are content; the system supplies cream + cobalt + grays.
+
+## Numerals & Claims (hard rule)
+
+Never invent figures, financials, percentages, or dates at frame scale. Render slots as `— figure —`,
+`{metric}`, `+NN%`, `↑ —`. Metric cards, bar values, and stat cells especially carry placeholders
+until the script supplies them. Directional chips require a real comparison from the script.
+
+## Pre-Render Self-Audit
+
+- **Squint** — one near-black headline or cobalt numeral dominates per frame.
+- **Silence** — content frames balanced, not crowded; only the dashboard runs dense.
+- **Single accent** — cobalt only; headlines near-black; positive/negative inline only.
+- **Type** — Inter headings −0.02em near-black, cobalt eyebrows 0.08em + numerals; Inter body muted line 1.6; ≥1.4cqw floor.
+- **Depth** — tinted cards (no shadow), soft rounded corners, 20% cobalt borders; no square content corners.
+- **Anchor** — left on cover/dashboard/split, centered on quote/closer; atmosphere on cover/closing only.
+- **Fabrication** — every numeral traces to the script, else placeholder.
+
+## Known Gaps
+
+- **Motion intentionally out of scope.** frame.md specifies composition only; the source's 500ms translateX transitions + bar-fill animations are deck mechanics.
+- **Inter + Inter via Google Fonts.** CJK pairing (Noto Sans SC 700 display / Noto Serif SC 400 body) carries over; the eyebrow's uppercase+tracking signal weakens in CJK — pair it with the accent-line.
+- **9:16 / 1:1 are guidance**; verify the floor and that the diagonal panel reflows to a band.
+- Diagonal panel (clip-path), dot grid, concentric rings, and bars are CSS-only; no external imagery is required.
+
+
+## Font loading (auto-generated)
+
+
+codex
+İlk okuma çıktı sınırına takıldı; dosyaların tamamını eksiksiz almak için aynı üç belgeyi daha küçük aralıklarda yeniden okuyorum. Henüz hiçbir dosyada değişiklik yapmadım.
+exec
+/bin/zsh -lc 'wc -l .hyperframes/frame-packets/_role.md .hyperframes/frame-packets/05-join-today.md frame.md' in /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+ succeeded in 0ms:
+     104 .hyperframes/frame-packets/_role.md
+      32 .hyperframes/frame-packets/05-join-today.md
+     327 frame.md
+     463 total
+
+exec
+/bin/zsh -lc "sed -n '1,140p' .hyperframes/frame-packets/_role.md && sed -n '1,80p' .hyperframes/frame-packets/05-join-today.md" in /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+ succeeded in 0ms:
+# Frame worker — core contract (shared by the narrative video workflows)
+
+The workflow-agnostic half of every frame worker's role. Each workflow's packet builder (`scripts/frame-packets.mjs`) prepends this file to that workflow's `sub-agents/frame-worker.md` (the **delta**) to form `.hyperframes/frame-packets/_role.md` — a worker reads the two as one role. Editing guidance: a rule that applies to any frame worker belongs here, once; a workflow-specific rule belongs in that workflow's delta. (`music-to-video` has its own composition model and does not use this contract.)
+
+You build the frame composition file(s) assigned in your dispatch and nothing else — sibling workers build the other frames. The structural law behind the constraints and self-check below (sub-composition shape, timeline registration, clip attrs, transform-only motion, determinism, root sizing) lives in `hyperframes-core` (`references/sub-compositions.md`, `references/determinism-rules.md`, `references/data-attributes.md`); everything you must enforce is restated below — open one of those only when a rule here is unclear. This role + your packet also **supersede the skill catalog's own imperatives**: do not open `hyperframes/SKILL.md` or `hyperframes-core/SKILL.md` ("read this first" is for fresh requests — that routing already happened upstream, and its output is this dispatch).
+
+**INPUT** — your dispatch provides this role, your frame packet(s), and:
+
+- `PROJECT_DIR` — the project root; all paths are relative to it.
+- `frame_id` — e.g. `03-feature`. Use it **verbatim** as the composition id, the `window.__timelines` key, and the file name (`compositions/frames/03-feature.html`) — that path **is** the frame's `src` in `STORYBOARD.md` (the orchestrator derived `frame_id` from it), so writing there is how the assembler finds your frame.
+- Your **packet** (`.hyperframes/frame-packets/<frame_id>.md`) — everything selected upstream for this frame. You never open the shared `STORYBOARD.md` (see below); the packet carries your exact **`## Frame N` block**:
+  - `scene` — a one-line contact-sheet caption. **Design intent, never visible DOM text.**
+  - `voiceover` — the narration line. **Timing reference only** (sync entrances to the voice); **never** rendered as text — captions are a separate root track (see constraints).
+  - `duration` — your render length in seconds. **Fixed upstream; never change it or tween to fill a different length.**
+  - `transition_in` — informational. The injector stamps it at the root; **you do not author transitions.**
+  - the **time-coded shot sequence** — your build spec. A sequence of Scene lines (`Scene 1 (0.0–Xs): … → Scene 2: … → Scene N`), each stating what's on screen, what enters / moves / reveals, and the layout inline. Build it faithfully, beat for beat — every Scene window is a phase you must realize, and each reveal lands on its `voiceover` cue (this is what keeps the shot from freezing).
+  - `blueprint:` — an id (or the literal `compose`): the shot template this frame instantiates — the overall shape + its signature move. Its body is inlined in your packet (`## Selected blueprint`); `compose` means there's no template — sequence the shot from the Scene lines directly.
+  - `focal:` / `roles:` — which element is the hero and what each element is. **Semantics are workflow-specific — see the delta.**
+  - `sfx:` — the orchestrator's; you mount no audio.
+- The packet also inlines the **rule recipe** (`## Selected motion rule: <id>`) for each named motion the Scene lines cite — the mechanics for that motion, which you reproduce, **never name-guess** (a guess loses the signature move). If a cited motion's recipe is missing from your packet, read `RULES_DIR/<id>.md` (`RULES_DIR` is in the packet header); a few recipes link an optional runnable demo in the shared `../hyperframes-animation/examples/<id>.html` — open it only when a recipe is unclear.
+- `frame.md` (project root) — the **design-truth**: palette, type ramp, components, composition rules. The LOOK. Pull every visual token from here. This is the one file you read outside your packet.
+- `../references/cut-catalog.md` (the workflow's own copy) — the **cut catalog** (zoom-through / inverse / cut-the-curve / waterfall). When a Scene seam is a within-scene swap, a scene-to-scene cut, or a text-to-text line change, build it INSIDE your composition per this catalog (Z-scale + blur + opacity, or per-word x-staggers). You never author the between-frame transition — story's `transition_in` + the injector own that.
+- Canvas `<width>×<height>` and `Captions: <enabled | disabled>` (+ the keep-out cutoff when enabled).
+
+**Retry** — if your context carries `lint` / `check` feedback from a prior pass, read it first and re-author so none of those findings recur; treat each as a hard constraint.
+
+**OUTPUT** — `compositions/frames/<frame_id>.html` for each assigned packet: exactly one bare `<template>…</template>` fragment. The first non-whitespace bytes are `<template`; the last are `</template>`. Never emit `<!doctype>`, `<html>`, `<head>`, `<body>`, or any markup outside that single template. Writing your assigned file(s) (past the self-check below) is your **terminal action** — you do not edit `STORYBOARD.md`, mint audio, assemble the index, run the CLI, or report back. The orchestrator picks up the file and marks the frame's `status`.
+
+## When a confirmed sketch exists
+
+In collaborative runs the orchestrator wireframes the board first, so your target file may already exist as the frame's **user-confirmed wireframe** — your dispatch says whether it does (a file found on a retry is your own prior output, not a sketch). Read it first and **keep its composition**: the placement, hierarchy, and copy were approved — don't move or drop them. Everything else is yours to finish: the full `frame.md` treatment (the sketch is deliberately unstyled), the finished content where the sketch used stand-in blocks (what that content is — real assets, invented visuals, a code block — is the delta's call), and the motion — map each Scene onto a timeline phase, reveal each piece on its `voiceover` cue with `fromTo` entrances, adding DOM only where a phase needs it. The frame's landed state must still read as the approved wireframe, fully dressed.
+
+## You do NOT decide
+
+These belong to other steps — touching them collides with a sibling or breaks an upstream contract:
+
+- **What is SAID** — narration is locked in `SCRIPT.md` / the `voiceover` line. You only show; you never write or restate narration text.
+- **Duration** — fixed from real voice timing. Build your shot to land within it; don't stretch or trim it.
+- **Transitions between frames** — the injector stamps them onto the root timeline. You author the shot itself (the VO-paced reveal sequence) but **never an exit** — the root transition IS the exit; a settle / fade-out only if you are the final frame.
+- **Audio** (narration / BGM / SFX) — assembled at the root by the orchestrator. **No `<audio>` element in your composition.**
+- **Design tokens** — palette / fonts / components come from `frame.md`. Don't invent them, and **never lift a word, label, or wordmark out of `frame.md` as your copy** — it is a style spec, not content. Visible text comes from your frame's `scene` / narrative.
+- **Which motions / assets exist** — named upstream in your block (the shot sequence's motion verbs + `blueprint:` + the delta's own vocabularies). Implement them; don't fetch or invent new ones (you have no asset-fetch tool — never fabricate an asset URL or reference a file the dispatch didn't name).
+- **The shared `STORYBOARD.md`** — your packet carries your block; never open or write the file itself. N siblings edit nothing there concurrently; the orchestrator owns its state.
+
+## Frame constraints
+
+Shared law for every narrative frame, each load-bearing; your workflow's delta adds its own on top:
+
+- **Caption keep-out — all content in the top ~83%.** A karaoke caption pill owns the bottom ~17% of the canvas. Keep every element (headline, cards, code panel, diagram, stats, brand mark) above `y ≈ 0.83 × height` — compute the pixel cutoff from your canvas (e.g. `≤ 900` on a 1080-tall frame, `≤ 1600` on a 1920-tall portrait). Holds **even when `Captions: disabled`** (bottom-edge consistency across frames).
+- **Fill the content area — especially portrait.** Compose the whole top-83% region; don't float one small cluster mid-frame. Anchor the hero high (~0.2–0.35 × height), flow supporting elements down with rhythm, scale the hero toward full-bleed. (Landscape's region is short, so vertical centering near 0.42 × height is fine.)
+- **Visible text is short motion-graphics copy** — a hero word / stat / one-word emphasis (`"$83K"`, `"2× faster"`, `"INSTANT"`), never a sentence from the narration. The root caption track already shows the spoken words synced to voice; repeating them double-prints on screen. (The delta may name exceptions — e.g. real code inside a code block is content, not narration.)
+- **Build the whole shot — reveal across the full `duration`, never front-load.** Dumping the whole canvas in the first ~25% then holding it is exactly what reads as a PowerPoint slide. Instead reveal each piece — a line, a card, a node, a stat — **as the `voiceover` reaches it** (on a silent frame, on the beat), sequencing reveals across the shot and especially the back ~50%, with the macro camera move running underneath. **Only EXITS are banned** — a non-final frame unmounts mid-frame, so an exit tween truncates and reads as a glitch (the root transition IS the exit); mid-shot reveals are free and seek-safe. The lone exception is a note marked as a deliberate hold / stillness frame: there, an entrance + a quiet settle is right (a held read beats bad motion).
+- **Implement the shot sequence faithfully — every Scene is a timeline phase.** The Scene lines ARE the build: map each Scene onto a phase of the one timeline, each piece revealing as the `voiceover` reaches it. For each **named motion** in a Scene, reproduce the mechanics of its inlined rule recipe — **never name-guess**. The inlined **`blueprint:` template** gives the overall shape; keep its **signature move** recognizable, then instantiate it with this frame's content / assets / timing. `compose` → no template; sequence the shot straight from the Scene lines. Whichever, never front-load the whole sequence at `t=0` — pace the reveals to the voiceover.
+
+## Workflow
+
+1. **Read** — your packet top to bottom (your frame block, the inlined blueprint, the inlined rule recipes), then `frame.md` (the look). Internalize the self-check codes below before you write — most lethal is **template transport**: every `<style>` + `<script>` (including the gsap load) must live INSIDE `<template>`, because the runtime only clones template contents and the assembled-project `lint` / `check` gate can miss an unwired blank sub-composition.
+2. **Design** — turn the time-coded shot sequence into a timeline using `frame.md`'s components and type ramp: each Scene window becomes a phase revealed on its `voiceover` cue, each named motion built from the recipe in your packet, the blueprint's signature move kept recognizable. Find a visual idea that reinforces the beat, not a literal restyle of the words.
+3. **Author** — write the full sub-composition to `compositions/frames/<frame_id>.html` (rewrite to iterate; last write wins). `<template>`-wrapped root carrying `data-composition-id="<frame_id>"` and styled via `#root` (not a class on that element — see the self-check below), exactly one `gsap.timeline({ paused: true })` registered at `window.__timelines["<frame_id>"]`, built synchronously.
+   Prefix authored ids and globally reusable class names with `<frame_id>-` so sibling frames assembled from parallel workers cannot collide. Contract selectors such as `#root` and `.clip` are the only exceptions.
+4. **Self-check, then finish** — re-read your file against the checklist below and fix in place; then continue to your next assigned packet, if any. You do **not** run the CLI.
+
+## Self-check before finishing (you do NOT run the CLI)
+
+You **can't** meaningfully run `hyperframes lint` / `check` here: they operate on the **assembled project** (the `index.html` graph / bundle), and your frame isn't wired in yet — so they report on _other_ files, not yours (a false green). The **orchestrator** runs them after assembly (the correct unit), and **re-dispatches you with the finding** if your frame fails (see **Retry** above). So get it right on write: re-read your file against this checklist before finishing — the codes in parens are `hyperframes lint`'s and what the orchestrator may cite back:
+
+- `missing_template_wrapper` / `missing_composition_id` — the entire file is exactly one bare `<template>…</template>` fragment (no DOCTYPE / full document); root carries `data-composition-id="<frame_id>"`.
+- **Template transport** — every `<style>` and `<script>` block, including the GSAP load, lives inside `<template>`.
+- `subcomposition_root_styled_by_class` — **style the frame root via `#root`, never a class on the `data-composition-id` element**: at render a class on the root gets scoped to a descendant selector that can't match it, so the **whole scene renders unstyled** (Studio preview still looks right — trust this rule, not the preview). Descendants use plain selectors.
+- **Full-bleed background on a `class="clip"` layer, never `#root`** — author a frame's full-bleed ground (color field / gradient / grid) as a dedicated full-duration `class="clip"` background element on the lowest content track, **not** as a `background` on the `#root` / `data-composition-id` element. At assembly the frame root is clip-gated to its scene window, so a background painted on the root is not a dependable full-frame ground — dark content can end up over the host `body` (black) and render invisible. The video's base ground is painted separately by the assembler from `frame.md`'s `canvas` color onto the index `#root`; your full-bleed clip rides on top of it.
+- `clip_missing_data_attrs` — every `class="clip"` element has `data-start` / `data-duration` / `data-track-index`.
+- `timeline_not_paused` / `timeline_not_registered` — one paused timeline, registered at `window.__timelines["<frame_id>"]`.
+- `css_transition_used` + repeat / yoyo / non-deterministic logic — none present (the renderer seeks frame-by-frame).
+- `gsap_css_transform_conflict` — never put a CSS `transform` (e.g. `translateY(-50%)` centering) on an element you then GSAP-animate a transform prop on (`x` / `y` / `scale` / `rotation`): GSAP overwrites the whole `transform` and silently drops the CSS centering (the element jumps). Center with `margin` / `inset` (or `top`/`left` + offset), fold the offset into the tween via `xPercent` / `yPercent`, or use `fromTo` (the rule exempts it).
+- **Hero visibility** — the main subject is visible by `t <= 0.5s`; entrance tweens use `fromTo` instead of CSS-hidden starting states.
+- `exit_animation_on_non_final_scene` — no exit tween unless you are the final frame.
+- **No front-loading (not a slide)** — the shot's pieces reveal on their `voiceover` cues across the duration, not all fired at `t=0`; a non-still frame keeps content arriving rather than holding a full canvas from ~25%.
+- **Shot-sequence fidelity** — every Scene in the time-coded sequence is realized as a phase, the blueprint's signature move (unless `compose`) is present and recognizable, and the shot reveals to the voiceover (never front-loaded at `t=0`).
+- `font_family_without_font_face` — every font you name has a matching `@font-face` **inside this file**. **Only use fonts that ship as files** with the project: the families declared in `frame.md` (their `.woff2` live in `assets/fonts/` or `capture/assets/fonts/` — point the `@font-face` `src` at the real file you find there). **Never name a font that has no file**, including system CJK / Japanese / Devanagari families (`Hiragino Sans`, `Yu Gothic`, `Noto Sans CJK`, `Noto Sans Devanagari`, …): the render machine is a clean headless Chrome with none of them installed, so the text silently falls back to a generic font and the typography is wrong in the MP4. For non-Latin or multilingual visible text, either use a shipped font that covers the script, or romanize / transliterate it (e.g. `日本語` → `Japanese`); if neither is possible it is out of scope for this frame — do not invent a font name.
+- **Keep-out + no-narration-text** (eyeball, no code) — nothing sits below the 83% cutoff; no narration sentence is rendered as visible text.
+
+---
+
+# Frame worker — product-launch delta
+
+> The shared law is the core contract above (the packet builder prepends `../hyperframes-core/references/frame-worker-core.md` to this file as `_role.md`) — read the two as one role. This file carries only what's specific to a product-launch frame; you run N-up, **one frame each** — your dispatch carries exactly one packet. Tempted to add a generic GSAP / timeline rule here? Wrong home — it belongs in the core contract or `hyperframes-core`.
+
+## Your `focal:` / `roles:` — real captured media
+
+- `focal:` — which candidate is the hero.
+- `roles:` — each candidate's role: `cutout` foreground / `background` full-bleed / supporting — plus the real media available (each `public/<basename> — description`; a **`[video]`** tag marks a `.mp4` motion source that cannot be mounted by this sub-composition worker).
+- **Asset paths are project-root relative everywhere.** This includes HTML attributes and CSS `url(...)` values such as `@font-face src`: use `assets/...` (or the supplied `capture/assets/...` path), never `../` or `../../`. Shared fonts are staged before dispatch so every parallel frame resolves the same local files; never fall back to a network `@import`.
+
+## Placing candidates (product-launch constraint)
+
+**Place each candidate by its `roles`** (the `focal` is the hero): a `cutout` is a foreground subject — respect the 83% keep-out, lay text around it, not over its face; a `background` is full-bleed and dimmed ~30–50% so foreground content stays legible. Frame files are sub-compositions. Audio remains orchestrator-owned: never author `<audio>` in a frame. An approved `[video]` candidate may be declared as a frame-local `<video data-frame-video="approved" data-start="..." data-duration="..." data-track-index="...">`; `assemble-index.mjs` hoists it to the host root and translates its timing. Give every approved video explicit host geometry with numeric `data-frame-video-x`, `data-frame-video-y`, `data-frame-video-width`, and `data-frame-video-height`; optionally set `data-frame-video-fit="cover|contain|fill|none|scale-down"` (default `cover`). The assembler converts only those values to host CSS: frame-local classes and inline styles do not cross the hoist boundary. Do not use this declaration for audio, unapproved URLs, or videos without explicit timing and geometry. If no approved video is supplied, use an explicitly supplied static still/key art (`[video-still]` or another image candidate) as `<img>`; do not extract a frame, fabricate a URL, or silently embed an unapproved clip.
+
+When a frame showcases a captured website, use the supplied screenshot as the page. Do not rebuild the full site in HTML: even a close recreation can change the real layout, spacing, or branding. If the shot needs motion inside the page, overlay the supplied real assets at measured positions or rebuild only the moving component.
+
+Brand text comes from your frame's `scene` / narrative — never from `frame.md` (a style spec, not the product's content). Place the named assets, and never invent new ones.
+
+## Cross-frame handoffs
+
+If the packet includes `handoff_in:` or `handoff_out:`, treat those values as a hard boundary contract. Start or end the named element at the exact x/y position, scale, opacity, and motion direction/speed provided; a field the packet states as unchanged is still binding, not optional. Do not restyle or reinterpret that boundary state. The neighboring frame is being built by another worker and will use the matching values.
+# Frame packet: 05-join-today
+
+## Project inputs
+
+- Project: /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+- Design tokens: /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube/frame.md
+- RULES_DIR: /Users/macbook/.agents/skills/hyperframes-animation/rules
+
+## Assigned storyboard block
+
+## Frame 5 — Join Today
+
+- status: outline
+- src: compositions/frames/05-join-today.html
+- duration: 11.34s
+- transition_in: crossfade
+- scene: Candar logosu mağaza çağrısına dönüşür; URL ve risk açıklaması okunaklı biçimde tutulur.
+- voiceover: "Candar Network, iOS ve Android'de ücretsiz. İlk adımını bugün at. Candar puanları yalnızca uygulama içi ilerleme içindir."
+- poster: 7.4s
+- type: cta
+- blueprint: cta-morph-press (Reproduce)
+- asset_candidates: assets/candar-network-logo.png; assets/candar-logo-official.png
+- focal: assets/candar-logo-official.png
+- roles: assets/candar-network-logo.png = supporting; assets/candar-logo-official.png = cutout
+- sfx: click-soft, release-glow
+
+Tek eylemle kapanır: candarnetwork.com/download. Uygulama içi puanların finansal ürün olmadığını aynı karede açıkça belirtir.
+
+Scene 1 (0.0–2.4s): resmi Candar logosu merkezde büyük, sakin ve yüksek kontrastlı bir marka kilidi olarak tutulur; yalnız markada düşük genlikli rotation-only resting breath vardır.
+Scene 2 (2.4–5.0s): logo aynı ekran merkezinde “ÜCRETSİZ İNDİR · iOS + ANDROID” CTA pill'ine scale-swap transition ile yoğunlaşır; turuncu buton tek dolu öğedir.
+Scene 3 (5.0–6.4s): sade imleç sahne dışından power-tail yaklaşımıyla CTA'ya gelir; buton ve imleç lockstep press compression yapar, tek bir cursor-click ripple çıkar.
+Scene 4 (6.4–11.2s): tıklanan CTA yukarı taşınmadan hold eder; altında candarnetwork.com/download ve “Puanlar yalnızca uygulama içi ilerleme içindir.” açıklaması görünür, alt altyazı bandının üstünde güvenli kalır.
+
+exec
+/bin/zsh -lc "sed -n '1,170p' frame.md" in /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+ succeeded in 0ms:
+---
+version: alpha
+name: Blue Professional — Frame (video / frame layer)
+description: >
+  Video-first companion to Blue Professional's design.md. The unit is the frame (1920×1080). Atoms
+  are identical and sacred — the warm cream canvas, a single saturated cobalt (#1e2bfa) as the only
+  accent, the three-step gray text ladder, Inter (display/numerals/chrome) + Inter (body),
+  soft cobalt-tinted cards (4% fill / 20% border / 10–14px radius) with NO shadows, pill chrome, and
+  the cobalt progress bar. Composition + frame scale rewritten. Motion out of scope.
+unit: the frame — 1920×1080 primary; 9:16 and 1:1 documented
+principle: atoms are sacred · composition is free · numbers come from the script
+
+colors:
+  bg: "#FFFFFF"
+  primary: "#F97316"
+  text: "#171717"
+  text-muted: "#5F6368"
+  text-light: "#9A9A9A"
+  accent-light: "rgba(249, 115, 22, 0.08)"
+  accent-medium: "rgba(249, 115, 22, 0.15)"
+  border: "rgba(249, 115, 22, 0.2)"
+  card-bg: "rgba(249, 115, 22, 0.04)"
+  positive: "#0F766E"
+  negative: "#dc2626"
+
+radii:
+  pill: "100px"
+  card-lg: "14px"
+  card-md: "12px"
+  card-sm: "10px"
+  bar: "6px"
+  circle: "50%"
+
+typography:
+  # — reading ramp (Inter body + Inter chrome) —
+  body:    { fontFamily: "Inter", cqw: 0.85, weight: 400, lineHeight: 1.6, color: "text-muted" }
+  h4-eyebrow:{ fontFamily: "Inter", cqw: 0.8, weight: 600, tracking: "0.08em", upper: true, color: "primary" }
+  tag:     { fontFamily: "Inter", px: 12, weight: 600, color: "primary" }
+  counter: { fontFamily: "Inter", px: 13, weight: 600, tracking: "0.05em", color: "text-muted" }
+  # — display / numerical ramp (Inter, near-black headings / cobalt numerals) —
+  h3:      { fontFamily: "Inter", cqw: 1.25, weight: 600, lineHeight: 1.3, tracking: "-0.02em", color: "text" }
+  stat-num:{ fontFamily: "Inter", cqw: 1.9, weight: 700, lineHeight: 1.0, color: "primary" }
+  blockquote:{ fontFamily: "Inter", cqw: 2.4, weight: 600, lineHeight: 1.35, color: "text" }
+  h2:      { fontFamily: "Inter", cqw: 2.6, weight: 600, lineHeight: 1.1, tracking: "-0.02em", color: "text" }
+  metric-value:{ fontFamily: "Inter", cqw: 3.0, weight: 700, lineHeight: 1.0, color: "primary" }
+  h1:      { fontFamily: "Inter", cqw: 4.2, weight: 700, lineHeight: 1.08, tracking: "-0.02em", color: "text" }
+  quote-mark:{ fontFamily: "Inter", cqw: 8.0, weight: 700, lineHeight: 0.5, color: "primary", opacity: 0.15 }
+
+spacing:
+  pad-x: "5cqw"
+  pad-y-top: "5cqw"
+  gap-cards: "1.4cqw"
+  accent-line: "60px × 4px"
+
+components:
+  card-tinted:
+    backgroundColor: "{colors.card-bg}"
+    border: "1.5px solid {colors.border}"
+    rounded: "{radii.card-lg}"
+    shadow: "none"
+    description: "Universal content card. Never solid-colored, never opaque-bordered, NO shadow."
+  metric-card:
+    backgroundColor: "{colors.card-bg}"
+    border: "1.5px solid {colors.border}"
+    rounded: "{radii.card-lg}"
+    typography: "{typography.metric-value} ({colors.primary}) + {typography.metric-label} + {typography.metric-desc}"
+    description: "+ optional inline ↑/↓ change chip ({colors.positive}/{colors.negative} text, no fill)."
+  tag-pill:
+    backgroundColor: "{colors.accent-light}"
+    textColor: "{colors.primary}"
+    rounded: "{radii.pill}"
+    typography: "{typography.tag}"
+    description: "Top-right of the slide-header."
+  cta-button:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.bg}"
+    rounded: "{radii.pill}"
+    typography: "Inter 600"
+    shadow: "soft cobalt on hover only — the system's only shadow"
+    description: "The one solid element."
+  accent-line:
+    backgroundColor: "{colors.primary}"
+    size: "60×4, 2px radius"
+    description: "Above cover titles / eyebrow separators."
+  bar-track:
+    backgroundColor: "{colors.accent-light}"
+    fill: "{colors.primary} (display:block so width resolves)"
+    rounded: "{radii.bar}"
+    description: "28px track; fill carries the value."
+  step-circle:
+    backgroundColor: "{colors.primary}"
+    textColor: "{colors.bg}"
+    rounded: "50%"
+    size: "56px"
+    description: "Sequential steps fade opacity 1.0→0.85→0.7→0.55."
+  split-highlight:
+    backgroundColor: "{colors.accent-light}"
+    borderLeft: "4px solid {colors.primary}"
+    rounded: "{radii.card-md}"
+    description: "Inline pull-quote callout."
+  slide-header:
+    typography: "{typography.h4-eyebrow} (cobalt) left, tag-pill right; {typography.h2} below"
+    description: "Top band of every content frame."
+  atmosphere:
+    elements: "clipped diagonal cobalt-tint panel, 3×3 cobalt dot grid, concentric closing rings"
+    description: "Cover/closing only. Never on content frames."
+  progress-bar:
+    backgroundColor: "{colors.primary}"
+    size: "3px tall, bottom edge, width grows with index"
+    description: "Persistent progress strip."
+---
+
+# Blue Professional — Frame (video / frame layer)
+
+## Brand adaptation (READ FIRST — the frontmatter is the source of truth)
+
+This is the **blue-professional** preset remixed onto the captured brand. The YAML frontmatter above (colors · typography · components) is **normative and already correct — use it verbatim.** The prose below is the ORIGINAL preset's intent; read it THROUGH the frontmatter:
+
+- **Fonts** — already set to **Inter** (display) / **Inter** (body); ignore any preset font name lingering in prose.
+- **Weights** — the brand font ships `{400, 600, 700, 800}` only; every weight is clamped to these — ignore higher preset weights (e.g. 600/700) in prose.
+- **Colors** — use the frontmatter hex; preset color NAMES in prose (e.g. "cobalt", "cream") mean the remapped brand values.
+
+
+## Overview
+
+Blue Professional at frame scale is a **consulting-grade system: restraint with one strong
+commitment.** A warm cream canvas and a single saturated cobalt that carries every accent —
+eyebrow, metric, CTA, chart fill, progress bar. No secondary brand color, no pastels, just cream,
+cobalt, and a tight ladder of grays. The register is investment-research / McKinsey briefing:
+measured, data-dense without crowding, executive-readable at distance.
+
+The voice is two faces in fixed roles: **Inter** (display, every numeral, all chrome —
+eyebrows uppercase 0.08em) and **Inter** (body, muted gray, line 1.6). Headlines are near-black;
+cobalt is reserved for accent moments. Depth is **soft and tinted** — 4% cobalt card fills with 20%
+cobalt borders and 10–14px radii — never shadowed. The lack of harsh shadows is the premium signal.
+
+**Key characteristics at frame scale:**
+
+- **Warm cream ground** on every frame; **single cobalt** as the only accent.
+- **Inter** (display/numerals/chrome) + **Inter** (body) — near-black headlines, cobalt numerals.
+- **Tinted cards** — cobalt 4% fill, cobalt 20% 1.5px border, 10–14px radius, **no shadow**.
+- **Pill chrome** (100px) — tag pills + the one solid cobalt CTA; cobalt **progress bar**.
+- **Soft rounded corners everywhere** (no square corners save the progress bar).
+- **Atmosphere** (diagonal panel, dot grid, concentric rings) on cover/closing only.
+
+## The Frame
+
+### Frame Craft Bar
+
+Three eyeball tests gate every frame before any structural check:
+
+- **Squint** — one **near-black headline or cobalt numeral** dominates at 3–6× its neighbor.
+- **Silence** — content frames read **balanced, not crowded**; the **dashboard is the one dense exception**.
+- **Restraint** — a **single cobalt accent** carries everything; headlines stay near-black (never cobalt); no shadows (tinted cards do the lift); positive/negative inline-text only.
+- **Reference** — aim at an **investment-research / McKinsey quarterly briefing**; failure looks like a **heavy-outlined, multi-color dashboard**.
+
+- **Primary:** 1920×1080 (16:9). Display authored in **`cqw`** (`px ÷ 1920 × 100 = cqw`).
+- **Vertical:** 1080×1920 (9:16). **Square:** 1080×1080 (1:1).
+- **Safe area:** `pad-x` 5cqw; bottom reserves room for the counter + progress bar.
+
+**The container law (load-bearing).** Every frame ground sets `container-type: size`; ALL
+frame-relative units are `cqw`/`cqh` against it — never `vw`. Card radii stay px (10–14px); the
+pill radius stays 100px; borders stay 1–1.5px.
+
+## Colors
+
+Tokens identical to the source. `{colors.bg}` cream is the universal ground; `{colors.primary}`
+cobalt is the **only** accent — every eyebrow, numeral, CTA, chart fill, progress bar, and the 4px
+highlight left-rule. Headlines are `{colors.text}` near-black (never cobalt); body is
+`{colors.text-muted}`; tertiary is `{colors.text-light}`. Cards fill `{colors.card-bg}` (4%) with
+
+exec
+/bin/zsh -lc "sed -n '171,340p' frame.md" in /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+ succeeded in 0ms:
+`{colors.border}` (20%) borders. `{colors.positive}`/`{colors.negative}` appear **only inline** on
+directional change chips — never as fills. **No second accent color.**
+
+## Typography
+
+Two ramps. The **reading ramp** (Inter body 0.85cqw muted; Inter eyebrow uppercase 0.08em
+cobalt) carries copy + chrome; the **display/numerical ramp** (Inter `h3` 1.25cqw → `h1`
+4.2cqw near-black; numerals `stat-num`/`metric-value` in cobalt) carries headings and figures.
+
+- **Legibility floor:** any load-bearing line ≥ **1.4cqw**; px chrome (tag/counter) is colophon only.
+- **Fit-to-measure:** size the headline to its length. Cap the block at **≤ 78cqw**; ≤3 words → `h1`; 4–6 → `h2`; 7+ → `h3`. Cobalt numerals scale `metric-value`→`stat-num` by card size.
+- **Headlines near-black, −0.02em**; **eyebrows cobalt, uppercase, 0.08em**; **numerals cobalt 600–700**; **body Inter 400 muted, line 1.6**. No italic, no uppercase body, no cobalt headline.
+
+## Depth & Surface
+
+Soft and tinted — never offset. Depth from:
+
+- **Tinted cards** — 4% cobalt fill + 20% cobalt 1.5px border + 10–14px radius reads as lifted without offset.
+- **Border-left accent** — the 4px cobalt rule on split-highlight blocks pulls a callout forward.
+- **Rounded corners** — the 10–14px radius is part of the softness; square corners break it.
+
+**Ceiling:** zero box-shadow on content (the only shadow is a soft cobalt CTA _hover_); no opaque cobalt borders; no harsh outlines.
+
+## Shapes
+
+- **100px** — tag pills, CTA, nav buttons (pill chrome).
+- **14/12/10px** — cards by size (large metric / standard stat / detail + mini).
+- **6px** — bar tracks + fills. **50%** — step circles, nav circles, dots, closing rings.
+- **0** — only the progress bar. No square-cornered content.
+
+## Components
+
+- **card-tinted / metric-card** — the universal soft-tint content cards (no shadow).
+- **tag-pill / cta-button / accent-line** — the cobalt pill chrome + the one solid CTA + the 60×4 rule.
+- **bar-track / step-circle / split-highlight** — cobalt data + sequence + callout patterns.
+- **slide-header** (eyebrow + tag pill) — the structural rhythm; **atmosphere** (diagonal/dots/rings) on cover/closing only; **progress-bar** on every frame.
+
+## Frame Treatments
+
+> Recipe: ground · container · composes · focal · chrome · accent · silence · Fixed/Free · density.
+> Atmosphere only on cover/closing; content frames carry the slide-header rhythm.
+
+### 1 · Cover (identity · move: diagonal accent · left)
+
+**Ground** cream + the clipped diagonal cobalt-tint panel (right ~36%) + a 3×3 cobalt dot grid.
+**Composes** accent-line, meta, h1, body sub. **Focal** a 2-line Inter `h1` near-black, left,
+under a cobalt accent-line + meta. **Chrome** counter + progress bar. **Accent** the cobalt line +
+diagonal panel. **Silence** the diagonal panel holds the right third. **Fixed** near-black h1, cobalt
+accents, atmosphere here only. **Free** title, meta. **Density** low.
+
+### 2 · Dashboard (data · move: 3-up metric grid · the dense frame)
+
+**Ground** cream, `pad-x`. **Composes** slide-header (eyebrow + tag-pill), h2, 3× metric/tinted card.
+**Focal** a row of tinted cards — cobalt `metric-value` + Inter label + muted desc + optional
+green/red change chip. **Chrome** eyebrow left, tag-pill right; progress bar. **Accent** the cobalt
+numerals. **Silence** tight — the density exception. **Fixed** 4% tint cards, 20% borders, no shadow,
+cobalt numerals. **Free** figures (from script), labels. **Density** dense-exception.
+
+### 3 · Bar Ranking (data · move: cobalt bars · left)
+
+**Ground** cream, `pad-x`. **Composes** eyebrow, h2, bar-track rows. **Focal** 3–5 labeled
+cobalt-fill bars on cobalt-8% tracks with cobalt percentages. **Chrome** eyebrow; progress bar.
+**Accent** the cobalt fills + figures. **Silence** moderate. **Fixed** 6px tracks, cobalt fills.
+**Free** rows, values (from script). **Density** standard.
+
+### 4 · Pull Quote (quote · move: concentric rings · centered)
+
+**Ground** cream, centered, with faint concentric closing-rings behind. **Composes** quote-mark,
+blockquote, cite. **Focal** a Inter `blockquote` near-black under a 15%-opacity cobalt
+quote-mark; an uppercase cobalt-muted cite beneath. **Accent** the faint rings + quote-mark. **Silence**
+~55%. **Fixed** near-black quote, soft rings. **Free** quote, cite. **Density** low.
+
+### 5 · Split + Highlight (content · move: asymmetric split · left)
+
+**Ground** cream, two columns. **Composes** eyebrow, h2, body, split-highlight block. **Focal** an
+Inter body column beside a cobalt-8% highlight block (4px cobalt left rule) carrying an inline pull
+quote. **Accent** the highlight's left rule. **Silence** generous gutter. **Fixed** tinted highlight,
+4px cobalt rule. **Free** body, callout. **Density** standard.
+
+### 6 · Closing / CTA (closer · move: centered rings + CTA)
+
+**Ground** cream + concentric closing-rings. **Composes** accent-line, h1, body, cta-button. **Focal**
+a Inter `h1` near-black, centered, with the one solid cobalt `cta-button` pill below. **Accent**
+the CTA + rings. **Silence** ~60%. **Fixed** one CTA, near-black h1, soft rings. **Free** sign-off, CTA
+label. **Density** low.
+
+## Composition Rules
+
+### Do
+
+- Start every frame on **warm cream**; let **cobalt carry every accent** (eyebrow, numeral, CTA, bar, progress).
+- Set headlines **near-black, −0.02em**; eyebrows **cobalt uppercase 0.08em**; numerals **cobalt 600–700**.
+- Use **tinted cards** (4% fill, 20% border, 10–14px radius, no shadow); body Inter 400 muted, line 1.6.
+- Keep all chrome **pill-shaped (100px)**; one solid cobalt CTA per closing frame.
+- Reserve **atmosphere** (diagonal panel, dots, rings) for cover/closing; content frames keep the slide-header rhythm.
+- Lean left on cover/dashboard/split, centered on quote/closer.
+
+### Don't
+
+- No second accent color; no cobalt headlines.
+- No drop shadows on content (only the soft cobalt CTA hover); no opaque cobalt borders.
+- No square corners (save the progress bar); no font substitutes; no uppercase body.
+- Don't use the green/red change chips as general accents — directional comparisons only.
+- Don't fill space with heavier borders — add substance; don't blow a headline edge-to-edge.
+
+## Aspect-Ratio Behavior
+
+| Treatment         | 16:9                       | 9:16                           | 1:1                      |
+| ----------------- | -------------------------- | ------------------------------ | ------------------------ |
+| Cover             | title left, diagonal right | title top, diagonal band below | title upper, dots corner |
+| Dashboard         | 3 cards across             | 3 stacked                      | 2×2                      |
+| Bar Ranking       | 3–5 bars                   | 3–5 bars (tighter)             | 3 bars                   |
+| Pull Quote        | centered, rings behind     | centered, taller               | centered                 |
+| Split + Highlight | side-by-side               | stacked                        | stacked                  |
+| Closing / CTA     | centered + CTA             | centered + CTA                 | centered + CTA           |
+
+`pad-x` holds on the short edge; re-step display above the 1.4cqw floor. The diagonal cover panel
+becomes a top/bottom band on 9:16. Numerals stay Latin Arabic digits in CJK builds.
+
+## Approved Entities
+
+No real customers, logos, or vendors are defined in the source — render any such mark as a
+placeholder. Figures, metrics, and quotes are content; the system supplies cream + cobalt + grays.
+
+## Numerals & Claims (hard rule)
+
+Never invent figures, financials, percentages, or dates at frame scale. Render slots as `— figure —`,
+`{metric}`, `+NN%`, `↑ —`. Metric cards, bar values, and stat cells especially carry placeholders
+until the script supplies them. Directional chips require a real comparison from the script.
+
+## Pre-Render Self-Audit
+
+- **Squint** — one near-black headline or cobalt numeral dominates per frame.
+- **Silence** — content frames balanced, not crowded; only the dashboard runs dense.
+- **Single accent** — cobalt only; headlines near-black; positive/negative inline only.
+- **Type** — Inter headings −0.02em near-black, cobalt eyebrows 0.08em + numerals; Inter body muted line 1.6; ≥1.4cqw floor.
+- **Depth** — tinted cards (no shadow), soft rounded corners, 20% cobalt borders; no square content corners.
+- **Anchor** — left on cover/dashboard/split, centered on quote/closer; atmosphere on cover/closing only.
+- **Fabrication** — every numeral traces to the script, else placeholder.
+
+## Known Gaps
+
+- **Motion intentionally out of scope.** frame.md specifies composition only; the source's 500ms translateX transitions + bar-fill animations are deck mechanics.
+- **Inter + Inter via Google Fonts.** CJK pairing (Noto Sans SC 700 display / Noto Serif SC 400 body) carries over; the eyebrow's uppercase+tracking signal weakens in CJK — pair it with the accent-line.
+- **9:16 / 1:1 are guidance**; verify the floor and that the diagonal panel reflows to a band.
+- Diagonal panel (clip-path), dot grid, concentric rings, and bars are CSS-only; no external imagery is required.
+
+
+## Font loading (auto-generated)
+
+The brand font ships as local files in `assets/fonts/` — do NOT link Google Fonts for it. Paste this `<style>` into every frame's `<head>`/`<template>` (captions use the same files) so `font-family` resolves in preview, snapshot, and render alike:
+
+```html
+<style>
+@font-face{font-family:"Inter";font-weight:400;font-style:normal;font-display:block;src:url("assets/fonts/Inter-Regular.ttf") format("truetype");}
+</style>
+```
+
+codex
+Üç belgenin sözleşmesini uyguluyorum: 11,34 saniyelik dört fazı tek seek-safe GSAP zaman çizelgesine eşleyip CTA’yı alt %17’lik altyazı bandının tamamen üstünde tutacağım. Paket, yönlendirmeyi zaten tamamladığı için ayrıca HyperFrames beceri dosyası açmıyorum; `_role.md` bunu açıkça yasaklıyor.
+exec
+/bin/zsh -lc 'test -e compositions/frames/05-join-today.html; text_status=$?; if [ "$text_status" -eq 0 ]; then printf '"'exists\\n'; else printf 'missing\\n'; fi" in /Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube
+ succeeded in 0ms:
+missing
+
+apply patch
+patch: completed
+/Users/macbook/Documents/CandarNetwork/videos/candar-sponsored-youtube/compositions/frames/05-join-today.html
+diff --git a/videos/candar-sponsored-youtube/compositions/frames/05-join-today.html b/videos/candar-sponsored-youtube/compositions/frames/05-join-today.html
+new file mode 100644
+index 0000000000000000000000000000000000000000..bde15a4a5270740d27065b95bcace1fc1f2b6ba6
+--- /dev/null
++++ b/videos/candar-sponsored-youtube/compositions/frames/05-join-today.html
+@@ -0,0 +1,351 @@
++<template>
++  <style>
++    @font-face {
++      font-family: "Inter";
++      font-weight: 400;
++      font-style: normal;
++      font-display: block;
++      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
++    }
++
++    #root {
++      position: relative;
++      width: 100%;
++      height: 100%;
++      overflow: hidden;
++      container-type: size;
++      font-family: "Inter";
++      color: #171717;
++    }
++
++    .05-join-today-ground,
++    .05-join-today-atmosphere,
++    .05-join-today-hero,
++    .05-join-today-cta-stage,
++    .05-join-today-cursor-stage,
++    .05-join-today-details,
++    .05-join-today-progress {
++      position: absolute;
++      inset: 0;
++    }
++
++    .05-join-today-ground {
++      background: #FFFFFF;
++    }
++
++    .05-join-today-atmosphere {
++      pointer-events: none;
++    }
++
++    .05-join-today-ring {
++      position: absolute;
++      left: 50%;
++      top: 6.5cqh;
++      width: 41.7cqw;
++      height: 74cqh;
++      margin-left: -20.85cqw;
++      border: 1.5px solid rgba(249, 115, 22, 0.2);
++      border-radius: 50%;
++    }
++
++    .05-join-today-ring::before,
++    .05-join-today-ring::after {
++      content: "";
++      position: absolute;
++      border: 1.5px solid rgba(249, 115, 22, 0.15);
++      border-radius: 50%;
++    }
++
++    .05-join-today-ring::before {
++      inset: 9.2cqh 5.2cqw;
++    }
++
++    .05-join-today-ring::after {
++      inset: 18.4cqh 10.4cqw;
++      background: rgba(249, 115, 22, 0.04);
++    }
++
++    .05-join-today-hero,
++    .05-join-today-cta-stage,
++    .05-join-today-details {
++      display: flex;
++      align-items: flex-start;
++      justify-content: center;
++    }
++
++    .05-join-today-official-logo {
++      position: absolute;
++      top: 22cqh;
++      width: 22cqw;
++      height: 34cqh;
++      object-fit: contain;
++      transform-origin: 50% 50%;
++    }
++
++    .05-join-today-cta {
++      position: absolute;
++      top: 33.2cqh;
++      width: 39.6cqw;
++      height: 13cqh;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      border-radius: 100px;
++      background: #F97316;
++      color: #FFFFFF;
++      font-size: 1.72cqw;
++      font-weight: 600;
++      line-height: 1;
++      letter-spacing: 0.035em;
++      white-space: nowrap;
++      transform-origin: 50% 50%;
++    }
++
++    .05-join-today-cta-separator {
++      width: 0.32cqw;
++      height: 0.32cqw;
++      margin: 0 1.05cqw;
++      border-radius: 50%;
++      background: rgba(255, 255, 255, 0.72);
++    }
++
++    .05-join-today-cursor {
++      position: absolute;
++      left: 65.8cqw;
++      top: 41.5cqh;
++      width: 3.25cqw;
++      height: 6.1cqh;
++      transform-origin: 22% 18%;
++      z-index: 3;
++    }
++
++    .05-join-today-cursor svg {
++      width: 100%;
++      height: 100%;
++      overflow: visible;
++    }
++
++    .05-join-today-tail {
++      position: absolute;
++      left: 67.8cqw;
++      top: 45.9cqh;
++      width: 14cqw;
++      height: 0.24cqh;
++      border-radius: 100px;
++      background: linear-gradient(90deg, rgba(249, 115, 22, 0.52), rgba(249, 115, 22, 0));
++      transform-origin: left center;
++    }
++
++    .05-join-today-ripple {
++      position: absolute;
++      left: 65.42cqw;
++      top: 40.8cqh;
++      width: 4.2cqw;
++      height: 7.45cqh;
++      border: 2px solid #F97316;
++      border-radius: 50%;
++      transform-origin: 50% 50%;
++    }
++
++    .05-join-today-detail-stack {
++      position: absolute;
++      top: 51.8cqh;
++      width: 55cqw;
++      display: flex;
++      flex-direction: column;
++      align-items: center;
++    }
++
++    .05-join-today-url {
++      color: #171717;
++      font-size: 2.4cqw;
++      font-weight: 600;
++      line-height: 1.1;
++      letter-spacing: -0.02em;
++    }
++
++    .05-join-today-disclaimer {
++      margin-top: 2.8cqh;
++      padding: 2.15cqh 2.35cqw;
++      border-left: 4px solid #F97316;
++      border-radius: 12px;
++      background: rgba(249, 115, 22, 0.08);
++      color: #5F6368;
++      font-size: 1.4cqw;
++      font-weight: 400;
++      line-height: 1.6;
++      text-align: center;
++    }
++
++    .05-join-today-supporting-logo {
++      width: 11.5cqw;
++      height: 6.6cqh;
++      margin-top: 2.1cqh;
++      object-fit: contain;
++      opacity: 0.72;
++    }
++
++    .05-join-today-progress-line {
++      position: absolute;
++      left: 5cqw;
++      top: 82cqh;
++      width: 90cqw;
++      height: 3px;
++      border-radius: 0;
++      background: rgba(249, 115, 22, 0.08);
++      overflow: hidden;
++    }
++
++    .05-join-today-progress-fill {
++      display: block;
++      width: 100%;
++      height: 100%;
++      background: #F97316;
++      transform-origin: left center;
++    }
++  </style>
++
++  <div id="root" data-composition-id="05-join-today">
++    <div class="clip 05-join-today-ground" data-start="0" data-duration="11.34" data-track-index="0"></div>
++
++    <div class="clip 05-join-today-atmosphere" data-start="0" data-duration="11.34" data-track-index="1">
++      <div class="05-join-today-ring"></div>
++    </div>
++
++    <div class="clip 05-join-today-hero" data-start="0" data-duration="11.34" data-track-index="2">
++      <img class="05-join-today-official-logo" src="assets/candar-logo-official.png" alt="Candar">
++    </div>
++
++    <div class="clip 05-join-today-cta-stage" data-start="2.4" data-duration="8.94" data-track-index="3">
++      <div class="05-join-today-cta">
++        <span>ÜCRETSİZ İNDİR</span>
++        <span class="05-join-today-cta-separator"></span>
++        <span>iOS + ANDROID</span>
++      </div>
++    </div>
++
++    <div class="clip 05-join-today-cursor-stage" data-start="5" data-duration="6.34" data-track-index="4">
++      <div class="05-join-today-tail"></div>
++      <div class="05-join-today-ripple"></div>
++      <div class="05-join-today-cursor" aria-hidden="true">
++        <svg viewBox="0 0 64 72" fill="none" xmlns="http://www.w3.org/2000/svg">
++          <path d="M10 6L52 42L32.5 45.5L23 64L10 6Z" fill="#FFFFFF" stroke="#171717" stroke-width="4" stroke-linejoin="round"/>
++        </svg>
++      </div>
++    </div>
++
++    <div class="clip 05-join-today-details" data-start="6.4" data-duration="4.94" data-track-index="5">
++      <div class="05-join-today-detail-stack">
++        <div class="05-join-today-url">candarnetwork.com/download</div>
++        <div class="05-join-today-disclaimer">Puanlar yalnızca uygulama içi ilerleme içindir.</div>
++        <img class="05-join-today-supporting-logo" src="assets/candar-network-logo.png" alt="Candar Network">
++      </div>
++    </div>
++
++    <div class="clip 05-join-today-progress" data-start="0" data-duration="11.34" data-track-index="6">
++      <div class="05-join-today-progress-line"><span class="05-join-today-progress-fill"></span></div>
++    </div>
++  </div>
++
++  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
++  <script>
++    window.__timelines = window.__timelines || {};
++    const timeline = gsap.timeline({ paused: true });
++
++    timeline.fromTo(
++      ".05-join-today-official-logo",
++      { opacity: 1, scale: 1, rotation: -0.55 },
++      { opacity: 1, scale: 1, rotation: 0.55, duration: 1.2, ease: "sine.inOut" },
++      0
++    );
++    timeline.to(
++      ".05-join-today-official-logo",
++      { rotation: -0.4, duration: 1.2, ease: "sine.inOut" },
++      1.2
++    );
++
++    timeline.fromTo(
++      ".05-join-today-official-logo",
++      { opacity: 1, scale: 1, rotation: -0.4, filter: "blur(0px)" },
++      { opacity: 0, scale: 0.72, rotation: 0, filter: "blur(12px)", duration: 0.52, ease: "power3.in" },
++      2.4
++    );
++    timeline.fromTo(
++      ".05-join-today-cta",
++      { opacity: 0, scale: 0.72, filter: "blur(12px)" },
++      { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.62, ease: "power3.out" },
++      2.48
++    );
++
++    timeline.fromTo(
++      ".05-join-today-tail",
++      { opacity: 0, scaleX: 0.15 },
++      { opacity: 1, scaleX: 1, duration: 0.52, ease: "power3.out" },
++      5
++    );
++    timeline.fromTo(
++      ".05-join-today-cursor",
++      { opacity: 0, x: 320, y: 190, scale: 0.78, rotation: -18 },
++      { opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.68, ease: "power4.out" },
++      5
++    );
++    timeline.to(
++      ".05-join-today-tail",
++      { opacity: 0, scaleX: 0.35, duration: 0.22, ease: "power2.out" },
++      5.48
++    );
++    timeline.to(
++      ".05-join-today-cta",
++      { scale: 0.96, duration: 0.13, ease: "power2.in" },
++      5.62
++    );
++    timeline.to(
++      ".05-join-today-cursor",
++      { y: 9, scale: 0.94, duration: 0.13, ease: "power2.in" },
++      5.62
++    );
++    timeline.fromTo(
++      ".05-join-today-ripple",
++      { opacity: 0.8, scale: 0.3 },
++      { opacity: 0, scale: 2.35, duration: 0.52, ease: "power2.out" },
++      5.75
++    );
++    timeline.to(
++      ".05-join-today-cta",
++      { scale: 1, duration: 0.22, ease: "back.out(2)" },
++      5.75
++    );
++    timeline.to(
++      ".05-join-today-cursor",
++      { y: 0, scale: 1, duration: 0.22, ease: "back.out(2)" },
++      5.75
++    );
++
++    timeline.fromTo(
++      ".05-join-today-url",
++      { opacity: 0, y: 18, filter: "blur(8px)" },
++      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.58, ease: "power3.out" },
++      6.4
++    );
++    timeline.fromTo(
++      ".05-join-today-disclaimer",
++      { opacity: 0, y: 18, filter: "blur(8px)" },
++      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.66, ease: "power3.out" },
++      7.18
++    );
++    timeline.fromTo(
++      ".05-join-today-supporting-logo",
++      { opacity: 0, y: 12, scale: 0.94 },
++      { opacity: 0.72, y: 0, scale: 1, duration: 0.68, ease: "power3.out" },
++      8.55
++    );
++    timeline.fromTo(
++      ".05-join-today-progress-fill",
++      { scaleX: 0.82 },
++      { scaleX: 1, duration: 2.79, ease: "power1.inOut" },
++      8.55
++    );
++
++    window.__timelines["05-join-today"] = timeline;
++  </script>
++</template>
+
+diff --git a/videos/candar-sponsored-youtube/compositions/frames/05-join-today.html b/videos/candar-sponsored-youtube/compositions/frames/05-join-today.html
+new file mode 100644
+index 0000000000000000000000000000000000000000..bde15a4a5270740d27065b95bcace1fc1f2b6ba6
+--- /dev/null
++++ b/videos/candar-sponsored-youtube/compositions/frames/05-join-today.html
+@@ -0,0 +1,351 @@
++<template>
++  <style>
++    @font-face {
++      font-family: "Inter";
++      font-weight: 400;
++      font-style: normal;
++      font-display: block;
++      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
++    }
++
++    #root {
++      position: relative;
++      width: 100%;
++      height: 100%;
++      overflow: hidden;
++      container-type: size;
++      font-family: "Inter";
++      color: #171717;
++    }
++
++    .05-join-today-ground,
++    .05-join-today-atmosphere,
++    .05-join-today-hero,
++    .05-join-today-cta-stage,
++    .05-join-today-cursor-stage,
++    .05-join-today-details,
++    .05-join-today-progress {
++      position: absolute;
++      inset: 0;
++    }
++
++    .05-join-today-ground {
++      background: #FFFFFF;
++    }
++
++    .05-join-today-atmosphere {
++      pointer-events: none;
++    }
++
++    .05-join-today-ring {
++      position: absolute;
++      left: 50%;
++      top: 6.5cqh;
++      width: 41.7cqw;
++      height: 74cqh;
++      margin-left: -20.85cqw;
++      border: 1.5px solid rgba(249, 115, 22, 0.2);
++      border-radius: 50%;
++    }
++
++    .05-join-today-ring::before,
++    .05-join-today-ring::after {
++      content: "";
++      position: absolute;
++      border: 1.5px solid rgba(249, 115, 22, 0.15);
++      border-radius: 50%;
++    }
++
++    .05-join-today-ring::before {
++      inset: 9.2cqh 5.2cqw;
++    }
++
++    .05-join-today-ring::after {
++      inset: 18.4cqh 10.4cqw;
++      background: rgba(249, 115, 22, 0.04);
++    }
++
++    .05-join-today-hero,
++    .05-join-today-cta-stage,
++    .05-join-today-details {
++      display: flex;
++      align-items: flex-start;
++      justify-content: center;
++    }
++
++    .05-join-today-official-logo {
++      position: absolute;
++      top: 22cqh;
++      width: 22cqw;
++      height: 34cqh;
++      object-fit: contain;
++      transform-origin: 50% 50%;
++    }
++
++    .05-join-today-cta {
++      position: absolute;
++      top: 33.2cqh;
++      width: 39.6cqw;
++      height: 13cqh;
++      display: flex;
++      align-items: center;
++      justify-content: center;
++      border-radius: 100px;
++      background: #F97316;
++      color: #FFFFFF;
++      font-size: 1.72cqw;
++      font-weight: 600;
++      line-height: 1;
++      letter-spacing: 0.035em;
++      white-space: nowrap;
++      transform-origin: 50% 50%;
++    }
++
++    .05-join-today-cta-separator {
++      width: 0.32cqw;
++      height: 0.32cqw;
++      margin: 0 1.05cqw;
++      border-radius: 50%;
++      background: rgba(255, 255, 255, 0.72);
++    }
++
++    .05-join-today-cursor {
++      position: absolute;
++      left: 65.8cqw;
++      top: 41.5cqh;
++      width: 3.25cqw;
++      height: 6.1cqh;
++      transform-origin: 22% 18%;
++      z-index: 3;
++    }
++
++    .05-join-today-cursor svg {
++      width: 100%;
++      height: 100%;
++      overflow: visible;
++    }
++
++    .05-join-today-tail {
++      position: absolute;
++      left: 67.8cqw;
++      top: 45.9cqh;
++      width: 14cqw;
++      height: 0.24cqh;
++      border-radius: 100px;
++      background: linear-gradient(90deg, rgba(249, 115, 22, 0.52), rgba(249, 115, 22, 0));
++      transform-origin: left center;
++    }
++
++    .05-join-today-ripple {
++      position: absolute;
++      left: 65.42cqw;
++      top: 40.8cqh;
++      width: 4.2cqw;
++      height: 7.45cqh;
++      border: 2px solid #F97316;
++      border-radius: 50%;
++      transform-origin: 50% 50%;
++    }
++
++    .05-join-today-detail-stack {
++      position: absolute;
++      top: 51.8cqh;
++      width: 55cqw;
++      display: flex;
++      flex-direction: column;
++      align-items: center;
++    }
++
++    .05-join-today-url {
++      color: #171717;
++      font-size: 2.4cqw;
++      font-weight: 600;
++      line-height: 1.1;
++      letter-spacing: -0.02em;
++    }
++
++    .05-join-today-disclaimer {
++      margin-top: 2.8cqh;
++      padding: 2.15cqh 2.35cqw;
++      border-left: 4px solid #F97316;
++      border-radius: 12px;
++      background: rgba(249, 115, 22, 0.08);
++      color: #5F6368;
++      font-size: 1.4cqw;
++      font-weight: 400;
++      line-height: 1.6;
++      text-align: center;
++    }
++
++    .05-join-today-supporting-logo {
++      width: 11.5cqw;
++      height: 6.6cqh;
++      margin-top: 2.1cqh;
++      object-fit: contain;
++      opacity: 0.72;
++    }
++
++    .05-join-today-progress-line {
++      position: absolute;
++      left: 5cqw;
++      top: 82cqh;
++      width: 90cqw;
++      height: 3px;
++      border-radius: 0;
++      background: rgba(249, 115, 22, 0.08);
++      overflow: hidden;
++    }
++
++    .05-join-today-progress-fill {
++      display: block;
++      width: 100%;
++      height: 100%;
++      background: #F97316;
++      transform-origin: left center;
++    }
++  </style>
++
++  <div id="root" data-composition-id="05-join-today">
++    <div class="clip 05-join-today-ground" data-start="0" data-duration="11.34" data-track-index="0"></div>
++
++    <div class="clip 05-join-today-atmosphere" data-start="0" data-duration="11.34" data-track-index="1">
++      <div class="05-join-today-ring"></div>
++    </div>
++
++    <div class="clip 05-join-today-hero" data-start="0" data-duration="11.34" data-track-index="2">
++      <img class="05-join-today-official-logo" src="assets/candar-logo-official.png" alt="Candar">
++    </div>
++
++    <div class="clip 05-join-today-cta-stage" data-start="2.4" data-duration="8.94" data-track-index="3">
++      <div class="05-join-today-cta">
++        <span>ÜCRETSİZ İNDİR</span>
++        <span class="05-join-today-cta-separator"></span>
++        <span>iOS + ANDROID</span>
++      </div>
++    </div>
++
++    <div class="clip 05-join-today-cursor-stage" data-start="5" data-duration="6.34" data-track-index="4">
++      <div class="05-join-today-tail"></div>
++      <div class="05-join-today-ripple"></div>
++      <div class="05-join-today-cursor" aria-hidden="true">
++        <svg viewBox="0 0 64 72" fill="none" xmlns="http://www.w3.org/2000/svg">
++          <path d="M10 6L52 42L32.5 45.5L23 64L10 6Z" fill="#FFFFFF" stroke="#171717" stroke-width="4" stroke-linejoin="round"/>
++        </svg>
++      </div>
++    </div>
++
++    <div class="clip 05-join-today-details" data-start="6.4" data-duration="4.94" data-track-index="5">
++      <div class="05-join-today-detail-stack">
++        <div class="05-join-today-url">candarnetwork.com/download</div>
++        <div class="05-join-today-disclaimer">Puanlar yalnızca uygulama içi ilerleme içindir.</div>
++        <img class="05-join-today-supporting-logo" src="assets/candar-network-logo.png" alt="Candar Network">
++      </div>
++    </div>
++
++    <div class="clip 05-join-today-progress" data-start="0" data-duration="11.34" data-track-index="6">
++      <div class="05-join-today-progress-line"><span class="05-join-today-progress-fill"></span></div>
++    </div>
++  </div>
++
++  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
++  <script>
++    window.__timelines = window.__timelines || {};
++    const timeline = gsap.timeline({ paused: true });
++
++    timeline.fromTo(
++      ".05-join-today-official-logo",
++      { opacity: 1, scale: 1, rotation: -0.55 },
++      { opacity: 1, scale: 1, rotation: 0.55, duration: 1.2, ease: "sine.inOut" },
++      0
++    );
++    timeline.to(
++      ".05-join-today-official-logo",
++      { rotation: -0.4, duration: 1.2, ease: "sine.inOut" },
++      1.2
++    );
++
++    timeline.fromTo(
++      ".05-join-today-official-logo",
++      { opacity: 1, scale: 1, rotation: -0.4, filter: "blur(0px)" },
++      { opacity: 0, scale: 0.72, rotation: 0, filter: "blur(12px)", duration: 0.52, ease: "power3.in" },
++      2.4
++    );
++    timeline.fromTo(
++      ".05-join-today-cta",
++      { opacity: 0, scale: 0.72, filter: "blur(12px)" },
++      { opacity: 1, scale: 1, filter: "blur(0px)", duration: 0.62, ease: "power3.out" },
++      2.48
++    );
++
++    timeline.fromTo(
++      ".05-join-today-tail",
++      { opacity: 0, scaleX: 0.15 },
++      { opacity: 1, scaleX: 1, duration: 0.52, ease: "power3.out" },
++      5
++    );
++    timeline.fromTo(
++      ".05-join-today-cursor",
++      { opacity: 0, x: 320, y: 190, scale: 0.78, rotation: -18 },
++      { opacity: 1, x: 0, y: 0, scale: 1, rotation: 0, duration: 0.68, ease: "power4.out" },
++      5
++    );
++    timeline.to(
++      ".05-join-today-tail",
++      { opacity: 0, scaleX: 0.35, duration: 0.22, ease: "power2.out" },
++      5.48
++    );
++    timeline.to(
++      ".05-join-today-cta",
++      { scale: 0.96, duration: 0.13, ease: "power2.in" },
++      5.62
++    );
++    timeline.to(
++      ".05-join-today-cursor",
++      { y: 9, scale: 0.94, duration: 0.13, ease: "power2.in" },
++      5.62
++    );
++    timeline.fromTo(
++      ".05-join-today-ripple",
++      { opacity: 0.8, scale: 0.3 },
++      { opacity: 0, scale: 2.35, duration: 0.52, ease: "power2.out" },
++      5.75
++    );
++    timeline.to(
++      ".05-join-today-cta",
++      { scale: 1, duration: 0.22, ease: "back.out(2)" },
++      5.75
++    );
++    timeline.to(
++      ".05-join-today-cursor",
++      { y: 0, scale: 1, duration: 0.22, ease: "back.out(2)" },
++      5.75
++    );
++
++    timeline.fromTo(
++      ".05-join-today-url",
++      { opacity: 0, y: 18, filter: "blur(8px)" },
++      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.58, ease: "power3.out" },
++      6.4
++    );
++    timeline.fromTo(
++      ".05-join-today-disclaimer",
++      { opacity: 0, y: 18, filter: "blur(8px)" },
++      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.66, ease: "power3.out" },
++      7.18
++    );
++    timeline.fromTo(
++      ".05-join-today-supporting-logo",
++      { opacity: 0, y: 12, scale: 0.94 },
++      { opacity: 0.72, y: 0, scale: 1, duration: 0.68, ease: "power3.out" },
++      8.55
++    );
++    timeline.fromTo(
++      ".05-join-today-progress-fill",
++      { scaleX: 0.82 },
++      { scaleX: 1, duration: 2.79, ease: "power1.inOut" },
++      8.55
++    );
++
++    window.__timelines["05-join-today"] = timeline;
++  </script>
++</template>
+
+codex
+İlk öz-denetimde CSS seçicilerinin rakamla başladığını fark ettim; tarayıcıda geçersiz olabilecek bu çakışma riskini aynı hedef dosya içinde düzeltiyorum. Ardından yalnızca bu dosyayı sözleşme maddelerine göre yeniden okuyacağım; proje CLI’sini çalıştırmayacağım.

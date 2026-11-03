@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en" data-resolution="portrait">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1080, height=1920">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: "Inter";
+        src: url("assets/Inter-Regular.ttf") format("truetype");
+        font-weight: 100 900;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        background: #080b10;
+        font-family: "Inter", Arial, sans-serif;
+      }
+
+      #root {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        color: #ffffff;
+      }
+
+      .background {
+        position: absolute;
+        inset: 0;
+        background:
+          radial-gradient(circle at 88% 12%, rgba(249, 115, 22, 0.28), transparent 31%),
+          radial-gradient(circle at 8% 66%, rgba(251, 146, 60, 0.13), transparent 32%),
+          linear-gradient(165deg, #111827 0%, #070a0f 51%, #120b07 100%);
+      }
+
+      .grid {
+        position: absolute;
+        inset: 0;
+        opacity: 0.16;
+        background-image:
+          linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+        background-size: 72px 72px;
+        mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), transparent 78%);
+      }
+
+      .orb {
+        position: absolute;
+        width: 380px;
+        height: 380px;
+        right: -190px;
+        top: 760px;
+        border-radius: 50%;
+        border: 2px solid rgba(249, 115, 22, 0.18);
+        box-shadow: 0 0 80px rgba(249, 115, 22, 0.12);
+      }
+
+      .brand-row {
+        position: absolute;
+        top: 64px;
+        left: 66px;
+        right: 66px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        color: #ffffff;
+        font-size: 27px;
+        font-weight: 800;
+        letter-spacing: 0.02em;
+      }
+
+      .brand img {
+        width: 58px;
+        height: 58px;
+        object-fit: contain;
+        border-radius: 14px;
+      }
+
+      .sponsor-pill {
+        padding: 12px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.24);
+        border-radius: 999px;
+        background: rgba(8, 11, 16, 0.72);
+        color: #f9fafb;
+        font-size: 18px;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+      }
+
+      .copy-card {
+        position: absolute;
+        top: 172px;
+        left: 66px;
+        width: 948px;
+        height: 315px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-self: flex-start;
+        margin-bottom: 18px;
+        padding: 9px 15px;
+        border-radius: 12px;
+        background: #f97316;
+        color: #130a03;
+        font-size: 18px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+      }
+
+      .headline {
+        max-width: 940px;
+        color: #ffffff;
+        font-size: 76px;
+        font-weight: 900;
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+        text-wrap: balance;
+      }
+
+      .subline {
+        max-width: 870px;
+        margin-top: 20px;
+        color: #e5e7eb;
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1.26;
+      }
+
+      .video-shell {
+        position: absolute;
+        top: 540px;
+        left: 60px;
+        width: 960px;
+        height: 540px;
+        overflow: hidden;
+        border: 2px solid rgba(255, 255, 255, 0.2);
+        border-radius: 34px;
+        background: #f7f4ed;
+        box-shadow:
+          0 32px 100px rgba(0, 0, 0, 0.45),
+          0 0 0 10px rgba(255, 255, 255, 0.035);
+      }
+
+      .video-shell video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .benefits {
+        position: absolute;
+        top: 1132px;
+        left: 66px;
+        right: 66px;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+      }
+
+      .benefit {
+        min-height: 126px;
+        padding: 22px 18px;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 24px;
+        background: rgba(255, 255, 255, 0.07);
+        text-align: center;
+      }
+
+      .benefit .icon {
+        display: block;
+        margin-bottom: 10px;
+        color: #fb923c;
+        font-size: 27px;
+        font-weight: 900;
+      }
+
+      .benefit .label {
+        color: #f9fafb;
+        font-size: 21px;
+        font-weight: 800;
+        line-height: 1.12;
+      }
+
+      .cta {
+        position: absolute;
+        top: 1334px;
+        left: 66px;
+        width: 948px;
+        min-height: 340px;
+        padding: 44px;
+        border-radius: 38px;
+        background: linear-gradient(135deg, #f97316, #c2410c);
+        color: #170a02;
+        box-shadow: 0 30px 90px rgba(194, 65, 12, 0.28);
+      }
+
+      .mini-cta {
+        position: absolute;
+        top: 1334px;
+        left: 66px;
+        width: 948px;
+        min-height: 248px;
+        padding: 38px 42px;
+        border: 1px solid rgba(249, 115, 22, 0.48);
+        border-radius: 34px;
+        background: linear-gradient(135deg, rgba(249, 115, 22, 0.18), rgba(255, 255, 255, 0.06));
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+      }
+
+      .mini-cta-title {
+        color: #ffffff;
+        font-size: 50px;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.045em;
+      }
+
+      .mini-cta-sub {
+        margin-top: 18px;
+        color: #f3f4f6;
+        font-size: 25px;
+        font-weight: 700;
+      }
+
+      .mini-cta-url {
+        display: inline-flex;
+        margin-top: 22px;
+        padding: 12px 18px;
+        border-radius: 14px;
+        background: #f97316;
+        color: #160b04;
+        font-size: 22px;
+        font-weight: 900;
+      }
+
+      .cta-kicker {
+        font-size: 21px;
+        font-weight: 900;
+        letter-spacing: 0.12em;
+      }
+
+      .cta-title {
+        margin-top: 14px;
+        font-size: 64px;
+        font-weight: 950;
+        line-height: 0.98;
+        letter-spacing: -0.055em;
+      }
+
+      .cta-platforms {
+        margin-top: 26px;
+        font-size: 27px;
+        font-weight: 850;
+      }
+
+      .cta-url {
+        display: inline-flex;
+        margin-top: 24px;
+        padding: 15px 22px;
+        border-radius: 16px;
+        background: #140b07;
+        color: #ffffff;
+        font-size: 24px;
+        font-weight: 800;
+      }
+
+      .disclaimer {
+        position: absolute;
+        left: 80px;
+        right: 80px;
+        bottom: 76px;
+        color: #d1d5db;
+        font-size: 18px;
+        line-height: 1.35;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div data-hf-id="hf-coex" id="root" data-composition-id="main" data-start="0" data-duration="30" data-width="1080" data-height="1920">
+      <div data-hf-id="hf-rr2k" class="background"></div>
+      <div data-hf-id="hf-80b5" class="grid" data-layout-ignore=""></div>
+      <div data-hf-id="hf-yqer" id="orb" class="orb" data-layout-ignore=""></div>
+
+      <div data-hf-id="hf-1l90" class="brand-row">
+        <div data-hf-id="hf-oojr" class="brand">
+          <img data-hf-id="hf-ijut" src="assets/candar-logo.png" alt="Candar Network">
+          <span data-hf-id="hf-o0f2">Candar Network</span>
+        </div>
+        <div data-hf-id="hf-brv9" class="sponsor-pill">SPONSORED</div>
+      </div>
+
+      <section data-hf-id="hf-ielc" id="copy-1" class="clip copy-card" data-start="0" data-duration="5.2" data-track-index="2">
+        <div data-hf-id="hf-hqad" class="copy-in">
+          <div data-hf-id="hf-4x0q" class="eyebrow">EARLY ACCESS</div>
+          <h1 data-hf-id="hf-9oqp" class="headline">MOST PEOPLE ARRIVE LATE</h1>
+          <p data-hf-id="hf-526l" class="subline">Candar is still early.</p>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-1ing" id="copy-2" class="clip copy-card" data-start="5.2" data-duration="5.3" data-track-index="3">
+        <div data-hf-id="hf-3ix5" class="copy-in">
+          <div data-hf-id="hf-8izx" class="eyebrow">FOUNDING MEMBER</div>
+          <h2 data-hf-id="hf-zaik" class="headline">JOIN BEFORE THE CROWD</h2>
+          <p data-hf-id="hf-krfa" class="subline">Unlock a permanent early-member role.</p>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-defp" id="copy-3" class="clip copy-card" data-start="10.5" data-duration="8" data-track-index="4">
+        <div data-hf-id="hf-4pu8" class="copy-in">
+          <div data-hf-id="hf-cbi9" class="eyebrow">DAILY PROGRESS</div>
+          <h2 data-hf-id="hf-sssy" class="headline">BUILD YOUR STREAK</h2>
+          <p data-hf-id="hf-vwx3" class="subline">Collect in-app points. Unlock achievements. Explore with Candar AI.</p>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-1o5a" id="copy-4" class="clip copy-card" data-start="18.5" data-duration="4.5" data-track-index="5">
+        <div data-hf-id="hf-4bj7" class="copy-in">
+          <div data-hf-id="hf-q8lk" class="eyebrow">YOUR NETWORK</div>
+          <h2 data-hf-id="hf-w5sl" class="headline">GROW IT TOGETHER</h2>
+          <p data-hf-id="hf-1yrx" class="subline">Invite friends. See your network. Reach new levels.</p>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-ows7" id="copy-5" class="clip copy-card" data-start="23" data-duration="7" data-track-index="6">
+        <div data-hf-id="hf-2c02" class="copy-in">
+          <div data-hf-id="hf-gpr8" class="eyebrow">IOS + ANDROID</div>
+          <h2 data-hf-id="hf-ooek" class="headline">START FREE TODAY</h2>
+          <p data-hf-id="hf-2jur" class="subline">Take your place in the Candar ecosystem.</p>
+        </div>
+      </section>
+
+      <div data-hf-id="hf-9oku" id="video-shell" class="video-shell">
+        <video data-hf-id="hf-iprm" id="source-video" class="clip" src="assets/source-ad.mp4" data-start="0" data-duration="30" data-track-index="0" muted playsinline></video>
+      </div>
+
+      <audio data-hf-id="hf-334r" id="voiceover" class="clip" src="assets/voiceover-en.wav" data-start="0" data-duration="29.88" data-track-index="10" data-volume="1"></audio>
+
+      <div data-hf-id="hf-u4kc" class="benefits">
+        <div data-hf-id="hf-wol1" class="benefit">
+          <span data-hf-id="hf-qnpx" class="icon">01</span>
+          <span data-hf-id="hf-v0vs" class="label">Daily streak</span>
+        </div>
+        <div data-hf-id="hf-0nu1" class="benefit">
+          <span data-hf-id="hf-run0" class="icon">02</span>
+          <span data-hf-id="hf-h21m" class="label">Candar AI</span>
+        </div>
+        <div data-hf-id="hf-1ur4" class="benefit">
+          <span data-hf-id="hf-rgbz" class="icon">03</span>
+          <span data-hf-id="hf-lqdq" class="label">Referral network</span>
+        </div>
+      </div>
+
+      <section data-hf-id="hf-hxwy" id="mini-cta" class="clip mini-cta" data-start="0" data-duration="23" data-track-index="7">
+        <div data-hf-id="hf-vcck" class="mini-cta-in">
+          <div data-hf-id="hf-mrvq" class="mini-cta-title">Join early. Build your place.</div>
+          <div data-hf-id="hf-w16r" class="mini-cta-sub">Free on the App Store and Google Play.</div>
+          <div data-hf-id="hf-erif" class="mini-cta-url">candarnetwork.com/download</div>
+        </div>
+      </section>
+
+      <section data-hf-id="hf-3q4j" id="cta" class="clip cta" data-start="23" data-duration="7" data-track-index="7">
+        <div data-hf-id="hf-wk9u" class="cta-in">
+          <div data-hf-id="hf-gck7" class="cta-kicker">CANDAR NETWORK</div>
+          <div data-hf-id="hf-a6dd" class="cta-title">START FREE</div>
+          <div data-hf-id="hf-s052" class="cta-platforms">Available on iOS and Android</div>
+          <div data-hf-id="hf-2bhd" class="cta-url">candarnetwork.com/download</div>
+        </div>
+      </section>
+
+      <p data-hf-id="hf-48b3" class="disclaimer">Candar Points are for in-app progress and benefits only—not cash, an investment, or a promise of future monetary value.</p>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      tl.fromTo("#orb", { scale: 0.88, opacity: 0.25 }, { scale: 1.08, opacity: 0.72, duration: 30, ease: "none" }, 0);
+      tl.fromTo("#video-shell", { scale: 0.965, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.55, ease: "power2.out" }, 0.12);
+
+      [
+        ["#copy-1 .copy-in", 0],
+        ["#copy-2 .copy-in", 5.2],
+        ["#copy-3 .copy-in", 10.5],
+        ["#copy-4 .copy-in", 18.5],
+        ["#copy-5 .copy-in", 23],
+      ].forEach(([selector, start]) => {
+        tl.fromTo(selector, { y: 34, opacity: 0 }, { y: 0, opacity: 1, duration: 0.42, ease: "power2.out" }, start + 0.05);
+      });
+
+      tl.fromTo("#cta .cta-in", { y: 32, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, ease: "power2.out" }, 23.12);
+      tl.fromTo("#mini-cta .mini-cta-in", { y: 28, opacity: 0 }, { y: 0, opacity: 1, duration: 0.48, ease: "power2.out" }, 1.34);
+      tl.fromTo(".benefit", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.5, stagger: 0.11, ease: "power2.out" }, 1.0);
+
+      window.__timelines["main"] = tl;
+    </script>
+  </body>
+</html>

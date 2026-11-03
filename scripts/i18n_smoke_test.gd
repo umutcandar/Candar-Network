@@ -1,0 +1,106 @@
+extends SceneTree
+
+const LOCALES := ["en", "tr", "de", "fr", "es", "pt", "ru", "zh", "ja", "ko", "ar", "hi"]
+const KEYS := [
+	"onboarding_first_step",
+	"onboarding_referral_optional",
+	"common_close",
+	"common_cancel",
+	"common_confirm",
+	"common_try_again",
+	"home_candar_points",
+	"home_rate_short",
+	"home_boost_short",
+	"home_refs_short",
+	"home_quick_access_title",
+	"home_quick_access_desc",
+	"home_btn_ai",
+	"home_roadmap_title",
+	"home_roadmap_view",
+	"home_daily_mission",
+	"home_daily_preparing",
+	"home_mission_open",
+	"home_mission_completed",
+	"home_mission_completed_body",
+	"home_mission_active_body",
+	"home_center_title",
+	"home_center_desc",
+	"home_center_open",
+	"home_center_summary",
+	"mission_collect_points",
+	"mission_ask_ai",
+	"mission_check_team",
+	"mission_explore_ecosystem",
+	"mission_review_roles",
+	"roadmap_complete_account",
+	"roadmap_first_reward",
+	"roadmap_seven_day",
+	"roadmap_first_invite",
+	"roadmap_new_level",
+	"roadmap_special_benefit",
+	"roadmap_all_complete",
+	"roadmap_progress_summary",
+	"ecosystem_title",
+	"ecosystem_body",
+	"center_points",
+	"center_my_team",
+	"center_roles",
+	"center_ad_boost",
+	"center_growth_news",
+	"role_founding_member",
+	"role_streak_master",
+	"role_network_builder",
+	"role_community_pioneer",
+	"roles_permanent_note",
+	"point_center_title",
+	"point_center_body",
+	"point_ad_free_button",
+	"point_boost_button",
+	"point_gold_button",
+	"point_ai_button",
+	"point_ad_free_reward",
+	"point_boost_reward",
+	"point_gold_reward",
+	"point_ai_reward",
+	"point_confirm_title",
+	"point_confirm_body",
+	"point_processing_title",
+	"point_processing_body",
+	"point_failed_title",
+	"point_active_title",
+	"point_active_body",
+	"team_title",
+	"team_loading_body",
+	"team_power_header",
+	"team_empty_body",
+	"team_next_target",
+	"team_all_complete",
+	"team_copy_code",
+	"team_invite_ready",
+	"team_invite_copied",
+	"invite_button",
+	"invite_auto_attribution",
+	"invite_code_auto_fill",
+	"share_title",
+	"invite_explainer",
+	"profile_referrals",
+	"loading_referrals",
+	"growth_news_title",
+	"growth_news_body",
+	"growth_news_body_current",
+]
+
+func _initialize() -> void:
+	var failures: PackedStringArray = []
+	for locale in LOCALES:
+		TranslationServer.set_locale(locale)
+		for key in KEYS:
+			var value := TranslationServer.translate(key)
+			if value == "" or value == key:
+				failures.append("%s:%s" % [locale, key])
+	if not failures.is_empty():
+		push_error("Missing translations: %s" % ", ".join(failures))
+		quit(1)
+		return
+	print("i18n smoke test passed: %d keys x %d locales" % [KEYS.size(), LOCALES.size()])
+	quit(0)

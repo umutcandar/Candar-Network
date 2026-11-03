@@ -1,0 +1,124 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function owns(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function changesServerManagedUserFields() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasAny([
+        'points',
+        'currentMultiplier',
+        'boostExpiresAt',
+        'mining',
+        'isPremium',
+        'premium',
+        'premiumExpiresAt',
+        'purchaseExpiresAt',
+        'lastPurchasePlatform',
+        'lastPurchaseProductId',
+        'lastPurchaseStoreProductId',
+        'lastPurchaseProof',
+        'lastPurchaseProofHash',
+        'lastPurchaseAt',
+        'lastMiningStart',
+        'lastMiningAt',
+        'nextMiningAt',
+        'lastMiningReward',
+        'lastRewardDay',
+        'lastLoginDate',
+        'dailyStreak',
+        'streakBonus',
+        'streakShieldCount',
+        'streakShieldEarnedAt',
+        'streakShieldUsedAt',
+        'xp',
+        'level',
+        'achievements',
+        'achievementsUpdatedAt',
+        'lastKnownMiningRate',
+        'lastMiningRateComponents',
+        'rewardedBoostMultiplier',
+        'rewardedBoostDay',
+        'rewardedBoostDailyCount',
+        'rewardedBoostLastAt',
+        'lastRewardedBoostAt',
+        'pointsAdFreeUntil',
+        'pointsBoostUntil',
+        'pointsBoostMultiplier',
+        'profilePrivilege',
+        'profilePrivilegeUnlockedAt',
+        'aiBonusCredits',
+        'lastAiBonusUsedAt',
+        'lastPointRewardId',
+        'lastPointRewardAt',
+        'referralCode',
+        'referredBy',
+        'referredByUid',
+        'referralCount',
+        'referralBonusApplied',
+        'referralRewardStatus',
+        'referralPendingAt',
+        'referralQualifiedAt',
+        'referralInviteeRewardPoints',
+        'referralInviterRewardPoints',
+        'miningReadyNotifiedFor',
+        'miningReadyNotificationSentAt',
+        'miningNeverStartedPushAt',
+        'dailyPointsPushCampaignKey',
+        'dailyPointsPushSentAt',
+        'dailyPointsPushDeliveryKey',
+        'dailyPointsPushClaimKey',
+        'dailyPointsPushClaimedAt',
+        'dailyPointsPushLastErrorCode',
+        'dailyPointsPushLastErrorAt',
+        'pushTokenInvalidAt'
+      ]);
+    }
+
+    match /users/{uid} {
+      allow read: if owns(uid);
+      allow create, delete: if false;
+      allow update: if owns(uid) && !changesServerManagedUserFields();
+
+      match /{subcollection=**} {
+        allow read, write: if owns(uid);
+      }
+    }
+
+    match /config/{document} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /dailyRewards/{document} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /rewards/{document} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /mining/{document} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /purchases/{document} {
+      allow read: if signedIn();
+      allow write: if false;
+    }
+
+    match /chats/{uid}/messages/{messageId} {
+      allow read, create: if owns(uid);
+      allow update, delete: if false;
+    }
+  }
+}

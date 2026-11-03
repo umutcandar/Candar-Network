@@ -1,0 +1,60 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
+[application]
+
+config/name="Candar Network"
+config/version="2.0.21"
+run/main_scene="res://onboarding.tscn"
+config/auto_accept_quit=false
+config/quit_on_go_back=false
+config/features=PackedStringArray("4.6", "Mobile")
+boot_splash/bg_color=Color(0.05882353, 0.09019608, 0.16470589, 1)
+boot_splash/image="uid://c6po4kj7wg02g"
+config/icon="uid://cblcjaeipdx1b"
+
+[autoload]
+
+Global="*res://global.gd"
+CandarUI="*res://scripts/CandarUI.gd"
+Firebase="*res://scripts/FirebaseClient.gd"
+IapManager="*res://IAPManager.gd"
+Analytics="*uid://cjhm1lhdg5d53"
+DeeplinkRouter="*res://autoload/deeplink_router.gd"
+DeeplinkBridge="*res://autoload/deeplink_bridge.gd"
+
+[display]
+
+window/size/viewport_width=720
+window/size/viewport_height=1280
+window/size/mode=3
+window/size/resizable=false
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+window/handheld/orientation=1
+window/ios/hide_status_bar=false
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/DeeplinkPlugin/plugin.cfg", "res://addons/GodotGooglePlayBilling/plugin.cfg", "res://addons/admob/plugin.cfg", "res://addons/google_analytics/plugin.cfg")
+
+[internationalization]
+
+locale/translations=PackedStringArray("res://candar_translations.ar.translation", "res://candar_translations.de.translation", "res://candar_translations.en.translation", "res://candar_translations.es.translation", "res://candar_translations.fr.translation", "res://candar_translations.hi.translation", "res://candar_translations.ja.translation", "res://candar_translations.ko.translation", "res://candar_translations.pt.translation", "res://candar_translations.ru.translation", "res://candar_translations.tr.translation", "res://candar_translations.zh.translation")
+
+[rendering]
+
+renderer/rendering_method="mobile"
+textures/vram_compression/import_etc2_astc=true
+environment/defaults/default_clear_color=Color(0.05882353, 0.09019608, 0.16470589, 1)

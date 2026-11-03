@@ -1,0 +1,42 @@
+{
+  "lines": [
+    {
+      "id": "01",
+      "sfx": [
+        "impact-soft",
+        "digital-whoosh"
+      ]
+    },
+    {
+      "id": "02",
+      "sfx": [
+        "soft-riser",
+        "impact-soft"
+      ]
+    },
+    {
+      "id": "03",
+      "sfx": [
+        "device-whoosh",
+        "click-soft"
+      ]
+    },
+    {
+      "id": "04",
+      "sfx": [
+        "soft-riser",
+        "card-pop"
+      ]
+    },
+    {
+      "id": "05",
+      "sfx": [
+        "click-soft",
+        "release-glow"
+      ]
+    }
+  ],
+  "bgm": {
+    "mode": "none"
+  }
+}

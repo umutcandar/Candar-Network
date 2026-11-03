@@ -1,0 +1,4 @@
+{"id":"image_001","type":"image","path":"assets/ai.png","source":"existing","description":"ai","width":1290,"height":2796,"provenance":{"provider":"local","adopted":true}}
+{"id":"image_002","type":"image","path":"assets/logo.png","source":"existing","description":"logo","width":1024,"height":1024,"provenance":{"provider":"local","adopted":true}}
+{"id":"image_003","type":"image","path":"assets/network.png","source":"existing","description":"network","width":1290,"height":2796,"provenance":{"provider":"local","adopted":true}}
+{"id":"image_004","type":"image","path":"assets/streak.png","source":"existing","description":"streak","width":1290,"height":2796,"provenance":{"provider":"local","adopted":true}}

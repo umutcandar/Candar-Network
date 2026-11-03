@@ -1,0 +1,728 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<style>@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(assets/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuLyfMZg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url(assets/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuGKYMZg.ttf) format('truetype');
+}
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: url(assets/fonts/UcCO3FwrK3iLTeHuS_nVMrMxCp50SjIw2boKoduKmMEVuDyYMZg.ttf) format('truetype');
+}
+</style>
+<style>:root {
+  --bg: #fbfaf7;
+  --panel: #ffffff;
+  --ink: #171717;
+  --muted: #5f6368;
+  --line: #e9e1d6;
+  --brand: #f97316;
+  --brand-dark: #9a3412;
+  --teal: #0f766e;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+}
+
+.wrap {
+  width: min(1120px, 100%);
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel) url('https://candarnetwork.com/images/candar_logo_192x192.png') center/30px 30px no-repeat;
+  box-shadow: 0 8px 24px rgba(23, 23, 23, .08);
+}
+
+.nav {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.nav a {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  color: var(--brand-dark);
+}
+
+.hero {
+  padding-top: 46px;
+  text-align: center;
+}
+
+.eyebrow {
+  display: inline-flex;
+  margin: 0 0 18px;
+  border: 1px solid #fed7aa;
+  border-radius: 999px;
+  padding: 8px 12px;
+  background: #fff7ed;
+  color: var(--brand-dark);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.hero-logo {
+  display: block;
+  margin: 0 auto;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 18px 46px rgba(23, 23, 23, .12);
+}
+
+.hero h1 {
+  width: 100%;
+  max-width: 820px;
+  margin: 22px auto 12px;
+  font-size: clamp(38px, 7vw, 74px);
+  line-height: .96;
+  letter-spacing: 0;
+  overflow-wrap: anywhere;
+}
+
+.lead {
+  max-width: 720px;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: 19px;
+  line-height: 1.62;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btn {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0 18px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.btn.primary {
+  border-color: var(--brand);
+  background: var(--brand);
+  color: #ffffff;
+}
+
+.btn.secondary {
+  border-color: var(--teal);
+  background: var(--teal);
+  color: #ffffff;
+}
+
+.btn.ghost {
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.proof {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 28px auto 0;
+}
+
+.proof span {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 9px 12px;
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 44px 0 18px;
+  text-align: left;
+}
+
+.steps article,
+.card,
+.download-band {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: 0 14px 40px rgba(23, 23, 23, .06);
+}
+
+.steps article {
+  padding: 18px;
+}
+
+.steps strong {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: var(--teal);
+}
+
+.steps h2,
+.card h2,
+.download-band h2 {
+  margin: 14px 0 8px;
+  font-size: 20px;
+}
+
+.steps p,
+.card p,
+.download-band p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.card {
+  padding: 18px;
+  text-align: left;
+}
+
+.roadmap {
+  margin: 44px 0 18px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 36px 0;
+  text-align: left;
+}
+
+.section-intro {
+  max-width: 760px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+
+.section-intro .eyebrow {
+  margin-bottom: 12px;
+}
+
+.section-intro h2 {
+  margin: 0 0 12px;
+  font-size: clamp(30px, 5vw, 48px);
+  line-height: 1.02;
+}
+
+.section-intro p:not(.eyebrow) {
+  margin: 0;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.roadmap-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roadmap-list li {
+  display: grid;
+  grid-template-columns: 50px 1fr;
+  gap: 14px;
+  border-top: 1px solid var(--line);
+  padding: 22px 0;
+}
+
+.roadmap-list span {
+  display: inline-flex;
+  width: 42px;
+  height: 42px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: var(--teal);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.roadmap-list h3 {
+  margin: 0 0 7px;
+  font-size: 20px;
+}
+
+.roadmap-list p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.roadmap-note {
+  max-width: 760px;
+  margin: 20px auto 0;
+  border-left: 3px solid var(--teal);
+  padding: 10px 0 10px 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.download-band {
+  margin-top: 18px;
+  padding: 28px;
+}
+
+.download-page {
+  min-height: 100vh;
+  padding-top: 22px;
+}
+
+.download-brand {
+  width: fit-content;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.download-hero {
+  max-width: 780px;
+  margin: 38px auto 0;
+  text-align: center;
+}
+
+.download-hero h1 {
+  margin: 20px auto 12px;
+  font-size: clamp(38px, 7vw, 70px);
+  line-height: .98;
+  letter-spacing: 0;
+}
+
+.download-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 28px auto 0;
+}
+
+.download-store {
+  min-height: 74px;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.download-store small {
+  font-size: 13px;
+  font-weight: 700;
+  opacity: .86;
+}
+
+.download-store.recommended {
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, .14), 0 18px 42px rgba(23, 23, 23, .13);
+}
+
+.download-note {
+  max-width: 620px;
+  margin: 18px auto 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.download-proof {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 34px auto 0;
+}
+
+.download-proof article {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 18px;
+  background: var(--panel);
+  box-shadow: 0 14px 40px rgba(23, 23, 23, .06);
+}
+
+.download-proof strong {
+  display: inline-flex;
+  width: 32px;
+  height: 32px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #ecfdf5;
+  color: var(--teal);
+}
+
+.download-proof h2 {
+  margin: 14px 0 8px;
+  font-size: 20px;
+}
+
+.download-proof p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.vision-band {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  margin-top: 18px;
+  border-radius: 12px;
+  padding: 34px;
+  background:
+    radial-gradient(circle at 90% 20%, rgba(15, 118, 110, .28), transparent 30%),
+    linear-gradient(135deg, #0b1220, #172033);
+  color: #ffffff;
+  text-align: left;
+}
+
+.vision-band .eyebrow {
+  margin-bottom: 12px;
+  border-color: rgba(251, 191, 36, .28);
+  background: rgba(251, 191, 36, .09);
+  color: #fbbf24;
+}
+
+.vision-band h2 {
+  max-width: 620px;
+  margin: 0 0 10px;
+  font-size: clamp(28px, 4vw, 42px);
+  line-height: 1.05;
+}
+
+.vision-band p:not(.eyebrow) {
+  max-width: 650px;
+  margin: 0;
+  color: #b8c3d1;
+  line-height: 1.65;
+}
+
+.vision-btn {
+  flex: 0 0 auto;
+  border-color: #f59e0b;
+  background: #f59e0b;
+  color: #171009;
+}
+
+.download-band h2 {
+  font-size: 28px;
+}
+
+.footer {
+  border-top: 1px solid var(--line);
+  margin-top: 28px;
+  padding: 24px;
+  color: var(--muted);
+  text-align: center;
+}
+
+pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+@media (max-width: 760px) {
+  .header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .nav {
+    justify-content: flex-start;
+  }
+
+  .hero {
+    padding-top: 24px;
+  }
+
+  .hero h1 {
+    font-size: 32px;
+    line-height: 1.06;
+  }
+
+  .lead {
+    font-size: 17px;
+  }
+
+  .steps {
+    grid-template-columns: 1fr;
+  }
+
+  .roadmap-list {
+    grid-template-columns: 1fr;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .proof {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .proof span {
+    width: 100%;
+  }
+
+  .vision-band {
+    align-items: stretch;
+    flex-direction: column;
+    padding: 26px;
+  }
+
+  .download-actions,
+  .download-proof {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .wrap {
+    padding-right: 18px;
+    padding-left: 18px;
+  }
+
+  .hero h1 {
+    font-size: 29px;
+  }
+
+  .nav {
+    gap: 11px;
+  }
+}
+</style>
+<script async="" src="https://www.googletagmanager.com/gtm.js?id=GTM-P6QCXSG9"></script>
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://candarnetwork.com/#organization",
+        "name": "Candar Network",
+        "url": "https://candarnetwork.com/",
+        "logo": "https://candarnetwork.com/images/candar_logo_192x192.png",
+        "email": "candarnetwork@gmail.com"
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://candarnetwork.com/#website",
+        "url": "https://candarnetwork.com/",
+        "name": "Candar Network",
+        "publisher": {"@id": "https://candarnetwork.com/#organization"},
+        "inLanguage": "tr-TR"
+      },
+      {
+        "@type": "SoftwareApplication",
+        "name": "Candar Network",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Android, iOS",
+        "url": "https://candarnetwork.com/",
+        "image": "https://candarnetwork.com/images/candar_logo_192x192.png",
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+      }
+    ]
+  }
+  </script>
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-P6QCXSG9');</script>
+</head>
+<body>
+
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-P6QCXSG9"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+
+  <header class="wrap header">
+    <div class="brand">
+      <div class="logo"></div>
+      <strong>Candar Network</strong>
+    </div>
+    <nav class="nav">
+      <a href="#roadmap">Roadmap</a>
+      <a href="/download?src=site_nav&amp;utm_medium=website&amp;utm_campaign=download">İndir</a>
+      <a href="/privacy.html">Gizlilik</a>
+      <a href="/terms.html">Şartlar</a>
+    </nav>
+  </header>
+
+  <main class="hero wrap">
+    <p class="eyebrow">Early access is open now</p>
+    <img class="hero-logo" src="https://candarnetwork.com/images/candar_logo_192x192.png" alt="Candar Network logo" width="112" height="112">
+    <h1>Bugün katıl.<br>Yarınki Candar<br>ağını birlikte kur.</h1>
+    <p class="lead">
+      Candar'a erken katıl, günlük puanını kaçırma, serini koru ve referans ağını büyüt. Topluluk büyüdükçe ilk katmandaki yerini ve uygulama içi avantajlarını şimdiden hazırla.
+    </p>
+    <p class="actions">
+      <a class="btn primary" href="/download?src=site_hero&amp;utm_medium=website&amp;utm_campaign=download">Hemen İndir</a>
+      <a class="btn secondary" href="https://play.google.com/store/apps/details?id=com.candarnetwork.app&amp;referrer=utm_source%3Dsite_hero%26utm_medium%3Dwebsite%26utm_campaign%3Ddirect_android">Google Play</a>
+      <a class="btn ghost" href="mailto:candarnetwork@gmail.com">Destek</a>
+    </p>
+    <div class="proof" aria-label="Candar Network öne çıkanlar">
+      <span>Early community access</span>
+      <span>Daily points &amp; streaks</span>
+      <span>Referral network growth</span>
+    </div>
+
+    <section class="steps" aria-label="Candar Network nasıl çalışır">
+      <article>
+        <strong>1</strong>
+        <h2>Erken yerini al</h2>
+        <p>Hesabını oluştur, Candar topluluğundaki ilk profilini hazırla.</p>
+      </article>
+      <article>
+        <strong>2</strong>
+        <h2>Serini kaçırma</h2>
+        <p>Her gün uygulamaya gir, puanını topla ve ilerlemeni büyüt.</p>
+      </article>
+      <article>
+        <strong>3</strong>
+        <h2>Ağını büyüt</h2>
+        <p>Kodunu paylaş, topluluk genişlerken görünür yerini güçlendir.</p>
+      </article>
+    </section>
+
+    <section id="roadmap" class="roadmap" aria-label="Candar Network roadmap">
+      <div class="section-intro">
+        <p class="eyebrow">CANDAR ROADMAP</p>
+        <h2>Collect today. Be early tomorrow.</h2>
+        <p>Candar'ın en güçlü hissi erken katılım: puanını biriktir, serini koru, ağını büyüt ve sonraki topluluk fazlarına hazır kullanıcılar arasında yerini al.</p>
+      </div>
+      <ol class="roadmap-list">
+        <li><span>01</span><div><h3>First community layer</h3><p>Daily points, streaks, referrals, and early user profiles become the base of the network.</p></div></li>
+        <li><span>02</span><div><h3>Status and visibility</h3><p>Badges, leaderboards, and milestones make consistent participation more visible.</p></div></li>
+        <li><span>03</span><div><h3>Utility expansion</h3><p>More in-app experiences, partner-ready surfaces, and community missions as usage grows.</p></div></li>
+        <li><span>04</span><div><h3>Ecosystem access</h3><p>Future experiences shaped by product readiness, community feedback, and platform rules.</p></div></li>
+      </ol>
+      <p class="roadmap-note">Candar points are in-app points. Early participation can unlock stronger in-app positioning, but this is not a financial promise, investment product, or guarantee of external value.</p>
+    </section>
+
+    <section id="ozellikler" class="grid" aria-label="Candar Network özellikleri">
+      <article class="card">
+        <h2>Günlük Puan</h2>
+        <p>Bugün puanını topla, serini koru ve Candar ağı büyürken ilerlemeni geride bırakma.</p>
+      </article>
+      <article class="card">
+        <h2>Referans Ağı</h2>
+        <p>Kodunu paylaş, gerçek kullanıcıları davet et ve erken topluluk katmanındaki yerini güçlendir.</p>
+      </article>
+      <article class="card">
+        <h2>Boost ve Premium</h2>
+        <p>Basic, Pro ve Ultra boost seçenekleriyle ilerlemeni güçlendir; Premium ile daha sade bir deneyim kullan.</p>
+      </article>
+      <article class="card">
+        <h2>Candar AI</h2>
+        <p>Uygulama içi yapay zeka asistanı; puan, referans, boost ve premium konularında hızlı destek verir.</p>
+      </article>
+      <article class="card">
+        <h2>Gizlilik</h2>
+        <p>Google ile giriş e-posta ve temel profil bilgisini hesap oluşturma amacıyla kullanır. Veriler satılmaz.</p>
+      </article>
+      <article class="card">
+        <h2>Destek</h2>
+        <p>Destek ve geliştirici iletişimi: <a href="mailto:candarnetwork@gmail.com">candarnetwork@gmail.com</a></p>
+      </article>
+    </section>
+
+    <section class="vision-band" aria-label="Candar Network vizyonu">
+      <div>
+        <p class="eyebrow">EARLY COMMUNITY</p>
+        <h2>Bugünün küçük adımı, yarının Candar topluluğunda yerini belirler.</h2>
+        <p>Serini koru, ağını büyüt ve ürünün sonraki fazlarına hazır kullanıcılar arasında kal.</p>
+      </div>
+      <a class="btn vision-btn" href="/download?src=site_vision&amp;utm_medium=website&amp;utm_campaign=community_roadmap">Candar'a Katıl</a>
+    </section>
+
+    <section class="download-band" aria-label="Candar Network indir">
+      <h2>Candar Network'ü şimdi indir</h2>
+    <p>Günlük puanını al, serini başlat ve Candar büyümeden önce ağdaki yerini hazırla.</p>
+      <div class="actions">
+        <a class="btn primary" href="/download?src=site_footer&amp;utm_medium=website&amp;utm_campaign=download">İndir</a>
+        <a class="btn secondary" href="https://play.google.com/store/apps/details?id=com.candarnetwork.app&amp;referrer=utm_source%3Dsite_footer%26utm_medium%3Dwebsite%26utm_campaign%3Ddirect_android">Google Play</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Candar Network · <a href="#roadmap">Roadmap</a> · <a href="/privacy.html">Gizlilik Politikası</a> · <a href="/terms.html">Hizmet Şartları</a> · <a href="/app-ads.txt">app-ads.txt</a></p>
+  </footer>
+
+
+
+</body>
+</html>

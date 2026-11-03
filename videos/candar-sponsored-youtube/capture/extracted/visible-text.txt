@@ -1,0 +1,80 @@
+[strong] Candar Network
+[a] Rehberler
+[a] Gizlilik
+[p] Early access is open now
+[h1] Bugün katıl.
+[h1] Yarınki Candar
+[h1] ağını birlikte kur.
+[p] Candar'a erken katıl, günlük puanını kaçırma, serini koru ve referans ağını büyüt. Topluluk büyüdükçe ilk katmandaki yerini ve uygulama içi avantajlarını şimdiden hazırla.
+[a] Hemen İndir
+[a] Google Play
+[a] Destek
+[span] Early community access
+[span] Daily points & streaks
+[span] Referral network growth
+[h2] Erken yerini al
+[p] Hesabını oluştur, Candar topluluğundaki ilk profilini hazırla.
+[h2] Serini kaçırma
+[p] Her gün uygulamaya gir, puanını topla ve ilerlemeni büyüt.
+[h2] Ağını büyüt
+[p] Kodunu paylaş, topluluk genişlerken görünür yerini güçlendir.
+[p] CANDAR ROADMAP
+[h2] Collect today. Be early tomorrow.
+[p] Candar'ın en güçlü hissi erken katılım: puanını biriktir, serini koru, ağını büyüt ve sonraki topluluk fazlarına hazır kullanıcılar arasında yerini al.
+[h3] First community layer
+[p] Daily points, streaks, referrals, and early user profiles become the base of the network.
+[h3] Status and visibility
+[p] Badges, leaderboards, and milestones make consistent participation more visible.
+[h3] Utility expansion
+[p] More in-app experiences, partner-ready surfaces, and community missions as usage grows.
+[h3] Ecosystem access
+[p] Future experiences shaped by product readiness, community feedback, and platform rules.
+[p] Candar points are in-app points. Early participation can unlock stronger in-app positioning, but this is not a financial promise, investment product, or guarantee of external value.
+[h2] Günlük Puan
+[p] Bugün puanını topla, serini koru ve Candar ağı büyürken ilerlemeni geride bırakma.
+[h2] Referans Ağı
+[p] Kodunu paylaş, gerçek kullanıcıları davet et ve erken topluluk katmanındaki yerini güçlendir.
+[h2] Boost ve Premium
+[p] Basic, Pro ve Ultra boost seçenekleriyle ilerlemeni güçlendir; Premium ile daha sade bir deneyim kullan.
+[h2] Candar AI
+[p] Uygulama içi yapay zeka asistanı; puan, referans, boost ve premium konularında hızlı destek verir.
+[h2] Gizlilik
+[p] Google ile giriş e-posta ve temel profil bilgisini hesap oluşturma amacıyla kullanır. Veriler satılmaz.
+[h2] Destek
+[p] Destek ve geliştirici iletişimi:
+[a] candarnetwork@gmail.com
+[p] ÜCRETSİZ REHBERLER
+[h2] Küçük bir günlük adımı kalıcı bir seriye dönüştür.
+[p] Seri oluşturma, günlük ilerlemeyi görünür kılma ve Candar’ın özelliklerini doğru kullanma hakkında kısa, uygulanabilir rehberler.
+[p] 7 GÜNLÜK PLAN
+[h3] 7 Günlük Seri Mücadelesi
+[p] Her gün birkaç dakikayla başlayabileceğin sade bir seri planı ve seriyi korumak için uygulanabilir ipuçları.
+[a] Rehberi oku →
+[p] UYGULAMA REHBERİ
+[h3] Günlük Seri Uygulaması Nasıl Seçilir?
+[p] Bir seri uygulamasında ilerleme, esneklik, topluluk ve gizlilik açısından bakılması gereken temel noktalar.
+[a] Rehberi oku →
+[p] ENGLISH
+[h3] Candar in English
+[p] Explore the daily streak, referral team, in-app points, achievements, and Candar AI experience.
+[a] Open English page →
+[p] SIK SORULANLAR
+[h2] Candar hakkında net cevaplar.
+[summary] Candar Network nedir?
+[p] Günlük seri, uygulama içi puan, referans takımı, başarılar ve Candar AI özelliklerini tek mobil deneyimde birleştiren bir alışkanlık ve topluluk uygulamasıdır.
+[summary] Ücretsiz kullanabilir miyim?
+[p] Evet. Candar Network iOS ve Android’de ücretsiz indirilebilir. Premium ve boost ürünleri tamamen isteğe bağlıdır.
+[summary] Candar puanları para veya kripto para mı?
+[p] Hayır. Puanlar yalnızca uygulama içi ilerleme içindir; nakit, yatırım getirisi, kripto para veya harici değer garantisi yoktur.
+[p] EARLY COMMUNITY
+[h2] Bugünün küçük adımı, yarının Candar topluluğunda yerini belirler.
+[p] Serini koru, ağını büyüt ve ürünün sonraki fazlarına hazır kullanıcılar arasında kal.
+[a] Candar'a Katıl
+[h2] Candar Network'ü şimdi indir
+[p] Günlük puanını al, serini başlat ve Candar büyümeden önce ağdaki yerini hazırla.
+[a] İndir
+[a] Google Play
+[p] © 2026 Candar Network ·
+[a] Gizlilik Politikası
+[a] Hizmet Şartları
+[a] app-ads.txt

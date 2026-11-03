@@ -1,0 +1,5 @@
+{"id":"voice_001","type":"voice","path":"assets/audio/narration.wav","source":"existing","description":"narration","duration":34.4,"provenance":{"provider":"local","adopted":true}}
+{"id":"image_001","type":"image","path":"assets/candar-daily-streak.png","source":"existing","description":"candar daily streak","width":1290,"height":2796,"provenance":{"provider":"local","adopted":true}}
+{"id":"image_002","type":"image","path":"assets/candar-logo-official.png","source":"existing","description":"candar logo official","width":192,"height":192,"provenance":{"provider":"local","adopted":true}}
+{"id":"image_003","type":"image","path":"assets/candar-network-logo.png","source":"existing","description":"candar network logo","width":192,"height":192,"provenance":{"provider":"local","adopted":true}}
+{"id":"image_004","type":"image","path":"assets/candar-referral-network.png","source":"existing","description":"candar referral network","width":1290,"height":2796,"provenance":{"provider":"local","adopted":true}}

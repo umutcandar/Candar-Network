@@ -1,0 +1,18 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Giriş — Candar Network</title><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/style.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet"></head><body>
+<header class="wrap header"><div class="brand"><div class="logo"></div><strong>Candar Network</strong></div><nav class="nav"><a class="btn" href="/">Ana sayfa</a></nav></header>
+<main class="wrap hero"><h1>Google ile Giriş</h1><p class="lead">Butona tıklayıp Google hesabınızla güvenli şekilde giriş yapabilirsiniz.</p>
+<p><button id="googleBtn" class="btn primary">Google ile devam et</button> <button id="signOutBtn" class="btn ghost" style="display:none">Çıkış</button></p>
+<div id="me" class="card" style="display:none;text-align:left"><h3>Profil</h3><pre id="meJson"></pre></div></main>
+<script type="module" src="/firebase-config.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+import { firebaseConfig } from "/firebase-config.js";
+const app = initializeApp(firebaseConfig); const auth = getAuth(app); const provider = new GoogleAuthProvider();
+const g=document.getElementById('googleBtn'), o=document.getElementById('signOutBtn'), box=document.getElementById('me'), pre=document.getElementById('meJson');
+onAuthStateChanged(auth,(u)=>{ g.style.display=u?"none":"inline-block"; o.style.display=u?"inline-block":"none"; if(u){ box.style.display="block"; pre.textContent = JSON.stringify({uid:u.uid,email:u.email,name:u.displayName,photo:u.photoURL}, null, 2);} else { box.style.display="none"; }});
+g.addEventListener('click',()=>signInWithPopup(auth,provider)); o.addEventListener('click',()=>signOut(auth));
+</script></body></html>

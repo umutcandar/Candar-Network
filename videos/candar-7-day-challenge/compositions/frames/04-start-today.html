@@ -1,0 +1,438 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+    }
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      font-family: "Inter";
+      color: #171717;
+    }
+
+    [class~="04-start-today-ground"] {
+      position: absolute;
+      inset: 0;
+      background: #f59e0b;
+    }
+
+    [class~="04-start-today-scene"] {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+    }
+
+    [class~="04-start-today-stage"] {
+      position: absolute;
+      inset: 0 0 17cqh;
+    }
+
+    [class~="04-start-today-burst"] {
+      position: absolute;
+      left: 50%;
+      top: 34cqh;
+      width: 1px;
+      height: 1px;
+    }
+
+    [class~="04-start-today-dot"] {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 3.3cqw;
+      height: 3.3cqw;
+      min-width: 30px;
+      min-height: 30px;
+      border-radius: 50%;
+      background: #171717;
+      will-change: transform, opacity;
+    }
+
+    [class~="04-start-today-swap"] {
+      position: absolute;
+      left: 7cqw;
+      right: 7cqw;
+      top: 18cqh;
+      height: 36cqh;
+    }
+
+    [class~="04-start-today-logo-state"],
+    [class~="04-start-today-cta-state"] {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform-origin: 50% 50%;
+      will-change: transform, opacity;
+    }
+
+    [class~="04-start-today-logo-state"] {
+      z-index: 1;
+    }
+
+    [class~="04-start-today-logo"] {
+      display: block;
+      width: 34cqw;
+      max-width: 360px;
+      max-height: 25cqh;
+      object-fit: contain;
+      filter: brightness(0);
+    }
+
+    [class~="04-start-today-cta-state"] {
+      z-index: 2;
+      flex-direction: column;
+      text-align: center;
+    }
+
+    [class~="04-start-today-cta-copy"] {
+      max-width: 86cqw;
+      margin: 0;
+      font-size: 7.2cqw;
+      line-height: 0.94;
+      letter-spacing: -0.04em;
+      font-weight: 800;
+      text-transform: lowercase;
+      color: #171717;
+    }
+
+    [class~="04-start-today-support"] {
+      margin-top: 3.2cqh;
+      font-size: 2.1cqw;
+      line-height: 1;
+      letter-spacing: 0.14em;
+      font-weight: 400;
+      text-transform: uppercase;
+      color: rgba(17, 17, 17, 0.55);
+    }
+
+    [class~="04-start-today-bloom"] {
+      position: absolute;
+      z-index: 1;
+      left: 50%;
+      top: 47cqh;
+      width: 72cqw;
+      height: 25cqh;
+      margin-left: -36cqw;
+      margin-top: -12.5cqh;
+      border-radius: 50%;
+      background: radial-gradient(
+        ellipse at center,
+        rgba(23, 23, 23, 0.28) 0%,
+        rgba(23, 23, 23, 0.08) 42%,
+        rgba(23, 23, 23, 0) 72%
+      );
+      pointer-events: none;
+      will-change: transform, opacity;
+    }
+
+    [class~="04-start-today-url-state"] {
+      position: absolute;
+      z-index: 3;
+      left: 5.5cqw;
+      right: 5.5cqw;
+      top: 17cqh;
+      height: 58cqh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      will-change: opacity;
+    }
+
+    [class~="04-start-today-final-logo"] {
+      display: block;
+      width: 22cqw;
+      max-width: 240px;
+      max-height: 16cqh;
+      object-fit: contain;
+      filter: brightness(0);
+      will-change: transform, opacity;
+    }
+
+    [class~="04-start-today-url"] {
+      width: 100%;
+      min-height: 13cqh;
+      margin-top: 8cqh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      font-size: 4.25cqw;
+      line-height: 1;
+      letter-spacing: -0.035em;
+      font-weight: 800;
+      color: #171717;
+    }
+
+    [class~="04-start-today-final-rule"] {
+      width: 11cqw;
+      height: 2px;
+      margin-top: 3cqh;
+      background: #171717;
+      transform-origin: 50% 50%;
+    }
+
+    [class~="04-start-today-final-dots"] {
+      display: flex;
+      align-items: center;
+      gap: 2.2cqw;
+      margin-top: 6cqh;
+    }
+
+    [class~="04-start-today-final-dot"] {
+      width: 2.2cqw;
+      height: 2.2cqw;
+      min-width: 20px;
+      min-height: 20px;
+      border-radius: 50%;
+      background: #171717;
+      will-change: transform, opacity;
+    }
+  </style>
+
+  <div id="root" data-composition-id="04-start-today" data-duration="4" data-width="1080" data-height="1920">
+    <div
+      class="clip 04-start-today-ground"
+      id="f04-start-today-ground"
+      data-start="0"
+      data-duration="4"
+      data-track-index="0"
+    ></div>
+
+    <div
+      class="clip 04-start-today-scene"
+      id="f04-start-today-scene"
+      data-start="0"
+      data-duration="4"
+      data-track-index="1"
+    >
+      <div class="04-start-today-stage">
+        <div class="04-start-today-burst" aria-hidden="true">
+          <span class="04-start-today-dot" data-target-x="-210" data-target-y="-80"></span>
+          <span class="04-start-today-dot" data-target-x="-140" data-target-y="74"></span>
+          <span class="04-start-today-dot" data-target-x="-72" data-target-y="-132"></span>
+          <span class="04-start-today-dot" data-target-x="0" data-target-y="104"></span>
+          <span class="04-start-today-dot" data-target-x="72" data-target-y="-132"></span>
+          <span class="04-start-today-dot" data-target-x="140" data-target-y="74"></span>
+          <span class="04-start-today-dot" data-target-x="210" data-target-y="-80"></span>
+        </div>
+
+        <div class="04-start-today-bloom" id="f04-start-today-bloom"></div>
+
+        <div class="04-start-today-swap">
+          <div class="04-start-today-logo-state" id="f04-start-today-logo-state">
+            <img
+              class="04-start-today-logo"
+              src="assets/logo_001.png"
+              alt="Candar Network"
+            />
+          </div>
+
+          <div class="04-start-today-cta-state" id="f04-start-today-cta-state">
+            <p class="04-start-today-cta-copy">start the 7-day<br />Candar challenge.</p>
+            <div class="04-start-today-support" id="f04-start-today-support">iOS + Android</div>
+          </div>
+        </div>
+
+        <div class="04-start-today-url-state" id="f04-start-today-url-state">
+          <img
+            class="04-start-today-final-logo"
+            id="f04-start-today-final-logo"
+            src="assets/logo_001.png"
+            alt="Candar Network"
+          />
+          <div class="04-start-today-url" id="f04-start-today-url"></div>
+          <div class="04-start-today-final-rule" id="f04-start-today-final-rule"></div>
+          <div class="04-start-today-final-dots" aria-hidden="true">
+            <span class="04-start-today-final-dot"></span>
+            <span class="04-start-today-final-dot"></span>
+            <span class="04-start-today-final-dot"></span>
+            <span class="04-start-today-final-dot"></span>
+            <span class="04-start-today-final-dot"></span>
+            <span class="04-start-today-final-dot"></span>
+            <span class="04-start-today-final-dot"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      const compositionId = "04-start-today";
+      const tl = gsap.timeline({ paused: true });
+
+      const logoState = document.getElementById("f04-start-today-logo-state");
+      const ctaState = document.getElementById("f04-start-today-cta-state");
+      const support = document.getElementById("f04-start-today-support");
+      const bloom = document.getElementById("f04-start-today-bloom");
+      const urlState = document.getElementById("f04-start-today-url-state");
+      const finalLogo = document.getElementById("f04-start-today-final-logo");
+      const finalRule = document.getElementById("f04-start-today-final-rule");
+      const dots = Array.from(
+        document.querySelectorAll('[class~="04-start-today-dot"]')
+      );
+      const finalDots = Array.from(
+        document.querySelectorAll('[class~="04-start-today-final-dot"]')
+      );
+      dots.forEach((dot, index) => {
+        const targetX = Number(dot.dataset.targetX);
+        const targetY = Number(dot.dataset.targetY);
+        tl.fromTo(
+          dot,
+          {
+            xPercent: -50,
+            yPercent: -50,
+            x: targetX,
+            y: targetY,
+            scale: 1,
+            opacity: 1,
+          },
+          {
+            x: 0,
+            y: 0,
+            scale: 0.55,
+            opacity: 0,
+            duration: 0.72,
+            ease: "power3.in",
+          },
+          0.08 + index * 0.035
+        );
+      });
+
+      tl.fromTo(
+        logoState,
+        { scale: 0.72, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 0.58, ease: "back.out(1.45)" },
+        0.36
+      );
+
+      tl.fromTo(
+        ctaState,
+        { scale: 0.7, opacity: 0 },
+        { scale: 0.7, opacity: 0, duration: 0.01, ease: "none" },
+        0
+      );
+
+      tl.to(
+        logoState,
+        { scale: 0.7, opacity: 0, duration: 0.36, ease: "power2.in" },
+        1.0
+      );
+      tl.to(
+        ctaState,
+        { scale: 1, opacity: 1, duration: 0.58, ease: "back.out(1.8)" },
+        1.2
+      );
+      tl.fromTo(
+        support,
+        { opacity: 0, y: 24 },
+        { opacity: 1, y: 0, duration: 0.36, ease: "power3.out" },
+        1.66
+      );
+
+      tl.to(
+        ctaState,
+        { scale: 0.94, duration: 0.14, ease: "power1.in" },
+        2.0
+      );
+      tl.to(
+        ctaState,
+        { scale: 1, duration: 0.19, ease: "power3.out" },
+        2.14
+      );
+
+      tl.fromTo(
+        bloom,
+        { opacity: 0, scale: 0.84 },
+        { opacity: 0.28, scale: 1, duration: 0.45, ease: "power2.out" },
+        2.05
+      );
+      tl.to(
+        bloom,
+        { opacity: 0, duration: 0.3, ease: "power2.in" },
+        2.5
+      );
+
+      tl.fromTo(
+        urlState,
+        { opacity: 0 },
+        { opacity: 1, duration: 0.01, ease: "none" },
+        2.12
+      );
+      tl.fromTo(
+        finalLogo,
+        { opacity: 0, scale: 0.76, y: 28 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.42, ease: "back.out(1.45)" },
+        2.3
+      );
+
+      const sequence = [
+        { t: 0.0, text: "" },
+        { t: 0.08, text: "candar" },
+        { t: 0.2, text: "candarnetwork" },
+        { t: 0.34, text: "candarnetwork.com" },
+        { t: 0.5, text: "candarnetwork.com/download" },
+      ];
+      const urlElement = document.getElementById("f04-start-today-url");
+      const textAt = (time) => {
+        for (let index = sequence.length - 1; index >= 0; index -= 1) {
+          if (time >= sequence[index].t) return sequence[index].text;
+        }
+        return "";
+      };
+      const urlDriver = { t: 0 };
+      tl.to(
+        urlDriver,
+        {
+          t: 0.5,
+          duration: 0.5,
+          ease: "none",
+          onUpdate: () => {
+            urlElement.textContent = textAt(urlDriver.t);
+          },
+        },
+        2.2
+      );
+
+      tl.to(
+        ctaState,
+        { opacity: 0, scale: 0.76, duration: 0.3, ease: "power2.in" },
+        2.34
+      );
+      tl.fromTo(
+        finalRule,
+        { scaleX: 0, opacity: 0 },
+        { scaleX: 1, opacity: 1, duration: 0.28, ease: "power3.out" },
+        2.4
+      );
+      tl.fromTo(
+        finalDots,
+        { scale: 0, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.28,
+          ease: "back.out(1.5)",
+          stagger: 0.03,
+        },
+        2.34
+      );
+
+      tl.to({}, { duration: 1.2 }, 2.8);
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines[compositionId] = tl;
+    })();
+  </script>
+</template>

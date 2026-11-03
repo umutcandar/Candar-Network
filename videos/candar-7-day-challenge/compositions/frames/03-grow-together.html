@@ -1,0 +1,392 @@
+<template>
+  <style>
+    @font-face {
+      font-family: "Inter";
+      font-weight: 400;
+      font-style: normal;
+      font-display: block;
+      src: url("assets/fonts/Inter-Regular.ttf") format("truetype");
+    }
+
+    #root {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      container-type: size;
+      color: #ffffff;
+      font-family: "Inter", sans-serif;
+    }
+
+    .f03-ground {
+      position: absolute;
+      inset: 0;
+      background: #171717;
+    }
+
+    .f03-scene {
+      position: absolute;
+      inset: 0;
+      height: 83cqh;
+      overflow: hidden;
+      perspective: 1800px;
+    }
+
+    .f03-kicker {
+      position: absolute;
+      top: 5.6cqh;
+      left: 5.5cqw;
+      color: #f59e0b;
+      font-size: 2.1cqw;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .f03-title {
+      position: absolute;
+      top: 7.8cqh;
+      left: 5.5cqw;
+      width: 89cqw;
+      margin: 0;
+      color: #ffffff;
+      font-size: 9.2cqw;
+      font-weight: 800;
+      line-height: 0.92;
+      letter-spacing: -0.04em;
+      text-align: center;
+      text-transform: lowercase;
+      white-space: nowrap;
+    }
+
+    .f03-title span {
+      color: #f59e0b;
+    }
+
+    .f03-stage {
+      position: absolute;
+      top: 19.4cqh;
+      left: 5.5cqw;
+      width: 89cqw;
+      height: 48.5cqh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4cqw;
+      transform-style: preserve-3d;
+    }
+
+    .f03-glow {
+      position: absolute;
+      z-index: 0;
+      top: 38%;
+      left: 46%;
+      width: 30cqw;
+      height: 30cqw;
+      margin-left: -15cqw;
+      margin-top: -15cqw;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.42) 0%, rgba(245, 158, 11, 0.13) 42%, rgba(245, 158, 11, 0) 72%);
+      pointer-events: none;
+      border-radius: 50%;
+    }
+
+    .f03-shell {
+      position: relative;
+      z-index: 2;
+      height: 44.5cqh;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .f03-left-shell {
+      width: 37cqw;
+    }
+
+    .f03-right-shell {
+      width: 48cqw;
+    }
+
+    .f03-bob {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .f03-card {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      border: 1px solid #262828;
+      background: #181a1a;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+
+    .f03-streak-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 4.6cqw 3.8cqw;
+      box-sizing: border-box;
+    }
+
+    .f03-streak-meta {
+      color: #f59e0b;
+      font-size: 2cqw;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+
+    .f03-streak-mark {
+      color: #ffffff;
+      font-size: 13.5cqw;
+      font-weight: 800;
+      line-height: 0.8;
+      letter-spacing: -0.05em;
+    }
+
+    .f03-progress {
+      display: grid;
+      gap: 1.2cqh;
+      width: 100%;
+    }
+
+    .f03-progress-line {
+      height: 0.72cqh;
+      background: #48504f;
+      transform-origin: 0% 50%;
+    }
+
+    .f03-progress-line:nth-child(1) { width: 42%; }
+    .f03-progress-line:nth-child(2) { width: 54%; }
+    .f03-progress-line:nth-child(3) { width: 65%; }
+    .f03-progress-line:nth-child(4) { width: 76%; }
+    .f03-progress-line:nth-child(5) { width: 87%; background: #f59e0b; }
+
+    .f03-screen {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #0b1220;
+    }
+
+    .f03-label {
+      position: absolute;
+      z-index: 4;
+      top: 54%;
+      display: flex;
+      align-items: center;
+      min-height: 4.8cqh;
+      padding: 0 2.5cqw;
+      box-sizing: border-box;
+      background: #f59e0b;
+      color: #171717;
+      font-size: 3.3cqw;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      white-space: nowrap;
+      transform-origin: 50% 50%;
+    }
+
+    .f03-left-label {
+      right: -1px;
+    }
+
+    .f03-right-label {
+      left: -1px;
+    }
+
+    .f03-ai-rail {
+      position: absolute;
+      top: 70.2cqh;
+      left: 5.5cqw;
+      width: 89cqw;
+      height: 8.5cqh;
+      display: grid;
+      grid-template-columns: 11cqw 1fr;
+      align-items: center;
+      border-top: 1px solid #262828;
+      border-bottom: 1px solid #262828;
+    }
+
+    .f03-logo-cell {
+      display: grid;
+      place-items: center;
+      height: 100%;
+      border-right: 1px solid #262828;
+    }
+
+    .f03-logo {
+      display: block;
+      width: 7cqw;
+      height: 7cqw;
+      object-fit: contain;
+    }
+
+    .f03-ai-copy {
+      padding-left: 3.4cqw;
+      color: #ffffff;
+      font-size: 4cqw;
+      font-weight: 700;
+      line-height: 1.1;
+      letter-spacing: -0.025em;
+    }
+
+    .f03-ai-copy span {
+      color: #f59e0b;
+    }
+  </style>
+
+  <div id="root" data-composition-id="03-grow-together" data-duration="4.6" data-width="1080" data-height="1920">
+    <div class="clip f03-ground" id="f03-ground" data-start="0" data-duration="4.6" data-track-index="0"></div>
+
+    <section class="clip f03-scene" id="f03-scene" data-start="0" data-duration="4.6" data-track-index="1">
+      <div class="f03-kicker" id="f03-kicker">Candar Network</div>
+      <h1 class="f03-title" id="f03-title">grow <span>together.</span></h1>
+
+      <div class="f03-stage">
+        <div class="f03-glow" id="f03-glow"></div>
+
+        <div class="f03-shell f03-left-shell" id="f03-left-shell">
+          <div class="f03-bob" id="f03-left-bob">
+            <div class="f03-card f03-streak-card" id="f03-left-card">
+              <div class="f03-streak-meta">daily progress</div>
+              <div class="f03-streak-mark">/</div>
+              <div class="f03-progress">
+                <div class="f03-progress-line"></div>
+                <div class="f03-progress-line"></div>
+                <div class="f03-progress-line"></div>
+                <div class="f03-progress-line"></div>
+                <div class="f03-progress-line"></div>
+              </div>
+            </div>
+            <div class="f03-label f03-left-label" id="f03-left-label">your streak.</div>
+          </div>
+        </div>
+
+        <div class="f03-shell f03-right-shell" id="f03-right-shell">
+          <div class="f03-bob" id="f03-right-bob">
+            <div class="f03-card" id="f03-right-card">
+              <img class="f03-screen" src="assets/image_002.png" alt="Candar referral network screen" />
+            </div>
+            <div class="f03-label f03-right-label" id="f03-right-label">your team.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="f03-ai-rail" id="f03-ai-rail">
+        <div class="f03-logo-cell">
+          <img class="f03-logo" src="assets/logo_001.png" alt="Candar Network" />
+        </div>
+        <div class="f03-ai-copy"><span>Candar AI,</span> when you need it.</div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script>
+    (function () {
+      window.__timelines = window.__timelines || {};
+
+      const tl = gsap.timeline({ paused: true });
+      window.__timelines["03-grow-together"] = tl;
+
+      tl.fromTo(
+        "#f03-kicker",
+        { opacity: 0, y: -20 },
+        { opacity: 1, y: 0, duration: 0.38, ease: "power3.out" },
+        0
+      );
+      tl.fromTo(
+        "#f03-title",
+        { opacity: 0, y: -58 },
+        { opacity: 1, y: 0, duration: 0.58, ease: "power3.out" },
+        0.04
+      );
+
+      tl.fromTo(
+        "#f03-left-shell",
+        { x: -360, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1.1, ease: "power3.out" },
+        0.5
+      );
+      tl.fromTo(
+        "#f03-left-card",
+        { rotateY: 24 },
+        { rotateY: 12, duration: 1.1, ease: "power3.out" },
+        0.5
+      );
+      tl.fromTo(
+        "#f03-right-shell",
+        { x: 420, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1.12, ease: "power3.out" },
+        0.66
+      );
+      tl.fromTo(
+        "#f03-right-card",
+        { rotateY: -24 },
+        { rotateY: -12, duration: 1.12, ease: "power3.out" },
+        0.66
+      );
+
+      gsap.utils.toArray(".f03-progress-line").forEach(function (line, index) {
+        tl.fromTo(
+          line,
+          { scaleX: 0, opacity: 0.25 },
+          { scaleX: 1, opacity: 1, duration: 0.46, ease: "power3.out" },
+          0.92 + index * 0.19
+        );
+      });
+
+      tl.fromTo(
+        "#f03-glow",
+        { opacity: 0, scale: 0.82 },
+        { opacity: 0.26, scale: 1, duration: 0.72, ease: "power2.out" },
+        2.26
+      );
+      tl.fromTo(
+        "#f03-left-label",
+        { scale: 0, opacity: 0, y: 18 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.58, ease: "power3.out" },
+        2.2
+      );
+      tl.fromTo(
+        "#f03-right-label",
+        { scale: 0, opacity: 0, y: 18 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.58, ease: "power3.out" },
+        2.47
+      );
+
+      tl.fromTo(
+        "#f03-ai-rail",
+        { opacity: 0, y: 34 },
+        { opacity: 1, y: 0, duration: 0.64, ease: "power3.out" },
+        3.18
+      );
+
+      const leftBob = document.getElementById("f03-left-bob");
+      const rightBob = document.getElementById("f03-right-bob");
+      const phase = { p: 0 };
+      tl.to(
+        phase,
+        {
+          p: Math.PI * 0.8,
+          duration: 0.65,
+          ease: "none",
+          onUpdate: function () {
+            const offset = Math.sin(phase.p) * 2;
+            leftBob.style.transform = "translateY(" + offset + "px)";
+            rightBob.style.transform = "translateY(" + -offset + "px)";
+          }
+        },
+        3.35
+      );
+    })();
+  </script>
+</template>

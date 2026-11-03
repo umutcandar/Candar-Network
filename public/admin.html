@@ -1,0 +1,19 @@
+<!doctype html><html lang="tr"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin — Candar Network</title><link rel="stylesheet" href="/styles.css?v=20260605">
+<style>main{max-width:900px;margin:40px auto;padding:0 20px}</style></head><body>
+<header class="wrap header"><div class="brand"><div class="logo">CN</div><strong>Candar Admin</strong></div>
+<nav><a class="btn" href="/">Site</a><a class="btn" href="/auth.html">Giriş</a></nav></header>
+<main>
+<div class="card"><h2>Yönetici Girişi</h2><p>Admin paneline erişmek için Google hesabınla giriş yap.</p>
+<p><button id="adminLogin" class="btn primary lg">Google ile Giriş</button>
+<button id="adminLogout" class="btn ghost lg" style="display:none">Çıkış</button></p>
+<p id="adminStatus" class="lead"></p></div>
+<div id="panel" style="display:none">
+<section class="card"><h3>Genel Ayarlar</h3>
+<label>Varsayılan puan oranı: <input id="miningRate" type="number" step="0.05" min="0" max="5" value="0.80"></label>
+<button id="saveConfig" class="btn primary">Kaydet</button> <span id="saveMsg" class="lead"></span></section>
+<section class="card"><h3>Kullanıcı (örnek sorgu)</h3><p id="userCount">—</p></section>
+</div></main>
+<script type="module" src="/firebase-config.js"></script>
+<script type="module" src="/app.js"></script></body></html>
