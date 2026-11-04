@@ -17,6 +17,7 @@ def method(source, name):
 
 global_source = (ROOT / "global.gd").read_text(encoding="utf-8")
 profile_source = (ROOT / "profile.gd").read_text(encoding="utf-8")
+firebase_source = (ROOT / "scripts/FirebaseClient.gd").read_text(encoding="utf-8")
 onboarding_source = (ROOT / "onboarding.gd").read_text(encoding="utf-8")
 global_methods = [
     "_load_ui_locales", "localized_ui_text", "localized_named_key",
@@ -48,6 +49,10 @@ func _ready() -> void:
 func _ui_text(_tr_text: String, en_text: String) -> String:
     return en_text
 """.replace("    ", "\t") + method(profile_source, "_show_language_dialog"), encoding="utf-8")
+    (work / "firebase_actual.gd").write_text("""extends Node
+func _get_global() -> Node:
+    return get_node_or_null("/root/Global")
+""".replace("    ", "\t") + method(firebase_source, "_friendly_function_error"), encoding="utf-8")
     (work / "test.gd").write_text("""extends SceneTree
 var checks := 0
 var errors := 0
@@ -62,8 +67,19 @@ func run() -> void:
     global._load_ui_locales()
     var data = JSON.parse_string(FileAccess.get_file_as_string("res://localization/ui_strings.json"))
     check(typeof(data) == TYPE_DICTIONARY, "Could not read locale catalog")
+    var firebase = load("res://firebase_actual.gd").new()
+    root.add_child(firebase)
     for lang in global.SUPPORTED_LANGS:
         TranslationServer.set_locale(lang)
+        var server_error = firebase._friendly_function_error(403, {
+            "error": {"status": "PERMISSION_DENIED", "message": "Bu işleme izniniz yok."}
+        })
+        check(server_error == data["named"]["fn_error_permission_denied"][lang],
+            "Backend error not localized in " + lang)
+        check(firebase._friendly_function_error(503, {}) == data["named"]["fn_error_unavailable"][lang],
+            "Server unavailable not localized in " + lang)
+        check(firebase._friendly_function_error(0, {}) == data["named"]["fn_error_unknown"][lang],
+            "Unknown server error not localized in " + lang)
         for i in range(data["keys"].size()):
             var result = global.localized_ui_text(data["tr"][i], data["en"][i])
             check(result == data[lang][i], "Missing dynamic locale %s at index %d" % [lang, i])
@@ -89,6 +105,7 @@ func run() -> void:
     global.set_language("INVALID")
     check(global._determine_initial_lang() == "en", "Invalid language must fall back to en")
     check(global.localized_ui_text("çeviri", "Unlisted message") == "Unlisted message", "Unknown message should gracefully fall back")
+    firebase.free()
     profile.free()
     onboarding.free()
     print("Localized UI smoke: %d assertions, %d failures" % [checks, errors])
