@@ -55,14 +55,14 @@ func run() -> void:
 	check(Time.get_ticks_msec() - start < 500, "Earn+dismiss must not wait for the timeout")
 	var result: Dictionary = manager.ads_get_last_rewarded_result()
 	check(result.reason == "earned" and result.impression and result.closed, "Confirmed callbacks must be reported")
-	check(manager.apply_count == 1 and earned.destroys == 1, "One completed ad applies once and destroys once")
+	check(manager.apply_count == 0 and earned.destroys == 1, "Client callback must not grant boosts, but must destroy ad")
 	check(not manager._rewarded_showing, "Completed presentation must release its lock")
 	var skipped := FakeReward.new()
 	skipped.mode = "dismissed"
 	manager._rewarded_ad = skipped
 	check(not await manager.ads_show_rewarded_and_wait(2.0, "test-user", 124), "Closing without reward must not award")
 	check(manager.ads_get_last_rewarded_result().reason == "dismissed_without_reward", "Dismiss callback must reach the waiter")
-	check(manager.apply_count == 1, "Dismissal must not call the reward backend")
+	check(manager.apply_count == 0, "Dismissal must not call the reward backend")
 	var failed := FakeReward.new()
 	failed.mode = "failed"
 	manager._rewarded_ad = failed

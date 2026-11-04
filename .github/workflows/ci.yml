@@ -24,3 +24,22 @@ jobs:
         run: |
           node --check functions/index.js
           node --check functions/admin-config.js
+
+  godot-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot 4.6
+        run: |
+          curl -fL --retry 3 "https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_linux.x86_64.zip" -o godot.zip
+          unzip -q godot.zip
+          mkdir -p "$HOME/.local/bin"
+          mv Godot_v4.6-stable_linux.x86_64 "$HOME/.local/bin/godot"
+          chmod +x "$HOME/.local/bin/godot"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Onboarding and translation smoke
+        run: python3 scripts/tests/run_onboarding_smoke.py
+      - name: Home rewarded-ad smoke
+        run: python3 scripts/tests/run_home_ads_smoke.py
+      - name: SDK ad-manager smoke
+        run: python3 scripts/tests/run_ad_manager_smoke.py
