@@ -38,6 +38,7 @@ initializeApp();
 const db = getFirestore();
 const candarAiConfig = defineSecret("CANDAR_AI_CONFIG");
 const { generateAnswer } = require("./candar-ai");
+const { normalizeMiningRate } = require("./admin-config");
 const appleIssuerId = defineSecret("APPLE_ISSUER_ID");
 const appleKeyId = defineSecret("APPLE_KEY_ID");
 const applePrivateKey = defineSecret("APPLE_PRIVATE_KEY");
@@ -1305,7 +1306,7 @@ exports.ensure_user_profile = onCall(
     }
 
     const uid = request.auth.uid;
-    const email = String(request.data?.email || request.auth.token?.email || "").trim();
+    const email = String(request.auth.token?.email || "").trim();
     const referralCode = sanitizeReferralCode(request.data?.referralCode);
     const userRef = db.collection("users").doc(uid);
     const snap = await userRef.get();
@@ -1319,6 +1320,8 @@ exports.ensure_user_profile = onCall(
     if (snap.exists) {
       await userRef.set(loginData, { merge: true });
     } else {
+      const configSnap = await db.collection("config").doc("general").get();
+      const initialRate = normalizeMiningRate(configSnap.data()?.mining_rate, 1.0);
       const newReferralCode = `C${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
       const newReferralRef = db.collection("referral_codes").doc(newReferralCode);
       created = await db.runTransaction(async (tx) => {
@@ -1338,6 +1341,7 @@ exports.ensure_user_profile = onCall(
           {
             ...loginData,
             referralCode: newReferralCode,
+            base_rate: initialRate,
             referredBy: "",
             referralBonusApplied: false,
             points: 0,
@@ -2444,6 +2448,49 @@ exports.sendMiningReadyNotifications = onSchedule(
   }
 );
 
+function requireOwner(request) {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
+  }
+  const emailHash = sha256(String(request.auth.token?.email || "").trim().toLowerCase());
+  if (request.auth.token?.email_verified !== true || !OWNER_EMAIL_HASHES.has(emailHash)) {
+    throw new HttpsError("permission-denied", "Yönetici yetkisi gerekli.");
+  }
+}
+
+exports.admin_get_overview = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    requireOwner(request);
+    const [configSnap, totalUsersSnap] = await Promise.all([
+      db.collection("config").doc("general").get(),
+      db.collection("users").count().get(),
+    ]);
+    return {
+      ok: true,
+      miningRate: normalizeMiningRate(configSnap.data()?.mining_rate, 1.0),
+      userCount: totalUsersSnap.data().count,
+    };
+  }
+);
+
+exports.admin_update_config = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    requireOwner(request);
+    const rate = normalizeMiningRate(request.data?.miningRate, null);
+    if (rate === null) {
+      throw new HttpsError("invalid-argument", "Temel puan oranı 1 ile 5 arasında olmalı.");
+    }
+    await db.collection("config").doc("general").set({
+      mining_rate: rate,
+      updatedByUid: request.auth.uid,
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    return { ok: true, miningRate: rate };
+  }
+);
+
 exports.send_daily_points_push_now = onCall(
   {
     region: "europe-west1",
@@ -2455,10 +2502,7 @@ exports.send_daily_points_push_now = onCall(
       throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
     }
 
-    const emailHash = sha256(String(request.auth.token?.email || "").toLowerCase());
-    if (!OWNER_EMAIL_HASHES.has(emailHash)) {
-      throw new HttpsError("permission-denied", "Bu bildirimi sadece uygulama sahibi gönderebilir.");
-    }
+    requireOwner(request);
 
     const campaignKey = String(request.data?.campaignKey || `daily_points_${todayKey()}`);
     const limit = Number(request.data?.limit || MAX_NOTIFICATION_BATCH);
