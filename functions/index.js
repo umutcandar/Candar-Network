@@ -961,10 +961,10 @@ async function scanGoogleVoidedPurchases() {
       throw new Error("Google Play refund scan unavailable");
     }
     const body = response?.data || {};
-    if (!Array.isArray(body.voidedPurchases)) {
+    if (body.voidedPurchases != null && !Array.isArray(body.voidedPurchases)) {
       throw new Error("Google voided-purchases response invalid");
     }
-    for (const entry of body.voidedPurchases) {
+    for (const entry of body.voidedPurchases || []) {
       const applied = await applyGoogleVoidedPurchase(entry);
       inspected += 1;
       if (applied.status === "revoked_current") revoked++;
@@ -2778,6 +2778,104 @@ exports.apply_premium = onCall(
       throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
     }
     return applyPurchaseToUser(request.auth.uid, request.data, true);
+  }
+);
+
+// Apple notifications V2: the outer JWS is untrusted here. The body is
+// only used to locate our own ledger entry; an Apple API call over TLS is
+// REQUIRED to establish the authoritative revoked transaction state.
+exports.apple_store_refund_notification = onRequest(
+  {
+    region: "europe-west1",
+    timeoutSeconds: 40,
+    memory: "256MiB",
+    cors: false,
+    secrets: [appleIssuerId, appleKeyId, applePrivateKey, appleBundleId],
+  },
+  async (request, response) => {
+    if (request.method !== "POST") {
+      response.status(405).send("Method not allowed");
+      return;
+    }
+    const signed = request.body?.signedPayload;
+    if (typeof signed !== "string" || signed.length > 32768) {
+      response.status(400).send("Invalid Apple notification");
+      return;
+    }
+    const hint = readAppleRefundHint(signed);
+    if (!hint) {
+      // Other Apple notifications require no entitlement changes here.
+      response.status(200).send("Ignored");
+      return;
+    }
+    try {
+      const event = await lookupStoreEvent("storeTransactionId", hint.transactionId, "ios");
+      if (!event) {
+        response.status(200).send("Unknown transaction");
+        return;
+      }
+      if (event.data()?.revoked === true) {
+        response.status(200).send("Already revoked");
+        return;
+      }
+
+      const token = createAppleServerApiToken();
+      let lookup = await requestAppleTransaction(
+        "https://api.storekit.apple.com", hint.transactionId, token);
+      if (lookup.response.status === 404) {
+        lookup = await requestAppleTransaction(
+          "https://api.storekit-sandbox.apple.com", hint.transactionId, token);
+      }
+      if (lookup.response.status === 404) {
+        response.status(200).send("Not found in App Store");
+        return;
+      }
+      if (!lookup.response.ok) {
+        response.status(503).send("Apple lookup unavailable");
+        return;
+      }
+      const transaction = decodeAppleJwsPayload(lookup.body?.signedTransactionInfo);
+      if (String(transaction.bundleId || "") !== APP_BUNDLE_ID ||
+          String(transaction.transactionId || "") !== hint.transactionId ||
+          normalizeProductId(transaction.productId) !== String(event.data()?.productId || "")) {
+        response.status(200).send("Transaction mismatch");
+        return;
+      }
+
+      const revocationDate = Number(transaction.revocationDate || 0);
+      if (!Number.isSafeInteger(revocationDate) || revocationDate <= 0) {
+        // A fake event cannot revoke a valid purchase. Apple may not yet
+        // have updated its state; retries are safe and no grant occurs.
+        response.status(503).send("Revocation not confirmed");
+        return;
+      }
+      await revokePurchaseEvent(event.ref, "apple_store_notification", revocationDate);
+      response.status(200).send("Refund recorded");
+    } catch (error) {
+      console.error("Apple refund handler failed", { code: error?.code || "lookup" });
+      response.status(503).send("Temporary failure");
+    }
+  }
+);
+
+// Google Play supports a server-to-server Voided Purchases API. This hourly
+// sweep uses a 48-hour overlap and a persisted page token to be restart-safe.
+// A Play Console service account with financial-data read access is required.
+exports.reconcile_google_play_refunds = onSchedule(
+  {
+    region: "europe-west1",
+    schedule: "every 60 minutes",
+    timeZone: "Etc/UTC",
+    timeoutSeconds: 540,
+    memory: "512MiB",
+    maxInstances: 1,
+  },
+  async () => {
+    const result = await scanGoogleVoidedPurchases();
+    console.info("Google refund sweep", {
+      pages: result.pages, inspected: result.inspected,
+      revoked: result.revoked, completed: result.completed,
+    });
   }
 );
 
