@@ -62,11 +62,32 @@ function googleVoidedUrl({ startMs, pageToken = "", packageName = ANDROID_PACKAG
   return url.toString();
 }
 
-function revokeUserFields({ user, eventId, event, nowMs = Date.now() }) {
+function timestampMs(value) {
+  if (typeof value?.toMillis === "function") return value.toMillis();
+  if (value instanceof Date) return value.getTime();
+  if (typeof value?._seconds === "number") return value._seconds * 1000;
+  if (typeof value?.seconds === "number") return value.seconds * 1000;
+  return 0;
+}
+
+function revokeUserFields({ user, eventId, event, nowMs = Date.now(), voidedTokenHash = "" }) {
   const premium = event?.isPremium === true;
   const pointerKey = premium ? "lastPremiumPurchaseEventId" : "lastBoostPurchaseEventId";
   const currentEventId = String(user?.[pointerKey] || "");
-  if (currentEventId !== eventId) return null; // never cancel a newer purchase
+  if (currentEventId && currentEventId !== eventId) return null; // never cancel a newer purchase
+  if (!currentEventId) {
+    // Migration for purchases from before the entitlement pointers existed:
+    // accept ONLY the most recently recorded purchase, identified by its
+    // exact server timestamp or Google receipt hash (never by product alone).
+    const samePurchase = user?.lastPurchasePlatform === event?.platform
+      && user?.lastPurchaseProductId === event?.productId;
+    const sameToken = Boolean(voidedTokenHash)
+      && String(user?.lastPurchaseProofHash || "") === voidedTokenHash;
+    const userAt = timestampMs(user?.lastPurchaseAt);
+    const eventAt = timestampMs(event?.purchaseAt);
+    const sameTime = userAt > 0 && eventAt > 0 && Math.abs(userAt - eventAt) <= 1000;
+    if (!samePurchase || (!sameToken && !sameTime)) return null;
+  }
   if (premium) {
     return {
       isPremium: false,

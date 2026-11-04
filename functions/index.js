@@ -919,7 +919,9 @@ async function applyGoogleVoidedPurchase(raw) {
     }, { merge: true });
     if (userSnap?.exists && userSnap.id === event.uid) {
       const user = userSnap.data() || {};
-      const patch = revokeUserFields({ user, eventId: eventSnap.id, event });
+      const patch = revokeUserFields({
+        user, eventId: eventSnap.id, event, voidedTokenHash: item.tokenHash,
+      });
       if (patch) {
         const next = { ...user, ...patch, mining: patch.mining || user.mining };
         patch.lastKnownMiningRate = calculateMiningRate(next);

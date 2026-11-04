@@ -49,6 +49,17 @@ test("Google API URL carries continuation tokens without exposing user secrets",
   assert.equal(next.searchParams.has("startTime"), false);
   assert.throws(() => googleVoidedUrl({ startMs: 10, packageName: "malicious" }));
 });
+test("Legacy purchases only revoke with exact proof or purchase timestamp", () => {
+  const oldEvent = { platform: "android", productId: "candar.boost.pro.30d", isPremium: false, purchaseAt: new Date(1780000000000) };
+  const last = { lastPurchasePlatform: "android", lastPurchaseProductId: oldEvent.productId, lastPurchaseProofHash: "token-hash",
+    lastPurchaseAt: new Date(1780000000000) };
+  assert.equal(revokeUserFields({ user: last, eventId: "old", event: oldEvent, voidedTokenHash: "token-hash" }).currentMultiplier, 1);
+  assert.equal(revokeUserFields({ user: { ...last, lastPurchaseAt: new Date(1780000010000), lastPurchaseProofHash: "another" },
+    eventId: "old", event: oldEvent, voidedTokenHash: "token-hash" }), null);
+  assert.equal(revokeUserFields({ user: { ...last, lastPurchasePlatform: "ios" }, eventId: "old",
+    event: oldEvent, voidedTokenHash: "token-hash" }), null);
+});
+
 test("Refund only disables its exact still-current entitlement", () => {
   assert.equal(revokeUserFields({
     user: { lastBoostPurchaseEventId: "newer" }, eventId: "older", event: { isPremium: false }
