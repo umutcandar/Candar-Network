@@ -47,3 +47,5 @@ jobs:
         run: python3 scripts/tests/run_team_center_smoke.py
       - name: iOS purchase recovery smoke
         run: python3 scripts/tests/run_iap_recovery_smoke.py
+      - name: Native secure session protocol smoke
+        run: python3 scripts/tests/run_secure_session_smoke.py
