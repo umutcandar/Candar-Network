@@ -1,4 +1,4 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onCall, onRequest, HttpsError } = require("firebase-functions/v2/https");
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { defineSecret } = require("firebase-functions/params");
 const { initializeApp } = require("firebase-admin/app");
@@ -39,6 +39,7 @@ const db = getFirestore();
 const candarAiConfig = defineSecret("CANDAR_AI_CONFIG");
 const { generateAnswer } = require("./candar-ai");
 const { normalizeMiningRate } = require("./admin-config");
+const { fetchVerifyingKeys, verifyCallback, AdmobVerificationError } = require("./admob-ssv");
 const appleIssuerId = defineSecret("APPLE_ISSUER_ID");
 const appleKeyId = defineSecret("APPLE_KEY_ID");
 const applePrivateKey = defineSecret("APPLE_PRIVATE_KEY");
@@ -2407,17 +2408,86 @@ exports.apply_premium = onCall(
   }
 );
 
+// Client callbacks must never grant points or permanent boosts. Only the
+// signed AdMob server-to-server callback can apply a rewarded boost.
 exports.apply_rewarded_boost = onCall(
-  {
-    region: "europe-west1",
-    timeoutSeconds: 30,
-    memory: "256MiB",
-  },
+  { region: "europe-west1", timeoutSeconds: 15, memory: "256MiB" },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
     }
-    return applyRewardedBoostToUser(request.auth.uid, request.data || {});
+    const attemptAt = Number(request.data?.attempt_at || 0);
+    if (!Number.isSafeInteger(attemptAt) || attemptAt <= 0) {
+      throw new HttpsError("invalid-argument", "Reklam denemesi eksik.");
+    }
+    const userSnap = await db.collection("users").doc(request.auth.uid).get();
+    if (!userSnap.exists) throw new HttpsError("not-found", "Kullanıcı bulunamadı.");
+    const data = userSnap.data() || {};
+    const lastApplied = intField(data, "rewardedBoostLastAppliedAttemptAt", 0);
+    if (lastApplied < attemptAt) {
+      return { ok: false, error: "rewarded_boost_verification_pending" };
+    }
+    return {
+      ok: true,
+      idempotent: true,
+      attempt_at: attemptAt,
+      rewarded_multiplier: numberField(data, "rewardedBoostMultiplier", 1.0),
+      total_rate: calculateMiningRate(data),
+      daily_count: Math.max(0, intField(data, "rewardedBoostDailyCount", 0)),
+      daily_limit: REWARDED_BOOST_DAILY_LIMIT,
+    };
+  }
+);
+
+exports.admob_ssv = onRequest(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB", cors: false },
+  async (request, response) => {
+    if (request.method !== "GET") {
+      response.status(405).send("Method not allowed");
+      return;
+    }
+    let reward;
+    try {
+      const keys = await fetchVerifyingKeys();
+      reward = verifyCallback(request.originalUrl, keys);
+    } catch (error) {
+      if (error instanceof AdmobVerificationError) {
+        response.status(403).send("Invalid callback");
+      } else {
+        console.error("AdMob verifier unavailable", { code: error?.code });
+        response.status(503).send("Verification unavailable");
+      }
+      return;
+    }
+
+    const receiptRef = db.collection("admob_ssv_transactions").doc(reward.transactionId);
+    try {
+      if ((await receiptRef.get()).exists) {
+        response.status(200).send("Already applied");
+        return;
+      }
+      const applied = await applyRewardedBoostToUser(reward.uid, {
+        attempt_at: reward.attemptAt,
+      });
+      if (!applied.ok) {
+        response.status(403).send("Unrecognized reward attempt");
+        return;
+      }
+      try {
+        await receiptRef.create({
+          uid: reward.uid,
+          attemptAt: reward.attemptAt,
+          adUnit: reward.adUnit,
+          receivedAt: FieldValue.serverTimestamp(),
+        });
+      } catch (error) {
+        if (error?.code !== 6 && error?.code !== "already-exists") throw error;
+      }
+      response.status(200).send("OK");
+    } catch (error) {
+      console.error("AdMob reward processing failed", { code: error?.code });
+      response.status(503).send("Temporary failure");
+    }
   }
 );
 
