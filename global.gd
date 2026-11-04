@@ -593,7 +593,7 @@ func _safe_http_headers_for_log(headers: Array) -> Array:
 	return safe_headers
 
 func http_request(url, method := HTTPClient.METHOD_GET, headers := [], body := "", retries := _max_retries) -> Array:
-	print(">> HTTP İSTEK: ", url, " | Metod: ", method, " | Başlıklar: ", _safe_http_headers_for_log(headers), " | Gövde: ", body)
+	print(">> HTTP request method=", method, " (payload bytes=", body.to_utf8_buffer().size(), ")")
 	var attempt := 0
 
 	while attempt <= retries:
@@ -627,7 +627,7 @@ func http_request(url, method := HTTPClient.METHOD_GET, headers := [], body := "
 		var response_body_bytes = response[3]
 		var response_text = response_body_bytes.get_string_from_utf8()
 
-		print(">> HAM HTTP YANIT (%d): %s" % [response_code, response_text])
+		print(">> HTTP response status=", response_code)
 
 		if status == HTTPRequest.RESULT_SUCCESS:
 			var json_parser = JSON.new()
@@ -659,7 +659,7 @@ func http_request(url, method := HTTPClient.METHOD_GET, headers := [], body := "
 			continue # Bir sonraki denemeye geç
 
 		# Deneme hakkı bittiyse veya hata kalıcıysa (4xx gibi) hata dön
-		return [false, effective_response_code, "HTTP hatasi: " + error_string(status) + " | Yanit: " + response_text]
+		return [false, effective_response_code, "HTTP hatasi: " + error_string(status) + " | Kod: " + str(effective_response_code)]
 
 	return [false, 500, "Bilinmeyen HTTP hata"]
 	# Firebase Bearer header
@@ -2743,7 +2743,7 @@ func _ads_apply_rewarded_boost_once(uid: String, attempt_at: int, reason: String
 	_ads_reward_apply_result = []
 	_ads_reward_apply_result = await activate_rewarded_boost(uid, attempt_at)
 	_ads_reward_apply_in_flight = false
-	print("[ADS] Rewarded server apply (%s): %s" % [reason, str(_ads_reward_apply_result)])
+	print("[ADS] Rewarded server apply reason=", reason, " ok=", _ads_reward_apply_result.size() > 0 and bool(_ads_reward_apply_result[0]))
 	if _ads_reward_apply_result.size() > 1 and bool(_ads_reward_apply_result[0]):
 		var payload: Dictionary = {}
 		if typeof(_ads_reward_apply_result[1]) == TYPE_DICTIONARY:

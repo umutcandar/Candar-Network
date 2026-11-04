@@ -227,7 +227,7 @@ func _extract_ios_display_price(product) -> String:
 	return ""
 
 func _on_ios_purchase_completed(transaction, status: int, error_message: String) -> void:
-	print("[IAP] iOS purchase_completed status=", status, " err=", error_message, " tx=", transaction)
+	print("[IAP] iOS purchase_completed status=", status)
 
 	# Miguel plugininde StoreKitStatus.ok genelde 0 olur.
 	if status != 0:
@@ -287,7 +287,7 @@ func _on_ios_restore_completed(status: int, error_message: String) -> void:
 	print("[IAP] iOS restore_completed status=", status, " err=", error_message)
 
 func _on_ios_transaction_updated(transaction) -> void:
-	print("[IAP] iOS transaction_updated: ", transaction)
+	print("[IAP] iOS transaction_updated")
 
 
 # ============================================================
@@ -504,7 +504,7 @@ func _buy_and_apply(product_id: String, is_premium: bool) -> Dictionary:
 
 	var store_product_id_a := _store_product_id(product_id)
 	var launch_res: Dictionary = billing.purchase(store_product_id_a)
-	print("[IAP] purchase() result: ", launch_res)
+	print("[IAP] purchase() returned status=", launch_res.get("status", launch_res.get("response_code", "unknown")))
 	if launch_res.is_empty():
 		return {"ok": false, "error": "purchase_launch_failed"}
 	if launch_res.has("status") and int(launch_res.get("status", OK)) != OK:

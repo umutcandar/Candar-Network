@@ -1338,6 +1338,8 @@ exports.ensure_user_profile = onCall(
     if (snap.exists) {
       await userRef.set(loginData, { merge: true });
     } else {
+      const newReferralCode = `C${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
+      const newReferralRef = db.collection("referral_codes").doc(newReferralCode);
       created = await db.runTransaction(async (tx) => {
         const latestUser = await tx.get(userRef);
         if (latestUser.exists) {
@@ -1345,11 +1347,16 @@ exports.ensure_user_profile = onCall(
           return false;
         }
 
+        const codeSnap = await tx.get(newReferralRef);
+        if (codeSnap.exists) {
+          throw new HttpsError("aborted", "Davet kodu çakıştı. Lütfen tekrar deneyin.");
+        }
+        tx.create(newReferralRef, { uid, createdAt: FieldValue.serverTimestamp() });
         tx.set(
           userRef,
           {
             ...loginData,
-            referralCode: String(Math.floor(100000 + Math.random() * 900000)),
+            referralCode: newReferralCode,
             referredBy: "",
             referralBonusApplied: false,
             points: 0,
@@ -1567,36 +1574,28 @@ exports.get_leaderboard = onCall(
     }
 
     const requestedLimit = Math.max(1, Math.min(80, Number(request.data?.limit || 25)));
-    const usersSnap = await db.collection("users").limit(500).get();
-    const referralCounts = new Map();
-    for (const doc of usersSnap.docs) {
-      const referredBy = String(doc.data()?.referredBy || "");
-      if (referredBy) referralCounts.set(referredBy, (referralCounts.get(referredBy) || 0) + 1);
-    }
+    // Query an indexed, globally ordered leaderboard rather than sorting an
+    // arbitrary first 500 users in memory.
+    const usersSnap = await db.collection("users")
+      .orderBy("referralCount", "desc")
+      .orderBy("points", "desc")
+      .limit(requestedLimit)
+      .get();
 
-    const rows = usersSnap.docs
-      .map((doc) => {
-        const data = doc.data() || {};
-        const referralCode = String(data.referralCode || "");
-        return {
-          uid: doc.id,
-          email: doc.id === request.auth.uid ? String(data.email || "") : maskEmail(data.email),
-          points: numberField(data, "points", 0),
-          referrals: Math.max(
-            intField(data, "referralCount", 0),
-            referralCounts.get(referralCode) || 0
-          ),
-        };
-      })
-      .sort((a, b) => b.referrals - a.referrals || b.points - a.points)
-      .slice(0, requestedLimit)
-      .map((row) => ({
+    const rows = usersSnap.docs.map((doc) => {
+      const data = doc.data() || {};
+      return {
         fields: {
-          email: { stringValue: row.email },
-          points: { doubleValue: row.points },
-          referralCount: { integerValue: row.referrals },
+          email: {
+            stringValue: doc.id === request.auth.uid
+              ? String(data.email || "")
+              : maskEmail(data.email),
+          },
+          points: { doubleValue: numberField(data, "points", 0) },
+          referralCount: { integerValue: Math.max(0, intField(data, "referralCount", 0)) },
         },
-      }));
+      };
+    });
 
     return { users: rows, count: rows.length };
   }
