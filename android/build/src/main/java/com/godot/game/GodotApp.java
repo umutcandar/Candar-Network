@@ -32,6 +32,9 @@ package com.godot.game;
 
 import org.godotengine.godot.Godot;
 import org.godotengine.godot.GodotActivity;
+import org.godotengine.godot.plugin.GodotPlugin;
+import java.util.Collections;
+import java.util.Set;
 
 import android.Manifest;
 import android.app.NotificationChannel;
@@ -65,6 +68,12 @@ public class GodotApp extends GodotActivity {
 				Log.e("GODOT", "Unable to load System.Security.Cryptography.Native.Android library");
 			}
 		}
+	}
+
+	// Register the native singleton without shipping a separate .aar.
+	@Override
+	public Set<GodotPlugin> getHostPlugins(Godot godot) {
+		return Collections.singleton(new CandarSecureStorePlugin(godot));
 	}
 
 	private final Runnable updateWindowAppearance = () -> {
