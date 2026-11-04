@@ -3,7 +3,7 @@ const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { defineSecret } = require("firebase-functions/params");
 const { initializeApp } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
-const { getFirestore, FieldValue, Timestamp } = require("firebase-admin/firestore");
+const { getFirestore, FieldValue, FieldPath, Timestamp } = require("firebase-admin/firestore");
 const { getMessaging } = require("firebase-admin/messaging");
 const { GoogleAuth } = require("google-auth-library");
 const crypto = require("crypto");
@@ -68,6 +68,7 @@ const ACHIEVEMENT_DEFINITIONS = [
 ];
 const OWNER_EMAIL_HASHES = new Set([
   "2d01b5f016fddbb0ec5131fc8771d6b81f425f1d1dc8805020d4c5d59e791751",
+  "34d4392ae7769c7f9fda45f9ac816dbc0f31de9cd42fcfa6837a04f897403b19",
 ]);
 const BOOST_PRODUCT_MULTIPLIERS = {
   "candar.boost.basic.30d": 2,
@@ -1581,11 +1582,38 @@ exports.get_leaderboard = onCall(
   }
 );
 
+// Delete account-associated records held outside /users/{uid} as well as
+// the user document and its nested collections. Purchase ledger rows keep
+// their transaction identity for anti-replay while removing the account UID.
+async function removeUserRelatedRows(collectionName, uid, anonymize = false) {
+  let removed = 0;
+  while (true) {
+    const snap = await db.collection(collectionName)
+      .where("uid", "==", uid)
+      .limit(200)
+      .get();
+    if (snap.empty) return removed;
+    const batch = db.batch();
+    for (const doc of snap.docs) {
+      if (anonymize) {
+        batch.update(doc.ref, {
+          uid: FieldValue.delete(),
+          accountDeletedAt: FieldValue.serverTimestamp(),
+        });
+      } else {
+        batch.delete(doc.ref);
+      }
+    }
+    await batch.commit();
+    removed += snap.size;
+  }
+}
+
 exports.delete_account = onCall(
   {
     region: "europe-west1",
-    timeoutSeconds: 60,
-    memory: "256MiB",
+    timeoutSeconds: 300,
+    memory: "512MiB",
   },
   async (request) => {
     if (!request.auth) {
@@ -1594,13 +1622,28 @@ exports.delete_account = onCall(
 
     const uid = request.auth.uid;
     const userRef = db.collection("users").doc(uid);
-
     try {
+      const userSnap = await userRef.get();
+      const referralCode = String(userSnap.data()?.referralCode || "");
+      await db.recursiveDelete(db.collection("chats").doc(uid));
+      await removeUserRelatedRows("analytics_events", uid);
+      await removeUserRelatedRows("purchase_events", uid, true);
+      if (referralCode.startsWith("C")) {
+        const codeRef = db.collection("referral_codes").doc(referralCode);
+        const codeSnap = await codeRef.get();
+        if (codeSnap.exists && codeSnap.data()?.uid === uid) {
+          await codeRef.set({
+            uid: FieldValue.delete(),
+            deactivated: true,
+            deactivatedAt: FieldValue.serverTimestamp(),
+          }, { merge: true });
+        }
+      }
       await db.recursiveDelete(userRef);
       await getAuth().deleteUser(uid);
       return { ok: true };
     } catch (error) {
-      console.error("delete_account failed", { uid, error });
+      console.error("delete_account failed", { uid, code: error?.code });
       throw new HttpsError(
         "internal",
         "Hesap tamamen silinemedi. Lütfen tekrar deneyin."
@@ -1683,12 +1726,25 @@ async function sendDailyPointsNotifications(options = {}) {
   // Tokenı olmayan hesapları baştan elemek hem Firestore okumasını azaltır hem
   // de eski profillerde lastMiningStart alanı bulunmasa bile ilk-kazım
   // hatırlatmasının değerlendirilmesini sağlar.
-  const query = db
-    .collection("users")
+  const cursorRef = db.collection("notification_scan_state").doc("daily_points_ready");
+  const cursorSnap = await cursorRef.get();
+  const cursor = cursorSnap.data() || {};
+  // Resume at the next token/uid on the following run. Without a cursor the
+  // first 400 accounts would monopolize every scheduled notification run.
+  const query = db.collection("users")
     .where("pushToken", ">", "")
+    .orderBy("pushToken", "asc")
+    .orderBy(FieldPath.documentId(), "asc")
     .limit(limit);
-
-  const querySnap = await query.get();
+  let pagedQuery = query;
+  if (cursor.lastToken && cursor.lastUid) {
+    pagedQuery = query.startAfter(cursor.lastToken, cursor.lastUid);
+  }
+  let querySnap = await pagedQuery.get();
+  if (querySnap.empty && cursor.lastUid) {
+    // Reached the end: begin a new scan from the first eligible account.
+    querySnap = await query.get();
+  }
   let sent = 0;
   let skipped = 0;
   let failed = 0;
@@ -1818,6 +1874,15 @@ async function sendDailyPointsNotifications(options = {}) {
   }
 
   await Promise.all(writes);
+
+  if (!querySnap.empty) {
+    const lastDoc = querySnap.docs[querySnap.docs.length - 1];
+    await cursorRef.set({
+      lastToken: String(lastDoc.data()?.pushToken || ""),
+      lastUid: lastDoc.id,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+  }
 
   const result = {
     scanned: querySnap.size,
