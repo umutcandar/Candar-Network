@@ -22,9 +22,11 @@ signal rewarded_boost_applied(payload: Dictionary)
 var _oauth_file := "user://oauth_callback.txt"
 var _state_file := "user://oauth_state.json"
 
-	# Refresh token kalıcı depolama
+# Legacy plain-text path is migration-only; never written to again.
 const _REFRESH_PATH := "user://refresh_token.txt"
-var _refresh_file := "user://refresh_token.txt"
+const _SECURE_REQUEST_PATH := "user://secure_session_request.json"
+const _SECURE_RESPONSE_PATH := "user://secure_session_response.json"
+var _secure_session_in_flight := false
 const APP_LINK_ANDROID := "https://play.google.com/store/apps/details?id=com.candarnetwork.app"
 const APP_LINK_IOS := "https://apps.apple.com/app/id6756212781"
 const APP_DOWNLOAD_LINK := "https://candarnetwork.com/download"
@@ -766,7 +768,7 @@ func register(email: String, password: String, referral_code := ""):
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("idToken"):
 				_firebase_id_token = str(res_data["idToken"])
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("refreshToken"):
-				_save_refresh_token(String(res_data["refreshToken"]))
+				await _save_refresh_token(String(res_data["refreshToken"]))
 			_is_signed_in = true
 			await save_uid(str(res_data["localId"]))
 			var user_doc_ok := await ensure_user_doc(str(res_data["localId"]), email, referral_code)
@@ -799,7 +801,7 @@ func login(email: String, password: String, referral_code := ""):
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("idToken"):
 				_firebase_id_token = str(res_data["idToken"])
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("refreshToken"):
-				_save_refresh_token(String(res_data["refreshToken"]))
+				await _save_refresh_token(String(res_data["refreshToken"]))
 			_is_signed_in = true
 			await save_uid(res_data["localId"])
 			# Var olan hesaba sonradan referans bağlanmaz.
@@ -1010,7 +1012,7 @@ func delete_my_account() -> Array:
 	if not bool(result.get("ok", false)):
 		return [false, str(result.get("error", "DELETE_FAILED"))]
 
-	logout()
+	await logout()
 	return [true, "OK"]
 
 # ======================================================================
@@ -1446,17 +1448,18 @@ func get_uid() -> String:
 	return ""
 
 func logout() -> void:
-	var path := "user://uid.txt"
-	if FileAccess.file_exists(path):
-		var dir := DirAccess.open("user://")
-		if dir:
-			dir.remove(path)
-	if FileAccess.file_exists(_REFRESH_PATH):
-		DirAccess.remove_absolute(_REFRESH_PATH)
+	# Delete the native refresh credential before navigating to the login
+	# screen. The UID is non-secret but must never resurrect a signed-out session.
+	await _clear_refresh_token()
+	if FileAccess.file_exists("user://uid.txt"):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path("user://uid.txt"))
 	_current_uid = ""
 	_firebase_id_token = ""
 	_is_signed_in = false
-	print("[AUTH] Çıkış yapıldı.")
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase and firebase.has_method("set_tokens"):
+		firebase.set_tokens("", "", "")
+	print("[AUTH] Oturum kapatıldı.")
 
 # ======================================================================
 #   Google ile Giriş (PKCE → id_token → Firebase Auth SignIn)
@@ -1660,7 +1663,7 @@ func _firebase_sign_in_with_google_id_token(id_token: String) -> Array:
 	_firebase_refresh_token = str(auth_info.get("refreshToken",""))
 	_current_uid = str(auth_info.get("localId",""))
 	if _firebase_refresh_token != "":
-		_save_refresh_token(_firebase_refresh_token)
+		await _save_refresh_token(_firebase_refresh_token)
 	if _current_uid != "":
 		save_uid(_current_uid)
 	_is_signed_in = (_firebase_id_token != "")
@@ -1766,7 +1769,7 @@ func _firebase_signin_with_google_tokens(id_token: String, access_token: String,
 	var rt := str(data.get("refreshToken", ""))
 
 	if rt != "":
-		_save_refresh_token(rt)
+		await _save_refresh_token(rt)
 
 	if _current_uid != "":
 		save_uid(_current_uid)
@@ -1881,10 +1884,8 @@ func google_sign_in(referral_code: String = "") -> Array:
 	if token_dict.has("email"):
 		email_hint = str(token_dict["email"])
 
-	# refresh_token bazen sadece ilk consent'ta gelir; gelirse kaydet
-	if token_dict.has("refresh_token"):
-		_save_refresh_token(str(token_dict["refresh_token"]))
-
+	# Google OAuth refresh_token, Firebase refreshToken değildir.
+	# Google tokenini Firebase oturum deposuna asla yazma.
 	# ✅ Her durumda Firebase'e Google ile giriş yap
 	return await firebase_sign_in_with_google(id_token, email_hint, referral_code)
 # ======================================================================
@@ -1926,7 +1927,7 @@ func firebase_sign_in_with_google(id_token: String, email_hint: String = "", ref
 				_firebase_id_token = str(data["idToken"])
 
 			if data.has("refreshToken"):
-				_save_refresh_token(str(data["refreshToken"]))
+				await _save_refresh_token(str(data["refreshToken"]))
 
 			var email_val: String = email_hint
 			if data.has("email"):
@@ -1937,7 +1938,7 @@ func firebase_sign_in_with_google(id_token: String, email_hint: String = "", ref
 				if has_node("/root/Firebase"):
 					var firebase := get_node("/root/Firebase")
 					if firebase and firebase.has_method("set_tokens"):
-						firebase.set_tokens(_firebase_id_token, _load_refresh_token(), uid)
+						firebase.set_tokens(_firebase_id_token, await _load_refresh_token(), uid)
 				var is_new_user := bool(data.get("isNewUser", false))
 				await firestore_load_or_create_user(uid, email_val, referral_code if is_new_user else "")
 				if not is_new_user:
@@ -1947,7 +1948,7 @@ func firebase_sign_in_with_google(id_token: String, email_hint: String = "", ref
 
 				var auth_info := {
 					"idToken": _firebase_id_token,
-					"refreshToken": _load_refresh_token(),
+					"refreshToken": await _load_refresh_token(),
 					"localId": uid,
 					"email": email_val,
 					"isNewUser": is_new_user
@@ -2005,7 +2006,7 @@ func firebase_sign_in_with_apple(id_token: String, email_hint: String = "", refe
 				_firebase_id_token = str(data["idToken"])
 
 			if data.has("refreshToken"):
-				_save_refresh_token(str(data["refreshToken"]))
+				await _save_refresh_token(str(data["refreshToken"]))
 
 			var email_val: String = email_hint
 			if data.has("email"):
@@ -2016,7 +2017,7 @@ func firebase_sign_in_with_apple(id_token: String, email_hint: String = "", refe
 				if has_node("/root/Firebase"):
 					var firebase := get_node("/root/Firebase")
 					if firebase and firebase.has_method("set_tokens"):
-						firebase.set_tokens(_firebase_id_token, _load_refresh_token(), uid)
+						firebase.set_tokens(_firebase_id_token, await _load_refresh_token(), uid)
 				var is_new_user := bool(data.get("isNewUser", false))
 				await firestore_load_or_create_user(uid, email_val, referral_code if is_new_user else "")
 				if not is_new_user:
@@ -2027,7 +2028,7 @@ func firebase_sign_in_with_apple(id_token: String, email_hint: String = "", refe
 				# onboarding.gd için auth_info sözlüğü döndürelim
 				var auth_info := {
 					"idToken": _firebase_id_token,
-					"refreshToken": _load_refresh_token(),
+					"refreshToken": await _load_refresh_token(),
 					"localId": uid,
 					"email": email_val,
 					"isNewUser": is_new_user
@@ -2247,28 +2248,107 @@ func _probe_network() -> void:
 #                     O T O M A T İ K  O T U R U M  &  T O K E N
 # ======================================================================
 
-func _save_refresh_token(rt: String) -> void:
-	var f := FileAccess.open(_REFRESH_PATH, FileAccess.WRITE)
-	if f:
-		f.store_string(rt)
-		f.close()
+func _remove_legacy_refresh_file() -> void:
+	if FileAccess.file_exists(_REFRESH_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_REFRESH_PATH))
+
+func _ios_secure_session_exchange(operation: String, token: String = "") -> Dictionary:
+	# Existing Swift bridge handles this on iOS. The IPC files are transient;
+	# the persistent secret belongs to Keychain (never to user://).
+	while _secure_session_in_flight:
+		await get_tree().process_frame
+	_secure_session_in_flight = true
+	if FileAccess.file_exists(_SECURE_RESPONSE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_SECURE_RESPONSE_PATH))
+	var request_id := str(Time.get_ticks_usec()) + "-" + str(Crypto.new().generate_random_bytes(8).hex_encode())
+	var request: Dictionary = {"operation": operation, "request_id": request_id}
+	if operation == "save":
+		request["token"] = token
+	var file := FileAccess.open(_SECURE_REQUEST_PATH, FileAccess.WRITE)
+	if file == null:
+		_secure_session_in_flight = false
+		return {"ok": false}
+	file.store_string(JSON.stringify(request))
+	file.close()
+	# Swift removes each input immediately, and Godot removes each output.
+	# Inaccessible Keychain or a missing native bridge must fail closed.
+	var timeout_at := Time.get_ticks_msec() + 6000
+	while Time.get_ticks_msec() < timeout_at:
+		if FileAccess.file_exists(_SECURE_RESPONSE_PATH):
+			var body := FileAccess.get_file_as_string(_SECURE_RESPONSE_PATH)
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(_SECURE_RESPONSE_PATH))
+			var response: Variant = JSON.parse_string(body)
+			if typeof(response) == TYPE_DICTIONARY and str(response.get("request_id", "")) == request_id:
+				_secure_session_in_flight = false
+				return response
+		await get_tree().process_frame
+	# Clear the in-flight plaintext on timeout; do not leak it to logs.
+	if FileAccess.file_exists(_SECURE_REQUEST_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_SECURE_REQUEST_PATH))
+	_secure_session_in_flight = false
+	return {"ok": false}
+
+func _save_refresh_token(rt: String) -> bool:
+	if rt == "":
+		return false
+	_firebase_refresh_token = rt
+	var saved := false
+	if OS.get_name() == "Android":
+		if Engine.has_singleton("CandarSecureStore"):
+			var secure = Engine.get_singleton("CandarSecureStore")
+			if secure.has_method("saveRefreshToken"):
+				saved = bool(secure.call("saveRefreshToken", rt))
+	elif OS.get_name() == "iOS":
+		var reply: Dictionary = await _ios_secure_session_exchange("save", rt)
+		saved = bool(reply.get("ok", false))
+	# No fallbacks to unencrypted or locally derived encryption keys.
+	_remove_legacy_refresh_file()
+	if not saved:
+		push_warning("[AUTH] Güvenli saklama yok: oturum yalnızca uygulama açıkken korunabilir.")
+	return saved
 
 func _load_refresh_token() -> String:
+	if _firebase_refresh_token != "":
+		return _firebase_refresh_token
+	var stored := ""
+	if OS.get_name() == "Android":
+		if Engine.has_singleton("CandarSecureStore"):
+			var secure = Engine.get_singleton("CandarSecureStore")
+			if secure.has_method("loadRefreshToken"):
+				stored = str(secure.call("loadRefreshToken"))
+	elif OS.get_name() == "iOS":
+		var reply: Dictionary = await _ios_secure_session_exchange("load")
+		if bool(reply.get("ok", false)):
+			stored = str(reply.get("token", ""))
+	if stored != "":
+		_firebase_refresh_token = stored
+		_remove_legacy_refresh_file()
+		return stored
+	# Upgrade: a previous release stored Firebase refresh tokens as plain
+	# text. Migrate once, then remove the legacy file even when no native
+	# backend is available (re-login is safer than persisting plaintext).
 	if FileAccess.file_exists(_REFRESH_PATH):
-		var f := FileAccess.open(_REFRESH_PATH, FileAccess.READ)
-		if f:
-			var s := f.get_as_text().strip_edges()
-			f.close()
-			return s
+		var legacy := FileAccess.get_file_as_string(_REFRESH_PATH).strip_edges()
+		if legacy != "":
+			await _save_refresh_token(legacy)
+			return legacy
+		_remove_legacy_refresh_file()
 	return ""
 
 func _clear_refresh_token() -> void:
-	if FileAccess.file_exists(_REFRESH_PATH):
-		DirAccess.remove_absolute(_REFRESH_PATH)
+	_firebase_refresh_token = ""
+	if OS.get_name() == "Android":
+		if Engine.has_singleton("CandarSecureStore"):
+			var secure = Engine.get_singleton("CandarSecureStore")
+			if secure.has_method("clearRefreshToken"):
+				secure.call("clearRefreshToken")
+	elif OS.get_name() == "iOS":
+		await _ios_secure_session_exchange("clear")
+	_remove_legacy_refresh_file()
 
 # Firebase idToken yenileme (Secure Token)
 func firebase_refresh_id_token() -> bool:
-	var rt := _load_refresh_token()
+	var rt := await _load_refresh_token()
 	if rt == "":
 		return false
 	var url := "https://securetoken.googleapis.com/v1/token?key=%s" % firebase_api_key
@@ -2280,13 +2360,18 @@ func firebase_refresh_id_token() -> bool:
 	var res := await http_request(url, HTTPClient.METHOD_POST, headers, body)
 	if res[0] and int(res[1]) == 200 and typeof(res[2]) == TYPE_DICTIONARY:
 		var d: Dictionary = res[2]
+		# Do not accept a refresh response for a different stored UID.
+		var returned_uid := str(d.get("user_id", _current_uid))
+		if _current_uid != "" and returned_uid != _current_uid:
+			await _clear_refresh_token()
+			return false
 		if d.has("id_token"):
 			_firebase_id_token = str(d["id_token"])
 		if d.has("refresh_token"):
-			_save_refresh_token(str(d["refresh_token"]))
+			await _save_refresh_token(str(d["refresh_token"]))
 		var firebase := get_node_or_null("/root/Firebase")
 		if firebase and firebase.has_method("set_tokens"):
-			firebase.set_tokens(_firebase_id_token, _load_refresh_token(), _current_uid)
+			firebase.set_tokens(_firebase_id_token, await _load_refresh_token(), _current_uid)
 		return true
 	return false
 
@@ -2324,7 +2409,7 @@ func ensure_token_fresh(threshold_sec := 120) -> void:
 func try_restore_session() -> void:
 	_current_uid = get_uid()
 	var has_uid := _current_uid != ""
-	var has_rt := _load_refresh_token() != ""
+	var has_rt := await _load_refresh_token() != ""
 
 	if has_uid and has_rt:
 		var ok := await firebase_refresh_id_token()

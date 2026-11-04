@@ -1118,7 +1118,7 @@ func _sync_engagement_in_background(uid: String, fields: Dictionary) -> void:
 # ---------- CIKIS ----------
 func _on_logout_button_pressed():
 	try_show_interstitial_ad(func():
-		Global.logout()
+		await Global.logout()
 		get_tree().change_scene_to_file("res://onboarding.tscn")
 	)
 # ---------- MINING BUTONU DURUM ----------

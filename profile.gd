@@ -284,8 +284,7 @@ func _do_delete_account() -> void:
 	var res: Array = await Global.delete_my_account()
 	var ok := res.size() > 0 and bool(res[0])
 	if ok:
-		if Global.has_method("logout"):
-			Global.logout()
+		# delete_my_account already awaits the native secure logout.
 		if FileAccess.file_exists("user://uid.txt"):
 			var d := DirAccess.open("user://")
 			if d:
@@ -1216,7 +1215,7 @@ func _on_reset_pressed() -> void:
 func _on_logout_pressed() -> void:
 	if _account_busy:
 		return
-	Global.logout()
+	await Global.logout()
 	get_tree().change_scene_to_file("res://onboarding.tscn")
 
 
