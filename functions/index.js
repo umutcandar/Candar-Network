@@ -40,6 +40,7 @@ const candarAiConfig = defineSecret("CANDAR_AI_CONFIG");
 const { generateAnswer } = require("./candar-ai");
 const { normalizeMiningRate } = require("./admin-config");
 const { fetchVerifyingKeys, verifyCallback, AdmobVerificationError } = require("./admob-ssv");
+const { TEAM_CAPACITY, normalizeTeamName, normalizeTeamCode, addMember, removeMember } = require("./team-domain");
 const appleIssuerId = defineSecret("APPLE_ISSUER_ID");
 const appleKeyId = defineSecret("APPLE_KEY_ID");
 const applePrivateKey = defineSecret("APPLE_PRIVATE_KEY");
@@ -1587,6 +1588,156 @@ exports.get_leaderboard = onCall(
   }
 );
 
+// Team membership lives on /users/{uid}.teamCode and
+// /teams/{code}.members. Both documents change in a Firestore transaction;
+// clients cannot write either field using firestore.rules.
+function requireSignedIn(request) {
+  if (!request.auth?.uid) {
+    throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
+  }
+  return request.auth.uid;
+}
+
+function teamSummary(code, data, uid = "") {
+  const members = Array.isArray(data?.members) ? data.members : [];
+  return {
+    code,
+    name: String(data?.name || ""),
+    memberCount: members.length,
+    maxMembers: TEAM_CAPACITY,
+    isOwner: String(data?.ownerUid || "") === uid,
+    isMember: members.includes(uid),
+  };
+}
+
+async function leaveTeamForUser(uid) {
+  const userRef = db.collection("users").doc(uid);
+  // A retry is safe. The caller may delete the account after this completes.
+  const profile = await userRef.get();
+  const code = normalizeTeamCode(profile.data()?.teamCode);
+  if (!code) return { ok: true, left: false };
+
+  const teamRef = db.collection("teams").doc(code);
+  return db.runTransaction(async (tx) => {
+    const [userSnap, teamSnap] = await Promise.all([
+      tx.get(userRef), tx.get(teamRef),
+    ]);
+    if (!userSnap.exists) return { ok: true, left: false };
+    if (normalizeTeamCode(userSnap.data()?.teamCode) !== code) {
+      return { ok: true, left: false };
+    }
+    if (!teamSnap.exists) {
+      tx.update(userRef, { teamCode: FieldValue.delete() });
+      return { ok: true, left: true, missingTeam: true };
+    }
+
+    const change = removeMember(teamSnap.data(), uid);
+    if (change.disbanded) {
+      tx.delete(teamRef);
+    } else if (change.wasMember) {
+      tx.update(teamRef, {
+        members: change.members,
+        memberCount: change.members.length,
+        ownerUid: change.ownerUid,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
+    tx.update(userRef, { teamCode: FieldValue.delete() });
+    return { ok: true, left: true, disbanded: Boolean(change.disbanded) };
+  });
+}
+
+exports.team_create = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    const uid = requireSignedIn(request);
+    const name = normalizeTeamName(request.data?.name);
+    if (!name) throw new HttpsError("invalid-argument", "Takım adı 3–40 karakter olmalı.");
+    const code = "T" + crypto.randomBytes(6).toString("hex").toUpperCase();
+    const userRef = db.collection("users").doc(uid);
+    const teamRef = db.collection("teams").doc(code);
+    return db.runTransaction(async (tx) => {
+      const [user, team] = await Promise.all([tx.get(userRef), tx.get(teamRef)]);
+      if (!user.exists) throw new HttpsError("not-found", "Kullanıcı profili bulunamadı.");
+      if (normalizeTeamCode(user.data()?.teamCode)) {
+        throw new HttpsError("failed-precondition", "Zaten bir takımdasın.");
+      }
+      if (team.exists) throw new HttpsError("aborted", "Takım kodu çakıştı. Tekrar deneyin.");
+      tx.create(teamRef, {
+        name, code, members: [uid], ownerUid: uid, memberCount: 1,
+        createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp(),
+      });
+      tx.update(userRef, { teamCode: code });
+      return { ok: true, team: { code, name, memberCount: 1, maxMembers: TEAM_CAPACITY, isOwner: true } };
+    });
+  }
+);
+
+exports.team_join = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    const uid = requireSignedIn(request);
+    const code = normalizeTeamCode(request.data?.code);
+    if (!code) throw new HttpsError("invalid-argument", "Takım kodu geçersiz.");
+    const userRef = db.collection("users").doc(uid);
+    const teamRef = db.collection("teams").doc(code);
+    return db.runTransaction(async (tx) => {
+      const [user, teamSnap] = await Promise.all([tx.get(userRef), tx.get(teamRef)]);
+      if (!user.exists) throw new HttpsError("not-found", "Kullanıcı profili bulunamadı.");
+      if (!teamSnap.exists) throw new HttpsError("not-found", "Takım bulunamadı.");
+      const currentCode = normalizeTeamCode(user.data()?.teamCode);
+      const teamData = teamSnap.data() || {};
+      if (currentCode) {
+        if (currentCode === code && Array.isArray(teamData.members) && teamData.members.includes(uid)) {
+          return { ok: true, alreadyJoined: true, team: teamSummary(code, teamData, uid) };
+        }
+        throw new HttpsError("failed-precondition", "Önce mevcut takımından ayrılmalısın.");
+      }
+      const joined = addMember(teamData, uid);
+      if (joined.full) throw new HttpsError("resource-exhausted", "Takım dolu (30 kişi).");
+      if (joined.alreadyMember) throw new HttpsError("failed-precondition", "Takım kayıtları uyuşmuyor.");
+      tx.update(teamRef, {
+        members: joined.members, memberCount: joined.members.length,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      tx.update(userRef, { teamCode: code });
+      return { ok: true, team: { ...teamSummary(code, teamData, uid), memberCount: joined.members.length, isMember: true } };
+    });
+  }
+);
+
+exports.team_leave = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => leaveTeamForUser(requireSignedIn(request))
+);
+
+exports.team_info = onCall(
+  { region: "europe-west1", timeoutSeconds: 15, memory: "256MiB" },
+  async (request) => {
+    const uid = requireSignedIn(request);
+    const profile = await db.collection("users").doc(uid).get();
+    if (!profile.exists) throw new HttpsError("not-found", "Profil bulunamadı.");
+    const code = normalizeTeamCode(profile.data()?.teamCode);
+    if (!code) return { ok: true, inTeam: false };
+    const snap = await db.collection("teams").doc(code).get();
+    if (!snap.exists) return { ok: true, inTeam: false, staleCode: true };
+    return { ok: true, inTeam: true, team: teamSummary(code, snap.data(), uid) };
+  }
+);
+
+exports.team_leaderboard = onCall(
+  { region: "europe-west1", timeoutSeconds: 20, memory: "256MiB" },
+  async (request) => {
+    requireSignedIn(request);
+    const limit = Math.min(50, Math.max(1, Number(request.data?.limit || 10)));
+    const snap = await db.collection("teams").orderBy("memberCount", "desc").limit(limit).get();
+    return {
+      ok: true,
+      teams: snap.docs.map((doc) => teamSummary(doc.id, doc.data())),
+    };
+  }
+);
+
 // Delete account-associated records held outside /users/{uid} as well as
 // the user document and its nested collections. Purchase ledger rows keep
 // their transaction identity for anti-replay while removing the account UID.
@@ -1630,6 +1781,7 @@ exports.delete_account = onCall(
     try {
       const userSnap = await userRef.get();
       const referralCode = String(userSnap.data()?.referralCode || "");
+      await leaveTeamForUser(uid);
       await db.recursiveDelete(db.collection("chats").doc(uid));
       await removeUserRelatedRows("analytics_events", uid);
       await removeUserRelatedRows("purchase_events", uid, true);
