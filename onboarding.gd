@@ -187,7 +187,7 @@ func _build_language_selector() -> void:
 		return
 	var selector := OptionButton.new()
 	selector.name = "LanguageSelect"
-	selector.tooltip_text = "🌐 Language / Dil"
+	selector.tooltip_text = tr("select_language")
 	selector.custom_minimum_size = Vector2(170, 46)
 	selector.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	selector.add_theme_font_size_override("font_size", 17)
@@ -426,7 +426,7 @@ func _build_input_rows() -> void:
 	_eye_btn.expand_icon = true
 	_eye_btn.add_theme_constant_override("icon_max_width", 36)
 	_eye_btn.focus_mode = Control.FOCUS_NONE
-	_eye_btn.tooltip_text = "Şifreyi göster/gizle" if TranslationServer.get_locale().begins_with("tr") else "Show/hide password"
+	_eye_btn.tooltip_text = Global.localized_ui_text("Şifreyi göster/gizle", "Show/hide password")
 	for state in ["normal", "hover", "pressed", "focus"]:
 		_eye_btn.add_theme_stylebox_override(state, StyleBoxEmpty.new())
 	password_edit.add_child(_eye_btn)
@@ -807,7 +807,7 @@ func _on_login_pressed_common(use_google: bool, use_apple: bool = false) -> void
 	# --- APPLE İLE GİRİŞ (NATIVE - WEB YOK) ---
 	if use_apple:
 		if not OS.has_feature("ios") and OS.get_name() != "iOS":
-			status_label.text = "Apple girişi sadece iOS cihazlarda aktif."
+			status_label.text = Global.localized_ui_text("Apple ile giriş sadece iOS cihazlarda kullanılabilir.", "Apple sign-in is only available on iOS devices.")
 			return
 
 		Global.analytics_event("signup_start", {"method": "apple"})
@@ -941,18 +941,22 @@ func _on_login_pressed_common(use_google: bool, use_apple: bool = false) -> void
 			var err_msg: String = str(result[1])
 			match err_msg:
 				"Bu e-posta zaten kayıtlı. Şifreni doğru yazıp tekrar dene":
-					status_label.text = "Bu e-posta zaten kayıtlı. Şifreni doğru yazıp tekrar dene."
+					status_label.text = tr("account_exists_password")
 				"Şifre yanlış!":
-					status_label.text = "Şifre yanlış!"
+					status_label.text = tr("wrong_password")
 				_:
-					if err_msg.contains("doğrulama") or err_msg.begins_with("Geçerli bir"):
-						status_label.text = err_msg
+					if err_msg.begins_with("Geçerli bir"):
+						status_label.text = tr("invalid_email")
+					elif err_msg.contains("doğrulama"):
+						status_label.text = tr("login_failed")
 					else:
-						status_label.text = "Hata: " + err_msg
+						# Backend errors may be Turkish-only; do not leak them to
+						# users in any other locale. Keep details in Turkish UI.
+						status_label.text = ("%s %s" % [tr("login_failed"), err_msg]) if TranslationServer.get_locale().begins_with("tr") else tr("login_failed")
 			_shake(_email_row)
 			_shake(_pass_row)
 	else:
-		status_label.text = "Beklenmeyen hata oluştu!"
+		status_label.text = tr("unexpected_error")
 
 func _on_forgot_password_pressed() -> void:
 	if _auth_in_progress:

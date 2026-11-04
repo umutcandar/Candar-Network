@@ -167,7 +167,9 @@
     "How can I get more referrals?",
     "Keep your message within 1,000 characters.",
     "🌐 App Language",
-    "App Language"
+    "App Language",
+    "Show/hide password",
+    "Apple sign-in is only available on iOS devices."
   ],
   "en": [
     "👥 My Referral Team",
@@ -336,7 +338,9 @@
     "How can I get more referrals?",
     "Keep your message within 1,000 characters.",
     "🌐 App Language",
-    "App Language"
+    "App Language",
+    "Show/hide password",
+    "Apple sign-in is only available on iOS devices."
   ],
   "tr": [
     "👥 Referans Takımım",
@@ -505,7 +509,9 @@
     "Referansı nasıl artırırım?",
     "Mesajını 1000 karakterle sınırla.",
     "🌐 Dil / Language",
-    "Uygulama Dili"
+    "Uygulama Dili",
+    "Şifreyi göster/gizle",
+    "Apple ile giriş sadece iOS cihazlarda kullanılabilir."
   ],
   "de": [
     "👥 Mein Empfehlungsteam",
@@ -674,7 +680,9 @@
     "Wie bekomme ich mehr Empfehlungen?",
     "Beschränke deine Nachricht auf 1.000 Zeichen.",
     "🌐 App-Sprache",
-    "App-Sprache"
+    "App-Sprache",
+    "Passwort anzeigen/ausblenden",
+    "Die Apple-Anmeldung ist nur auf iOS-Geräten verfügbar."
   ],
   "fr": [
     "👥 Mon équipe de parrainage",
@@ -843,7 +851,9 @@
     "Comment obtenir plus de parrainages ?",
     "Limitez votre message à 1 000 caractères.",
     "🌐 Langue de l’application",
-    "Langue de l’application"
+    "Langue de l’application",
+    "Afficher/masquer le mot de passe",
+    "La connexion Apple n’est disponible que sur iOS."
   ],
   "es": [
     "👥 Mi equipo de referidos",
@@ -1012,7 +1022,9 @@
     "¿Cómo puedo conseguir más referidos?",
     "Limita tu mensaje a 1000 caracteres.",
     "🌐 Idioma de la aplicación",
-    "Idioma de la aplicación"
+    "Idioma de la aplicación",
+    "Mostrar/ocultar contraseña",
+    "Iniciar sesión con Apple solo está disponible en iOS."
   ],
   "pt": [
     "👥 Minha equipe de indicações",
@@ -1181,7 +1193,9 @@
     "Como consigo mais indicações?",
     "Limite sua mensagem a 1.000 caracteres.",
     "🌐 Idioma do aplicativo",
-    "Idioma do aplicativo"
+    "Idioma do aplicativo",
+    "Mostrar/ocultar senha",
+    "Entrar com a Apple só está disponível em dispositivos iOS."
   ],
   "ru": [
     "👥 Моя реферальная команда",
@@ -1350,7 +1364,9 @@
     "Как привлечь больше рефералов?",
     "Ограничьте сообщение 1000 символами.",
     "🌐 Язык приложения",
-    "Язык приложения"
+    "Язык приложения",
+    "Показать/скрыть пароль",
+    "Вход через Apple доступен только на устройствах iOS."
   ],
   "zh": [
     "👥 我的邀请团队",
@@ -1519,7 +1535,9 @@
     "怎样获得更多邀请？ ",
     "请将消息控制在 1,000 个字符以内。",
     "🌐 应用语言",
-    "应用语言"
+    "应用语言",
+    "显示/隐藏密码",
+    "仅 iOS 设备支持 Apple 登录。"
   ],
   "ja": [
     "👥 マイ紹介チーム",
@@ -1688,7 +1706,9 @@
     "紹介を増やすには？",
     "メッセージは 1,000 文字以内にしてください。",
     "🌐 アプリの言語",
-    "アプリの言語"
+    "アプリの言語",
+    "パスワードを表示/非表示",
+    "AppleでのログインはiOS端末でのみ利用できます。"
   ],
   "ko": [
     "👥 내 추천 팀",
@@ -1857,7 +1877,9 @@
     "추천을 더 늘리려면 어떻게 해야 하나요?",
     "메시지는 1,000자 이내로 작성하세요.",
     "🌐 앱 언어",
-    "앱 언어"
+    "앱 언어",
+    "비밀번호 표시/숨기기",
+    "Apple 로그인은 iOS 기기에서만 가능합니다."
   ],
   "ar": [
     "👥 فريق الإحالات الخاص بي",
@@ -2026,7 +2048,9 @@
     "كيف أحصل على مزيد من الإحالات؟",
     "اجعل رسالتك ضمن 1000 حرف.",
     "🌐 لغة التطبيق",
-    "لغة التطبيق"
+    "لغة التطبيق",
+    "إظهار/إخفاء كلمة المرور",
+    "تسجيل الدخول باستخدام Apple متاح فقط على أجهزة iOS."
   ],
   "hi": [
     "👥 मेरी रेफ़रल टीम",
@@ -2195,7 +2219,9 @@
     "मैं और रेफ़रल कैसे पा सकता हूँ?",
     "अपना संदेश 1,000 अक्षरों तक सीमित रखें।",
     "🌐 ऐप की भाषा",
-    "ऐप की भाषा"
+    "ऐप की भाषा",
+    "पासवर्ड दिखाएँ/छिपाएँ",
+    "Apple साइन-इन केवल iOS डिवाइस पर उपलब्ध है।"
   ],
   "named": {
     "badge_starter": {
