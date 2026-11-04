@@ -165,7 +165,9 @@
     "What is my strategy today?",
     "Should I buy a boost?",
     "How can I get more referrals?",
-    "Keep your message within 1,000 characters."
+    "Keep your message within 1,000 characters.",
+    "🌐 App Language",
+    "App Language"
   ],
   "en": [
     "👥 My Referral Team",
@@ -332,7 +334,9 @@
     "What is my strategy today?",
     "Should I buy a boost?",
     "How can I get more referrals?",
-    "Keep your message within 1,000 characters."
+    "Keep your message within 1,000 characters.",
+    "🌐 App Language",
+    "App Language"
   ],
   "tr": [
     "👥 Referans Takımım",
@@ -499,7 +503,9 @@
     "Bugünkü stratejim ne?",
     "Boost almalı mıyım?",
     "Referansı nasıl artırırım?",
-    "Mesajını 1000 karakterle sınırla."
+    "Mesajını 1000 karakterle sınırla.",
+    "🌐 Dil / Language",
+    "Uygulama Dili"
   ],
   "de": [
     "👥 Mein Empfehlungsteam",
@@ -666,7 +672,9 @@
     "Was ist meine Strategie für heute?",
     "Sollte ich einen Boost kaufen?",
     "Wie bekomme ich mehr Empfehlungen?",
-    "Beschränke deine Nachricht auf 1.000 Zeichen."
+    "Beschränke deine Nachricht auf 1.000 Zeichen.",
+    "🌐 App-Sprache",
+    "App-Sprache"
   ],
   "fr": [
     "👥 Mon équipe de parrainage",
@@ -833,7 +841,9 @@
     "Quelle est ma stratégie aujourd’hui ?",
     "Devrais-je acheter un boost ?",
     "Comment obtenir plus de parrainages ?",
-    "Limitez votre message à 1 000 caractères."
+    "Limitez votre message à 1 000 caractères.",
+    "🌐 Langue de l’application",
+    "Langue de l’application"
   ],
   "es": [
     "👥 Mi equipo de referidos",
@@ -1000,7 +1010,9 @@
     "¿Cuál es mi estrategia para hoy?",
     "¿Debería comprar un impulso?",
     "¿Cómo puedo conseguir más referidos?",
-    "Limita tu mensaje a 1000 caracteres."
+    "Limita tu mensaje a 1000 caracteres.",
+    "🌐 Idioma de la aplicación",
+    "Idioma de la aplicación"
   ],
   "pt": [
     "👥 Minha equipe de indicações",
@@ -1167,7 +1179,9 @@
     "Qual é minha estratégia para hoje?",
     "Devo comprar um impulso?",
     "Como consigo mais indicações?",
-    "Limite sua mensagem a 1.000 caracteres."
+    "Limite sua mensagem a 1.000 caracteres.",
+    "🌐 Idioma do aplicativo",
+    "Idioma do aplicativo"
   ],
   "ru": [
     "👥 Моя реферальная команда",
@@ -1334,7 +1348,9 @@
     "Какова моя стратегия на сегодня?",
     "Стоит ли покупать буст?",
     "Как привлечь больше рефералов?",
-    "Ограничьте сообщение 1000 символами."
+    "Ограничьте сообщение 1000 символами.",
+    "🌐 Язык приложения",
+    "Язык приложения"
   ],
   "zh": [
     "👥 我的邀请团队",
@@ -1501,7 +1517,9 @@
     "我今天应该采取什么策略？",
     "我应该购买加成吗？",
     "怎样获得更多邀请？ ",
-    "请将消息控制在 1,000 个字符以内。"
+    "请将消息控制在 1,000 个字符以内。",
+    "🌐 应用语言",
+    "应用语言"
   ],
   "ja": [
     "👥 マイ紹介チーム",
@@ -1668,7 +1686,9 @@
     "今日の戦略は？",
     "ブーストを購入すべき？",
     "紹介を増やすには？",
-    "メッセージは 1,000 文字以内にしてください。"
+    "メッセージは 1,000 文字以内にしてください。",
+    "🌐 アプリの言語",
+    "アプリの言語"
   ],
   "ko": [
     "👥 내 추천 팀",
@@ -1835,7 +1855,9 @@
     "오늘의 전략은 무엇인가요?",
     "부스트를 구매해야 할까요?",
     "추천을 더 늘리려면 어떻게 해야 하나요?",
-    "메시지는 1,000자 이내로 작성하세요."
+    "메시지는 1,000자 이내로 작성하세요.",
+    "🌐 앱 언어",
+    "앱 언어"
   ],
   "ar": [
     "👥 فريق الإحالات الخاص بي",
@@ -2002,7 +2024,9 @@
     "ما استراتيجيتي اليوم؟",
     "هل ينبغي أن أشتري تعزيزًا؟",
     "كيف أحصل على مزيد من الإحالات؟",
-    "اجعل رسالتك ضمن 1000 حرف."
+    "اجعل رسالتك ضمن 1000 حرف.",
+    "🌐 لغة التطبيق",
+    "لغة التطبيق"
   ],
   "hi": [
     "👥 मेरी रेफ़रल टीम",
@@ -2169,6 +2193,136 @@
     "आज मेरी रणनीति क्या होनी चाहिए?",
     "क्या मुझे बूस्ट खरीदना चाहिए?",
     "मैं और रेफ़रल कैसे पा सकता हूँ?",
-    "अपना संदेश 1,000 अक्षरों तक सीमित रखें।"
-  ]
+    "अपना संदेश 1,000 अक्षरों तक सीमित रखें।",
+    "🌐 ऐप की भाषा",
+    "ऐप की भाषा"
+  ],
+  "named": {
+    "badge_starter": {
+      "en": "Starter",
+      "tr": "Başlangıç",
+      "de": "Einsteiger",
+      "fr": "Débutant",
+      "es": "Inicial",
+      "pt": "Inicial",
+      "ru": "Новичок",
+      "zh": "新手",
+      "ja": "初心者",
+      "ko": "초보자",
+      "ar": "مبتدئ",
+      "hi": "शुरुआती"
+    },
+    "badge_pro": {
+      "en": "Pro",
+      "tr": "Profesyonel",
+      "de": "Profi",
+      "fr": "Pro",
+      "es": "Profesional",
+      "pt": "Profissional",
+      "ru": "Профи",
+      "zh": "专家",
+      "ja": "プロ",
+      "ko": "프로",
+      "ar": "محترف",
+      "hi": "प्रो"
+    },
+    "badge_master": {
+      "en": "Master",
+      "tr": "Usta",
+      "de": "Meister",
+      "fr": "Maître",
+      "es": "Maestro",
+      "pt": "Mestre",
+      "ru": "Мастер",
+      "zh": "大师",
+      "ja": "マスター",
+      "ko": "마스터",
+      "ar": "خبير",
+      "hi": "मास्टर"
+    },
+    "badge_veteran": {
+      "en": "Veteran",
+      "tr": "Deneyimli",
+      "de": "Veteran",
+      "fr": "Vétéran",
+      "es": "Veterano",
+      "pt": "Veterano",
+      "ru": "Ветеран",
+      "zh": "资深",
+      "ja": "ベテラン",
+      "ko": "베테랑",
+      "ar": "مخضرم",
+      "hi": "अनुभवी"
+    },
+    "badge_legend": {
+      "en": "Legend",
+      "tr": "Efsane",
+      "de": "Legende",
+      "fr": "Légende",
+      "es": "Leyenda",
+      "pt": "Lenda",
+      "ru": "Легенда",
+      "zh": "传奇",
+      "ja": "レジェンド",
+      "ko": "전설",
+      "ar": "أسطورة",
+      "hi": "दिग्गज"
+    },
+    "streak_7_bonus": {
+      "en": "🔥 7-day streak! Your bonus increased.",
+      "tr": "🔥 7 günlük seri! Bonusun arttı.",
+      "de": "🔥 7-Tage-Serie! Dein Bonus ist gestiegen.",
+      "fr": "🔥 Série de 7 jours ! Votre bonus a augmenté.",
+      "es": "🔥 ¡Racha de 7 días! Aumentó tu bonificación.",
+      "pt": "🔥 Sequência de 7 dias! Seu bônus aumentou.",
+      "ru": "🔥 Серия из 7 дней! Бонус увеличен.",
+      "zh": "🔥 连续 7 天！奖励已提高。",
+      "ja": "🔥 7日連続達成！ボーナスが増えました。",
+      "ko": "🔥 7일 연속 달성! 보너스가 증가했습니다.",
+      "ar": "🔥 سلسلة 7 أيام! زادت مكافأتك.",
+      "hi": "🔥 7-दिन की स्ट्रीक! बोनस बढ़ गया।"
+    },
+    "streak_30_bonus": {
+      "en": "🔥 30-day streak! Your bonus increased.",
+      "tr": "🔥 30 günlük seri! Bonusun arttı.",
+      "de": "🔥 30-Tage-Serie! Dein Bonus ist gestiegen.",
+      "fr": "🔥 Série de 30 jours ! Votre bonus a augmenté.",
+      "es": "🔥 ¡Racha de 30 días! Aumentó tu bonificación.",
+      "pt": "🔥 Sequência de 30 dias! Seu bônus aumentou.",
+      "ru": "🔥 Серия из 30 дней! Бонус увеличен.",
+      "zh": "🔥 连续 30 天！奖励已提高。",
+      "ja": "🔥 30日連続達成！ボーナスが増えました。",
+      "ko": "🔥 30일 연속 달성! 보너스가 증가했습니다.",
+      "ar": "🔥 سلسلة 30 يومًا! زادت مكافأتك.",
+      "hi": "🔥 30-दिन की स्ट्रीक! बोनस बढ़ गया।"
+    },
+    "streak_100_bonus": {
+      "en": "🔥 100-day streak! Maximum bonus unlocked.",
+      "tr": "🔥 100 günlük seri! Maksimum bonus açıldı.",
+      "de": "🔥 100-Tage-Serie! Maximaler Bonus freigeschaltet.",
+      "fr": "🔥 Série de 100 jours ! Bonus maximal débloqué.",
+      "es": "🔥 ¡Racha de 100 días! Bonificación máxima desbloqueada.",
+      "pt": "🔥 Sequência de 100 dias! Bônus máximo liberado.",
+      "ru": "🔥 Серия из 100 дней! Открыт максимальный бонус.",
+      "zh": "🔥 连续 100 天！已解锁最高奖励。",
+      "ja": "🔥 100日連続達成！最大ボーナスを解除。",
+      "ko": "🔥 100일 연속 달성! 최대 보너스 해제.",
+      "ar": "🔥 سلسلة 100 يوم! تم فتح أقصى مكافأة.",
+      "hi": "🔥 100-दिन की स्ट्रीक! अधिकतम बोनस अनलॉक।"
+    },
+    "streak_reset": {
+      "en": "Your streak reset. Start a new one today.",
+      "tr": "Serin sıfırlandı. Bugün yeniden başla.",
+      "de": "Deine Serie wurde zurückgesetzt. Starte heute neu.",
+      "fr": "Votre série est réinitialisée. Recommencez aujourd’hui.",
+      "es": "Tu racha se reinició. Comienza una nueva hoy.",
+      "pt": "Sua sequência foi reiniciada. Comece outra hoje.",
+      "ru": "Серия сброшена. Начните новую сегодня.",
+      "zh": "连续记录已重置，今天重新开始吧。",
+      "ja": "連続記録がリセットされました。今日から再開しましょう。",
+      "ko": "연속 기록이 초기화되었습니다. 오늘 다시 시작하세요.",
+      "ar": "تمت إعادة ضبط سلسلتك. ابدأ من جديد اليوم.",
+      "hi": "आपकी स्ट्रीक रीसेट हो गई। आज फिर शुरू करें।"
+    }
+  }
 }

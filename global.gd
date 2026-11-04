@@ -2504,6 +2504,16 @@ func localized_ui_text(turkish: String, english: String) -> String:
 		return str(entries[index])
 	return english
 
+func localized_named_key(key: String) -> String:
+	if _ui_catalog.is_empty():
+		_load_ui_locales()
+	var named: Dictionary = _ui_catalog.get("named", {})
+	if named.has(key):
+		var values: Dictionary = named[key]
+		var lang := TranslationServer.get_locale().replace("-", "_").get_slice("_", 0).to_lower()
+		return str(values.get(lang, values.get("en", key)))
+	return TranslationServer.translate(key)
+
 func _determine_initial_lang() -> String:
 	var saved := ConfigFile.new()
 	if saved.load("user://settings.cfg") == OK:
@@ -3181,11 +3191,11 @@ func get_badge_from_points(points: float) -> String:
 
 func get_badge_display_name(badge: String) -> String:
 	match badge:
-		BADGE_STARTER: return tr("badge_starter")
-		BADGE_PRO: return tr("badge_pro")
-		BADGE_MASTER: return tr("badge_master")
-		BADGE_VETERAN: return tr("badge_veteran")
-		BADGE_LEGEND: return tr("badge_legend")
+		BADGE_STARTER: return localized_named_key("badge_starter")
+		BADGE_PRO: return localized_named_key("badge_pro")
+		BADGE_MASTER: return localized_named_key("badge_master")
+		BADGE_VETERAN: return localized_named_key("badge_veteran")
+		BADGE_LEGEND: return localized_named_key("badge_legend")
 		_: return ""
 
 func get_badge_color(badge: String) -> Color:
@@ -3300,15 +3310,15 @@ func update_daily_streak(uid: String) -> Array:
 		streak_bonus = get_streak_bonus(new_streak)
 
 		if new_streak == 7:
-			bonus_message = tr("streak_7_bonus")
+			bonus_message = localized_named_key("streak_7_bonus")
 		elif new_streak == 30:
-			bonus_message = tr("streak_30_bonus")
+			bonus_message = localized_named_key("streak_30_bonus")
 		elif new_streak == 100:
-			bonus_message = tr("streak_100_bonus")
+			bonus_message = localized_named_key("streak_100_bonus")
 	else:
 		new_streak = 1
 		streak_bonus = 1.0
-		bonus_message = tr("streak_reset")
+		bonus_message = localized_named_key("streak_reset")
 
 	var update_fields := {
 		"lastLoginDate": {"integerValue": now},
