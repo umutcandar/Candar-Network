@@ -106,6 +106,7 @@ func _ready() -> void:
 	_ensure_onboarding_scroll()
 	_apply_premium_style()
 	_build_tagline_and_glass_logo()
+	_build_language_selector()
 	_build_input_rows()
 	root_box.mouse_filter = Control.MOUSE_FILTER_PASS
 
@@ -172,6 +173,39 @@ func _ready() -> void:
 	add_child(_loading_timer)
 	call_deferred("_prefill_referral_from_launch_context")
 
+
+# A language switcher is available before sign-in, rather than requiring
+# users to navigate a foreign-language profile screen first.
+func _build_language_selector() -> void:
+	var codes := ["en", "tr", "de", "fr", "es", "pt", "ru", "zh", "ja", "ko", "ar", "hi"]
+	var names := [
+		"English", "Türkçe", "Deutsch", "Français", "Español", "Português",
+		"Русский", "简体中文", "日本語", "한국어", "العربية", "हिन्दी"
+	]
+	var existing := root_box.get_node_or_null("LanguageSelect")
+	if existing:
+		return
+	var selector := OptionButton.new()
+	selector.name = "LanguageSelect"
+	selector.tooltip_text = "🌐 Language / Dil"
+	selector.custom_minimum_size = Vector2(170, 46)
+	selector.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	selector.add_theme_font_size_override("font_size", 17)
+	for i in range(codes.size()):
+		selector.add_item(names[i], i)
+	var current := TranslationServer.get_locale().replace("-", "_").get_slice("_", 0).to_lower()
+	var index := codes.find(current)
+	if index >= 0:
+		selector.select(index)
+	selector.item_selected.connect(func(chosen: int) -> void:
+		var next_locale: String = codes[chosen]
+		if next_locale != current:
+			Global.set_language(next_locale)
+			# New onboarding scene also reapplies all tr() placeholders.
+			get_tree().call_deferred("reload_current_scene")
+	)
+	root_box.add_child(selector)
+	root_box.move_child(selector, mini(2, root_box.get_child_count() - 1))
 
 # Yardımcılar
 func _event_pos(event: InputEvent) -> Vector2:
