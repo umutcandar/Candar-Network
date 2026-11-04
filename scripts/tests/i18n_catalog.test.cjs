@@ -99,6 +99,15 @@ test("No remaining untranslated tr() keys in app screen sources", () => {
   }
 });
 
+test("Android and iOS exports bundle the runtime locale catalog", () => {
+  const presets = fs.readFileSync(path.join(root, "export_presets.cfg"), "utf8");
+  const includeRules = [...presets.matchAll(/^include_filter="([^"]*)"/gm)].map(x => x[1]);
+  assert.equal(includeRules.length, 2);
+  for (const rule of includeRules) {
+    assert.ok(rule.split(",").includes("localization/ui_strings.json"), "UI catalog missing from mobile export");
+  }
+});
+
 test("Login and profile screens expose a real language selector", () => {
   const onboarding = fs.readFileSync(path.join(root, "onboarding.gd"), "utf8");
   const profile = fs.readFileSync(path.join(root, "profile.gd"), "utf8");
