@@ -2777,7 +2777,7 @@ func ads_show_rewarded_and_wait(
 		print("[ADS] Rewarded earned (Global)")
 		state.completed = true
 		state.earned_at_ms = Time.get_ticks_msec()
-		_ads_apply_rewarded_boost_once(reward_uid, attempt_at, "earned")
+		# Signed AdMob SSV callback applies the reward on the server.
 
 	ad.full_screen_content_callback.on_ad_dismissed_full_screen_content = func() -> void:
 		print("[ADS] Rewarded dismissed (Global)")
@@ -2800,6 +2800,11 @@ func ads_show_rewarded_and_wait(
 	var started := Time.get_ticks_msec()
 	print("[ADS] Rewarded show and wait (Global)")
 	_rewarded_ad = null
+	if reward_uid != "" and attempt_at > 0:
+		var ssv_options := ServerSideVerificationOptions.new()
+		ssv_options.user_id = reward_uid
+		ssv_options.custom_data = str(attempt_at)
+		ad.set_server_side_verification_options(ssv_options)
 	ad.show(listener)
 
 	var timeout_ms := int(maxf(timeout_seconds, 0.0) * 1000.0)
@@ -4424,23 +4429,32 @@ func reserve_rewarded_boost_attempt() -> Dictionary:
 
 func activate_rewarded_boost(uid: String, attempt_at: int = 0) -> Array:
 	var firebase := get_node_or_null("/root/Firebase")
-	if firebase and firebase.has_method("apply_rewarded_boost"):
-		var backend_result: Dictionary = await firebase.apply_rewarded_boost(attempt_at)
-		if bool(backend_result.get("ok", false)):
+	if firebase == null or not firebase.has_method("apply_rewarded_boost"):
+		return [false, {"ok": false, "error": "rewarded_boost_service_unavailable"}]
+
+	# Local SDK reward callbacks are not trusted. Only a Google-signed AdMob
+	# callback grants the reward; poll the backend to confirm delivery.
+	var last_result: Dictionary = {}
+	for poll in range(20):
+		last_result = await firebase.apply_rewarded_boost(attempt_at)
+		if bool(last_result.get("ok", false)):
 			var latest_doc: Dictionary = await get_user_doc(uid)
 			var latest_fields: Dictionary = latest_doc.get("fields", {}) if latest_doc.has("fields") else {}
 			var components: Dictionary = await get_user_mining_rate_components(uid, latest_fields)
-			var rewarded_multiplier := float(backend_result.get("rewarded_multiplier", components.get("rewarded_multiplier", 1.0)))
+			var rewarded_multiplier := float(last_result.get("rewarded_multiplier", components.get("rewarded_multiplier", 1.0)))
 			return [true, {
 				"rewarded_multiplier": rewarded_multiplier,
-				"total_rate": float(backend_result.get("total_rate", components.get("total_rate", rewarded_multiplier))),
+				"total_rate": float(last_result.get("total_rate", components.get("total_rate", rewarded_multiplier))),
 				"components": components
 			}]
-		var backend_error := str(backend_result.get("error", ""))
-		if _is_rewarded_boost_limit_error(backend_error):
-			return [false, backend_result]
-		push_error("Rewarded boost backend failed: %s" % str(backend_result))
-	return [false, {"ok": false, "error": "rewarded_boost_service_unavailable"}]
+		if str(last_result.get("error", "")) != "rewarded_boost_verification_pending":
+			return [false, last_result]
+		await get_tree().create_timer(2.0).timeout
+	return [false, {
+		"ok": false,
+		"error": "rewarded_boost_verification_pending",
+		"message": "Reklam doğrulaması gecikti. Ödül sunucuda onaylandığında otomatik olarak hesabına işlenecek."
+	}]
 
 func get_rewarded_boost_status(uid: String) -> Dictionary:
 	var user_doc: Dictionary = await get_user_doc(uid)

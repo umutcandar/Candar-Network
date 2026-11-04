@@ -22,7 +22,7 @@ const AND_INTERSTITIAL_ID  := "ca-app-pub-3086179575899998/3083940247"
 const AND_REWARDED_ID 	   := "ca-app-pub-3086179575899998/9932720942"
 const REWARDED_BOOST_BUTTON_ENABLED := true
 const REWARDED_BOOST_HOME_VISIBLE := false
-const POINT_CENTER_ENABLED := false
+const POINT_CENTER_ENABLED := true
 
 # ---------- DURUM ----------
 var countdown_label  : Label
