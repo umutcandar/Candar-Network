@@ -88,9 +88,10 @@ func _gsi_log(msg: String) -> void:
 	#                               Y A R D I M C I L A R
 	# ======================================================================
 func _ready() -> void:
-	# --- DİLİ TELEFON DİLİNDEN AYARLA ---
+	# User preference overrides the device locale after the first explicit choice.
 	current_lang = _determine_initial_lang()
 	TranslationServer.set_locale(current_lang)
+	_load_ui_locales()
 	print("CURRENT LANG = ", current_lang, " | OS locale = ", OS.get_locale())
 
 	# --- MEVCUT INIT KODLARIN ---
@@ -2471,16 +2472,46 @@ var SUPPORTED_LANGS := [
 	"hi"  # हिन्दी
 ]
 
+const _UI_CATALOG_PATH := "res://localization/ui_strings.json"
+var _ui_catalog: Dictionary = {}
+var _ui_indexes: Dictionary = {}
+
+func _load_ui_locales() -> void:
+	var raw := FileAccess.get_file_as_string(_UI_CATALOG_PATH)
+	var result: Variant = JSON.parse_string(raw)
+	if typeof(result) != TYPE_DICTIONARY:
+		push_error("[I18N] UI locale catalog unavailable")
+		return
+	_ui_catalog = result
+	_ui_indexes.clear()
+	var keys: Array = _ui_catalog.get("keys", [])
+	for i in range(keys.size()):
+		_ui_indexes[str(keys[i])] = i
+
+func localized_ui_text(turkish: String, english: String) -> String:
+	var locale := TranslationServer.get_locale().replace("-", "_").get_slice("_", 0).to_lower()
+	if locale == "tr":
+		return turkish
+	if locale == "en":
+		return english
+	if _ui_indexes.is_empty():
+		_load_ui_locales()
+	if not _ui_indexes.has(english):
+		return english
+	var entries: Array = _ui_catalog.get(locale, [])
+	var index := int(_ui_indexes[english])
+	if index < entries.size() and str(entries[index]) != "":
+		return str(entries[index])
+	return english
+
 func _determine_initial_lang() -> String:
-	# SADECE CİHAZ DİLİNE BAK
-	var locale := OS.get_locale() # ör: "tr_TR", "en_US"
-	var code := locale.split("_")[0].to_lower() # "tr", "en", "de", "zh"...
-
-	if code in SUPPORTED_LANGS:
-		return code
-
-	# Desteklenmeyen dilse fallback (istersen "tr" yap)
-	return "en"
+	var saved := ConfigFile.new()
+	if saved.load("user://settings.cfg") == OK:
+		var chosen := str(saved.get_value("general", "lang", "")).to_lower()
+		if chosen in SUPPORTED_LANGS:
+			return chosen
+	var code := OS.get_locale().replace("-", "_").get_slice("_", 0).to_lower()
+	return code if code in SUPPORTED_LANGS else "en"
 
 
 func set_language(lang_code: String) -> void:
