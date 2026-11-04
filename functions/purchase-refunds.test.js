@@ -19,7 +19,7 @@ test("Apple refund events are only lookup hints, never arbitrary grants", () => 
   });
   assert.deepEqual(readAppleRefundHint(valid), { transactionId: "1234567890", type: "REFUND" });
   assert.equal(readAppleRefundHint(fakeJws({ notificationType: "DID_RENEW", data: {} })), null);
-  assert.equal(readAppleRefundHint(valid.replace("REFUND", "INVALID")), readAppleRefundHint(valid));
+  assert.deepEqual(readAppleRefundHint(valid.replace("REFUND", "INVALID")), readAppleRefundHint(valid));
   assert.equal(readAppleRefundHint(fakeJws({
     notificationType: "REFUND",
     data: { bundleId: "other.bundle", signedTransactionInfo: fakeJws({transactionId: "1234567890"}) }
