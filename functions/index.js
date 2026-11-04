@@ -41,6 +41,12 @@ const { generateAnswer } = require("./candar-ai");
 const { normalizeMiningRate } = require("./admin-config");
 const { fetchVerifyingKeys, verifyCallback, AdmobVerificationError } = require("./admob-ssv");
 const { TEAM_CAPACITY, normalizeTeamName, normalizeTeamCode, addMember, removeMember } = require("./team-domain");
+const {
+  readAppleRefundHint,
+  normalizeGoogleVoidedPurchase,
+  googleVoidedUrl,
+  revokeUserFields,
+} = require("./purchase-refunds");
 const appleIssuerId = defineSecret("APPLE_ISSUER_ID");
 const appleKeyId = defineSecret("APPLE_KEY_ID");
 const applePrivateKey = defineSecret("APPLE_PRIVATE_KEY");
@@ -650,14 +656,33 @@ async function applyPurchaseToUser(uid, data, isPremium) {
   const userRef = db.collection("users").doc(uid);
 
   return db.runTransaction(async (tx) => {
-    const [existingEvent, userSnap] = await Promise.all([
+    // A Google refund may arrive before the purchase's first Firebase grant.
+    // Tombstones are read IN THE SAME transaction, so racing refunds win.
+    const googleOrderId = platform === "android"
+      ? String(verification.orderId || "") : "";
+    const googleTokenHash = platform === "android" ? sha256(receipt) : "";
+    const orderVoidRef = googleOrderId
+      ? db.collection("purchase_revocations").doc(sha256("android:order:" + googleOrderId))
+      : null;
+    const tokenVoidRef = googleTokenHash
+      ? db.collection("purchase_revocations").doc(sha256("android:token:" + googleTokenHash))
+      : null;
+    const [existingEvent, userSnap, orderVoid, tokenVoid] = await Promise.all([
       tx.get(eventRef),
       tx.get(userRef),
+      orderVoidRef ? tx.get(orderVoidRef) : Promise.resolve(null),
+      tokenVoidRef ? tx.get(tokenVoidRef) : Promise.resolve(null),
     ]);
+    if (orderVoid?.exists || tokenVoid?.exists) {
+      throw new HttpsError("failed-precondition", "Bu satın alma iade edilmiş veya iptal edilmiş.");
+    }
     if (existingEvent.exists) {
       const eventData = existingEvent.data() || {};
       if (String(eventData.uid || "") !== uid) {
         throw new HttpsError("already-exists", "Bu mağaza işlemi başka bir hesapta kullanılmış.");
+      }
+      if (eventData.revoked === true) {
+        throw new HttpsError("failed-precondition", "Bu satın alma iade edilmiş veya iptal edilmiş.");
       }
       return {
         ok: true,
@@ -685,6 +710,7 @@ async function applyPurchaseToUser(uid, data, isPremium) {
       updatedAt: FieldValue.serverTimestamp(),
     };
     if (isPremium) {
+      update.lastPremiumPurchaseEventId = eventId;
       update.isPremium = true;
       update.premiumExpiresAt = Timestamp.fromDate(expiresAt);
       update.premium = {
@@ -692,6 +718,7 @@ async function applyPurchaseToUser(uid, data, isPremium) {
         expires_at: Timestamp.fromDate(expiresAt),
       };
     } else {
+      update.lastBoostPurchaseEventId = eventId;
       const multiplier = BOOST_PRODUCT_MULTIPLIERS[productId];
       update.currentMultiplier = multiplier;
       update.boostExpiresAt = Timestamp.fromDate(expiresAt);
@@ -757,6 +784,8 @@ async function applyPurchaseToUser(uid, data, isPremium) {
       platform,
       storeTransactionId: verification.transactionId,
       storeOrderId: verification.orderId,
+      storeTokenHash: platform === "android" ? sha256(receipt) : null,
+      revoked: false,
       storeEnvironment: verification.environment,
       storePurchaseAt: Timestamp.fromDate(verification.purchaseDate),
       isPremium,
@@ -781,6 +810,185 @@ async function applyPurchaseToUser(uid, data, isPremium) {
       expiresAt: expiresAt.toISOString(),
     };
   });
+}
+
+// The ledger, current user entitlement and refund receipt are updated together.
+// A revoked historical order cannot disable an unrelated newer purchase.
+async function revokePurchaseEvent(eventRef, source, voidedAtMs) {
+  const knownEvent = await eventRef.get();
+  if (!knownEvent.exists) return { status: "unmatched" };
+  const uid = String(knownEvent.data()?.uid || "");
+  const userRef = uid ? db.collection("users").doc(uid) : null;
+
+  return db.runTransaction(async (tx) => {
+    const [eventSnap, userSnap] = await Promise.all([
+      tx.get(eventRef),
+      userRef ? tx.get(userRef) : Promise.resolve(null),
+    ]);
+    if (!eventSnap.exists) return { status: "unmatched" };
+    const event = eventSnap.data() || {};
+    if (event.revoked === true) return { status: "already_revoked" };
+    const nowMs = Date.now();
+    const dateMs = Math.max(0, Math.min(nowMs, Number(voidedAtMs) || nowMs));
+    tx.set(eventRef, {
+      revoked: true,
+      revokedAt: Timestamp.fromMillis(dateMs),
+      revocationSource: String(source).slice(0, 48),
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    if (userSnap?.exists && userSnap.id === event.uid) {
+      const userData = userSnap.data() || {};
+      const patch = revokeUserFields({
+        user: userData,
+        eventId: eventSnap.id,
+        event,
+        nowMs,
+      });
+      if (patch) {
+        const next = {
+          ...userData,
+          ...patch,
+          mining: patch.mining || userData.mining,
+        };
+        patch.lastKnownMiningRate = calculateMiningRate(next, Math.floor(nowMs / 1000));
+        patch.updatedAt = FieldValue.serverTimestamp();
+        tx.set(userRef, patch, { merge: true });
+        return { status: "revoked_current" };
+      }
+    }
+    return { status: "revoked_historical" };
+  });
+}
+
+async function lookupStoreEvent(field, value, platform) {
+  if (!value) return null;
+  const matches = await db.collection("purchase_events")
+    .where(field, "==", value)
+    .limit(6)
+    .get();
+  return matches.docs.find((doc) =>
+    String(doc.data()?.platform || "") === platform) || null;
+}
+
+async function applyGoogleVoidedPurchase(raw) {
+  const item = normalizeGoogleVoidedPurchase(raw);
+  if (!item) return { status: "ignored" };
+  const orderVoidRef = db.collection("purchase_revocations")
+    .doc(sha256("android:order:" + item.orderId));
+  const tokenVoidRef = db.collection("purchase_revocations")
+    .doc(sha256("android:token:" + item.tokenHash));
+
+  const matched = await lookupStoreEvent("storeOrderId", item.orderId, "android")
+    || await lookupStoreEvent("storeTokenHash", item.tokenHash, "android")
+    || await lookupStoreEvent("storeTransactionId", item.tokenHash, "android");
+  const eventRef = matched?.ref || null;
+  const userId = String(matched?.data()?.uid || "");
+  const userRef = userId ? db.collection("users").doc(userId) : null;
+
+  // Both identifiers become permanent deny-list receipts. This is also
+  // idempotent when Google replays the same order from overlapping scans.
+  return db.runTransaction(async (tx) => {
+    const [orderVoid, tokenVoid, eventSnap, userSnap] = await Promise.all([
+      tx.get(orderVoidRef), tx.get(tokenVoidRef),
+      eventRef ? tx.get(eventRef) : Promise.resolve(null),
+      userRef ? tx.get(userRef) : Promise.resolve(null),
+    ]);
+    if (!orderVoid.exists) {
+      tx.create(orderVoidRef, {
+        platform: "android", orderHash: sha256(item.orderId),
+        voidedAt: Timestamp.fromMillis(item.voidedAtMs),
+        reason: item.reason, createdAt: FieldValue.serverTimestamp(),
+      });
+    }
+    if (!tokenVoid.exists) {
+      tx.create(tokenVoidRef, {
+        platform: "android", tokenHash: item.tokenHash,
+        voidedAt: Timestamp.fromMillis(item.voidedAtMs),
+        reason: item.reason, createdAt: FieldValue.serverTimestamp(),
+      });
+    }
+    if (!eventSnap?.exists || eventSnap.data()?.revoked === true) {
+      return { status: eventSnap?.exists ? "already_revoked" : "tombstoned_unmatched" };
+    }
+    const event = eventSnap.data() || {};
+    tx.set(eventRef, {
+      revoked: true, revokedAt: Timestamp.fromMillis(item.voidedAtMs),
+      revocationSource: "google_voided_purchases",
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    if (userSnap?.exists && userSnap.id === event.uid) {
+      const user = userSnap.data() || {};
+      const patch = revokeUserFields({ user, eventId: eventSnap.id, event });
+      if (patch) {
+        const next = { ...user, ...patch, mining: patch.mining || user.mining };
+        patch.lastKnownMiningRate = calculateMiningRate(next);
+        patch.updatedAt = FieldValue.serverTimestamp();
+        tx.set(userRef, patch, { merge: true });
+        return { status: "revoked_current" };
+      }
+    }
+    return { status: "revoked_historical" };
+  });
+}
+
+async function scanGoogleVoidedPurchases() {
+  // The official Voided Purchases API limits lookback to 30 days. Scan a
+  // 48-hour overlap each run and continue from a saved page token when needed.
+  const stateRef = db.collection("purchase_refund_scan_state").doc("google_play");
+  const saved = (await stateRef.get()).data() || {};
+  const nowMs = Date.now();
+  const dayMs = 24 * 60 * 60 * 1000;
+  const startMs = Number(saved.pageStartMs || 0) > 0 && saved.nextPageToken
+    ? Math.max(nowMs - 29 * dayMs, Number(saved.pageStartMs))
+    : Math.max(nowMs - 29 * dayMs, Number(saved.completedAtMs || 0) - 2 * dayMs);
+  let pageToken = String(saved.nextPageToken || "");
+  const client = await googlePlayAuth.getClient();
+  let pages = 0;
+  let inspected = 0;
+  let revoked = 0;
+
+  while (pages < 4) {
+    const url = googleVoidedUrl({ startMs, pageToken });
+    let response;
+    try {
+      response = await client.request({ url, method: "GET" });
+    } catch (error) {
+      console.error("Google Play refund scan failed", {
+        status: error?.response?.status,
+        code: error?.code,
+      });
+      throw new Error("Google Play refund scan unavailable");
+    }
+    const body = response?.data || {};
+    if (!Array.isArray(body.voidedPurchases)) {
+      throw new Error("Google voided-purchases response invalid");
+    }
+    for (const entry of body.voidedPurchases) {
+      const applied = await applyGoogleVoidedPurchase(entry);
+      inspected += 1;
+      if (applied.status === "revoked_current") revoked++;
+    }
+    pages += 1;
+    const nextToken = String(body.tokenPagination?.nextPageToken || "");
+    if (!nextToken) {
+      await stateRef.set({
+        completedAtMs: nowMs,
+        nextPageToken: FieldValue.delete(),
+        pageStartMs: FieldValue.delete(),
+        lastPages: pages, lastInspected: inspected, lastRevoked: revoked,
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      return { pages, inspected, revoked, completed: true };
+    }
+    await stateRef.set({
+      nextPageToken: nextToken,
+      pageStartMs: startMs,
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    pageToken = nextToken;
+  }
+  return { pages, inspected, revoked, completed: false };
 }
 
 async function applyRewardedBoostToUser(uid, requestData = {}) {
