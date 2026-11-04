@@ -37,7 +37,8 @@ test("Google Play voided purchase validation and no accidental partial revocatio
     voidedAtMs: 1783000000000, reason: 7,
   });
   assert.equal(normalizeGoogleVoidedPurchase({...data, voidedQuantity: 1}), null);
-  assert.equal(normalizeGoogleVoidedPurchase({...data, orderId: ""}), null);
+  assert.equal(normalizeGoogleVoidedPurchase({...data, orderId: ""}).orderId, "");
+  assert.equal(normalizeGoogleVoidedPurchase({...data, purchaseToken: ""}), null);
   assert.equal(normalizeGoogleVoidedPurchase({...data, voidedTimeMillis: "NaN"}), null);
 });
 test("Google API URL carries continuation tokens without exposing user secrets", () => {

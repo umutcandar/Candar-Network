@@ -874,8 +874,10 @@ async function lookupStoreEvent(field, value, platform) {
 async function applyGoogleVoidedPurchase(raw) {
   const item = normalizeGoogleVoidedPurchase(raw);
   if (!item) return { status: "ignored" };
-  const orderVoidRef = db.collection("purchase_revocations")
-    .doc(sha256("android:order:" + item.orderId));
+  const orderVoidRef = item.orderId
+    ? db.collection("purchase_revocations")
+      .doc(sha256("android:order:" + item.orderId))
+    : null;
   const tokenVoidRef = db.collection("purchase_revocations")
     .doc(sha256("android:token:" + item.tokenHash));
 
@@ -890,11 +892,12 @@ async function applyGoogleVoidedPurchase(raw) {
   // idempotent when Google replays the same order from overlapping scans.
   return db.runTransaction(async (tx) => {
     const [orderVoid, tokenVoid, eventSnap, userSnap] = await Promise.all([
-      tx.get(orderVoidRef), tx.get(tokenVoidRef),
+      orderVoidRef ? tx.get(orderVoidRef) : Promise.resolve(null),
+      tx.get(tokenVoidRef),
       eventRef ? tx.get(eventRef) : Promise.resolve(null),
       userRef ? tx.get(userRef) : Promise.resolve(null),
     ]);
-    if (!orderVoid.exists) {
+    if (orderVoidRef && !orderVoid.exists) {
       tx.create(orderVoidRef, {
         platform: "android", orderHash: sha256(item.orderId),
         voidedAt: Timestamp.fromMillis(item.voidedAtMs),

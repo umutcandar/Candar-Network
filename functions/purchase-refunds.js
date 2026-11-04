@@ -37,9 +37,11 @@ function normalizeGoogleVoidedPurchase(value) {
   const orderId = String(value.orderId || "").trim();
   const purchaseToken = String(value.purchaseToken || "").trim();
   const voidedAtMs = Number(value.voidedTimeMillis);
-  if (!orderId || orderId.length > 180 || !purchaseToken ||
+  // Google may omit orderId on unacknowledged/cancelled purchases.
+  // The token hash is still an authoritative, replay-resistant identity.
+  if (orderId.length > 180 || !purchaseToken ||
       purchaseToken.length > 4096 || !Number.isSafeInteger(voidedAtMs) ||
-      voidedAtMs <= 0 || !/^[A-Za-z0-9_.-]+$/.test(orderId)) return null;
+      voidedAtMs <= 0 || (orderId && !/^[A-Za-z0-9_.-]+$/.test(orderId))) return null;
   // Quantity-based partial refunds need per-unit accounting, which this app
   // does not sell. Never revoke the entire entitlement for a partial refund.
   if (Number(value.voidedQuantity || 0) > 0) return null;

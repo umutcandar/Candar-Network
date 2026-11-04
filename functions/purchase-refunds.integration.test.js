@@ -254,6 +254,11 @@ test("Google Play: later product survives older refund; pending tombstone blocks
   assert.equal(h.row("users", "u2").currentMultiplier, 7);
   assert.equal(h.row("users", "u2").lastBoostPurchaseEventId, newer);
 
+  // A cancellation without orderId must still leave a token tombstone.
+  assert.equal((await h.internal.applyGoogleVoidedPurchase({
+    orderId: "", purchaseToken: "unknown-cancelled-token",
+    voidedTimeMillis: String(Date.now()-1000),
+  })).status, "tombstoned_unmatched");
   h.setOrder("token-later", "GPA.refund-before-grant");
   const before = {orderId:"GPA.refund-before-grant",purchaseToken:"token-later",
     voidedTimeMillis: String(Date.now()-1000)};
