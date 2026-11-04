@@ -3363,139 +3363,39 @@ func reset_rate_limit(action: String, uid: String = "") -> void:
 #                     G R U P / T E A M   S İ S T E M İ
 # ======================================================================
 
-func create_team(team_name: String, team_code: String) -> Array:
-	await ensure_token_fresh(60)
-
-	var my_uid := get_uid()
-	if my_uid == "":
-		return [false, "Not logged in"]
-
-	var teams_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teams/%s" % team_code
-
-	var fields := {
-		"teamName": {"stringValue": team_name},
-		"teamCode": {"stringValue": team_code},
-		"leaderId": {"stringValue": my_uid},
-		"memberCount": {"integerValue": 1},
-		"totalPoints": {"doubleValue": 0.0},
-		"createdAt": {"integerValue": int(Time.get_unix_time_from_system())}
-	}
-
-	var body := JSON.stringify({"fields": fields})
-	var res := await http_request(teams_url, HTTPClient.METHOD_POST, _auth_headers(), body)
-
-	if res[0] and int(res[1]) in [200, 201]:
-		await join_team(team_code)
-		return [true, {"team_code": team_code}]
-
-	return [false, "Team creation failed"]
+func create_team(team_name: String, _team_code: String = "") -> Array:
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_create"):
+		return [false, "Team service unavailable"]
+	var result: Dictionary = await firebase.team_create(team_name)
+	return [bool(result.get("ok", false)), result]
 
 func join_team(team_code: String) -> Array:
-	await ensure_token_fresh(60)
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_join"):
+		return [false, "Team service unavailable"]
+	var result: Dictionary = await firebase.team_join(team_code)
+	return [bool(result.get("ok", false)), result]
 
-	var my_uid := get_uid()
-	if my_uid == "":
-		return [false, "Not logged in"]
-
-	var team_members_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teamMembers/%s_%s" % [team_code, my_uid]
-
-	var fields := {
-		"teamCode": {"stringValue": team_code},
-		"userId": {"stringValue": my_uid},
-		"joinedAt": {"integerValue": int(Time.get_unix_time_from_system())}
-	}
-
-	var body := JSON.stringify({"fields": fields})
-	var res := await http_request(team_members_url, HTTPClient.METHOD_POST, _auth_headers(), body)
-
-	if res[0] and int(res[1]) in [200, 201]:
-		await _update_team_member_count(team_code, 1)
-		return [true, {"team_code": team_code}]
-
-	return [false, "Join team failed"]
-
-func _update_team_member_count(team_code: String, delta: int) -> Array:
-	await ensure_token_fresh(60)
-
-	var team_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teams/%s" % team_code
-
-	var team_doc := await http_request(team_url, HTTPClient.METHOD_GET, _auth_headers(), "")
-	if not team_doc[0]:
-		return [false, "Team not found"]
-
-	var current_count := 0
-	if team_doc[2].has("fields") and team_doc[2]["fields"].has("memberCount"):
-		current_count = int(team_doc[2]["fields"]["memberCount"]["integerValue"])
-
-	var new_count := current_count + delta
-	var fields := {"memberCount": {"integerValue": new_count}}
-	var masks := ["updateMask.fieldPaths=memberCount"]
-	var url := "%s?%s" % [team_url, "&".join(masks)]
-
-	return await http_request(url, HTTPClient.METHOD_PATCH, _auth_headers(), JSON.stringify({"fields": fields}))
+func leave_team() -> Array:
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_leave"):
+		return [false, "Team service unavailable"]
+	var result: Dictionary = await firebase.team_leave()
+	return [bool(result.get("ok", false)), result]
 
 func get_team_leaderboard(limit := 50) -> Array:
-	await ensure_token_fresh(60)
-
-	var run_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents:runQuery"
-	var query_body := {
-		"structuredQuery": {
-			"from": [{"collectionId": "teams"}],
-			"orderBy": [{"field": {"fieldPath": "totalPoints"}, "direction": "DESCENDING"}],
-			"limit": limit
-		}
-	}
-
-	var res := await http_request(run_url, HTTPClient.METHOD_POST, _auth_headers(), JSON.stringify(query_body))
-	var teams := []
-
-	if res[0] and typeof(res[2]) == TYPE_ARRAY:
-		for item in res[2]:
-			if item.has("document") and item["document"].has("fields"):
-				teams.append(item["document"])
-
-	return teams
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_leaderboard"):
+		return []
+	var result: Dictionary = await firebase.team_leaderboard(limit)
+	return result.get("teams", []) if bool(result.get("ok", false)) else []
 
 func get_my_team() -> Dictionary:
-	await ensure_token_fresh(60)
-
-	var my_uid := get_uid()
-	if my_uid == "":
-		return {}
-
-	var run_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents:runQuery"
-	var query_body := {
-		"structuredQuery": {
-			"from": [{"collectionId": "teamMembers"}],
-			"where": {
-				"fieldFilter": {
-					"field": {"fieldPath": "userId"},
-					"op": "EQUAL",
-					"value": {"stringValue": my_uid}
-				}
-			},
-			"limit": 1
-		}
-	}
-
-	var res := await http_request(run_url, HTTPClient.METHOD_POST, _auth_headers(), JSON.stringify(query_body))
-
-	if res[0] and typeof(res[2]) == TYPE_ARRAY and res[2].size() > 0:
-		var item: Dictionary = res[2][0]
-		if item.has("document") and item["document"].has("fields"):
-			var fields: Dictionary = item["document"]["fields"]
-			if fields.has("teamCode"):
-				var team_code: String = str(fields["teamCode"]["stringValue"])
-				var team_doc: Array = await http_request(
-					"https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teams/%s" % team_code,
-					HTTPClient.METHOD_GET,
-					_auth_headers(),
-					""
-				)
-				if team_doc[0]:
-					return team_doc[2]
-
-	return {}
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_info"):
+		return {"ok": false, "error": "Team service unavailable"}
+	return await firebase.team_info()
 
 # ======================================================================
 #                     A C T I V I T Y   F E E D

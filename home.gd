@@ -45,6 +45,7 @@ var missions_card    : PanelContainer
 var missions_label   : Label
 var strategy_card    : PanelContainer
 var strategy_label   : Label
+var real_team_label: Label
 var referral_team_card: PanelContainer
 var referral_team_label: Label
 var referral_team_slots: Label
@@ -514,6 +515,19 @@ func _inject_dynamic_nodes():
 	(team_nodes["box"] as VBoxContainer).add_child(team_button)
 	box.add_child(referral_team_card)
 	box.move_child(referral_team_card, insert_pos)
+	insert_pos += 1
+
+	var real_team_nodes := _add_feature_card(
+		_ui_text("🌐 Candar Topluluk Takımı", "🌐 Candar Community Team"),
+		_ui_text("30 kişilik bir takım kur, kodla katıl veya sıralamayı gör.", "Create or join a 30-member team and compete on the leaderboard."),
+		Color("#06b6d466")
+	)
+	real_team_label = real_team_nodes["label"]
+	var real_team_button := _mk_card_action_button(_ui_text("Takım Merkezini Aç", "Open Team Center"))
+	real_team_button.pressed.connect(_open_real_team_center)
+	(real_team_nodes["box"] as VBoxContainer).add_child(real_team_button)
+	box.add_child(real_team_nodes["card"])
+	box.move_child(real_team_nodes["card"], insert_pos)
 	insert_pos += 1
 
 	var point_nodes := _add_feature_card(
@@ -1524,6 +1538,128 @@ func _run_rewarded_boost_flow() -> void:
 			_ui_text("Boost uygulanamadı", "Boost could not be applied"),
 			_rewarded_boost_error_message(payload)
 		)
+
+# ---------- GERÇEK TOPLULUK TAKIMLARI ----------
+func _open_real_team_center() -> void:
+	var state: Dictionary = await Global.get_my_team()
+	if not bool(state.get("ok", false)):
+		_show_app_modal(_ui_text("Takım sunucusu", "Team service"),
+			str(state.get("error", _ui_text("Takım bilgisi alınamadı.", "Team data unavailable."))))
+		return
+
+	var dialog := AcceptDialog.new()
+	dialog.title = _ui_text("Candar Takım Merkezi", "Candar Team Center")
+	dialog.get_ok_button().text = _ui_text("Kapat", "Close")
+	add_child(dialog)
+	dialog.confirmed.connect(func() -> void: dialog.queue_free())
+	var content := VBoxContainer.new()
+	content.add_theme_constant_override("separation", 10)
+	content.custom_minimum_size = Vector2(280, 0)
+	dialog.add_child(content)
+
+	if bool(state.get("inTeam", false)):
+		var team: Dictionary = state.get("team", {})
+		var code := str(team.get("code", ""))
+		var headline := Label.new()
+		headline.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		headline.text = "%s\n%s: %s\n%s: %d/%d" % [
+			str(team.get("name", "")),
+			_ui_text("Takım kodu", "Team code"), code,
+			_ui_text("Üyeler", "Members"), int(team.get("memberCount", 0)),
+			int(team.get("maxMembers", 30))
+		]
+		content.add_child(headline)
+		if real_team_label:
+			real_team_label.text = str(team.get("name", ""))
+		var copy_btn := Button.new()
+		copy_btn.text = _ui_text("Takım Kodunu Kopyala", "Copy Team Code")
+		copy_btn.pressed.connect(func() -> void:
+			DisplayServer.clipboard_set(code)
+			_show_app_modal(_ui_text("Kopyalandı", "Copied"), code)
+		)
+		content.add_child(copy_btn)
+		var leave_btn := Button.new()
+		leave_btn.text = _ui_text("Takımdan Ayrıl", "Leave Team")
+		leave_btn.pressed.connect(_leave_real_team_pressed.bind(dialog))
+		content.add_child(leave_btn)
+	else:
+		var name_field := LineEdit.new()
+		name_field.placeholder_text = _ui_text("Yeni takım adı (3–40 karakter)", "New team name (3–40 characters)")
+		content.add_child(name_field)
+		var create_btn := Button.new()
+		create_btn.text = _ui_text("Yeni Takım Kur", "Create a Team")
+		create_btn.pressed.connect(_create_real_team_pressed.bind(name_field, dialog))
+		content.add_child(create_btn)
+		var code_field := LineEdit.new()
+		code_field.placeholder_text = _ui_text("Katılım kodu (T ile başlar)", "Invite code (starts with T)")
+		code_field.max_length = 16
+		content.add_child(code_field)
+		var join_btn := Button.new()
+		join_btn.text = _ui_text("Kodla Takıma Katıl", "Join with Code")
+		join_btn.pressed.connect(_join_real_team_pressed.bind(code_field, dialog))
+		content.add_child(join_btn)
+		if real_team_label:
+			real_team_label.text = _ui_text("Henüz bir topluluk takımına katılmadın.", "You have not joined a community team yet.")
+
+	var leaderboard_btn := Button.new()
+	leaderboard_btn.text = _ui_text("Takım Sıralamasını Gör", "View Team Leaderboard")
+	leaderboard_btn.pressed.connect(_open_real_team_leaderboard)
+	content.add_child(leaderboard_btn)
+	dialog.popup_centered_ratio(0.85)
+
+func _create_real_team_pressed(field: LineEdit, dialog: AcceptDialog) -> void:
+	var team_name := field.text.strip_edges()
+	if team_name.length() < 3:
+		_show_app_modal(_ui_text("Takım adı çok kısa", "Team name too short"),
+			_ui_text("En az 3 karakter gir.", "Please enter at least 3 characters."))
+		return
+	dialog.hide()
+	var response: Array = await Global.create_team(team_name)
+	_show_real_team_result(response,
+		_ui_text("Takım oluşturuldu", "Team created"),
+		_ui_text("Yeni takımın kuruldu. Kodu arkadaşlarınla paylaş.", "Your team is ready. Share the code with friends."))
+
+func _join_real_team_pressed(field: LineEdit, dialog: AcceptDialog) -> void:
+	var code := field.text.strip_edges().to_upper()
+	if code == "":
+		_show_app_modal(_ui_text("Kod gerekli", "Code required"),
+			_ui_text("Katılım kodunu gir.", "Enter an invite code."))
+		return
+	dialog.hide()
+	var response: Array = await Global.join_team(code)
+	_show_real_team_result(response,
+		_ui_text("Takıma katıldın", "Joined team"),
+		_ui_text("Artık bu takımın bir üyesisin.", "You are now a member of this team."))
+
+func _leave_real_team_pressed(dialog: AcceptDialog) -> void:
+	dialog.hide()
+	var response: Array = await Global.leave_team()
+	_show_real_team_result(response,
+		_ui_text("Takımdan ayrıldın", "Left team"),
+		_ui_text("İstediğinde başka bir takıma katılabilirsin.", "You may join another team whenever you like."))
+
+func _show_real_team_result(response: Array, title_ok: String, message_ok: String) -> void:
+	var success := response.size() >= 1 and bool(response[0])
+	if success:
+		if real_team_label:
+			real_team_label.text = _ui_text("Takım bilgini güncellemek için merkeze gir.", "Open the center to refresh team status.")
+		_show_app_modal(title_ok, message_ok)
+	else:
+		var payload: Variant = response[1] if response.size() > 1 else {}
+		var message := str(payload.get("error", "Team action failed")) if typeof(payload) == TYPE_DICTIONARY else str(payload)
+		_show_app_modal(_ui_text("Takım işlemi başarısız", "Team action failed"), message)
+
+func _open_real_team_leaderboard() -> void:
+	var teams: Array = await Global.get_team_leaderboard(10)
+	if teams.is_empty():
+		_show_app_modal(_ui_text("Takım sıralaması", "Team rankings"),
+			_ui_text("Henüz listelenecek takım yok.", "No teams to display yet."))
+		return
+	var lines: PackedStringArray = []
+	for i in range(teams.size()):
+		var team: Dictionary = teams[i]
+		lines.append("%d. %s — %d/30" % [i + 1, str(team.get("name", "")), int(team.get("memberCount", 0))])
+	_show_app_modal(_ui_text("En Aktif Takımlar", "Team Leaderboard"), "\n".join(lines))
 
 # ---------- REFERANSLAR ----------
 func _on_referanslar_button_pressed():

@@ -294,6 +294,29 @@ func get_referrals() -> Dictionary:
 		"status": raw.get("status", 0)
 	}
 
+func _team_function(fn_name: String, payload: Dictionary = {}) -> Dictionary:
+	var raw := await _call_fn_raw(fn_name, payload)
+	if bool(raw.get("ok", false)) and typeof(raw.get("data", {})) == TYPE_DICTIONARY:
+		var result: Dictionary = (raw["data"] as Dictionary).duplicate(true)
+		result["ok"] = bool(result.get("ok", true))
+		return result
+	return {"ok": false, "error": str(raw.get("error", "Team service unavailable"))}
+
+func team_create(name: String) -> Dictionary:
+	return await _team_function("team_create", {"name": name})
+
+func team_join(code: String) -> Dictionary:
+	return await _team_function("team_join", {"code": code})
+
+func team_leave() -> Dictionary:
+	return await _team_function("team_leave")
+
+func team_info() -> Dictionary:
+	return await _team_function("team_info")
+
+func team_leaderboard(limit: int = 10) -> Dictionary:
+	return await _team_function("team_leaderboard", {"limit": clampi(limit, 1, 50)})
+
 func get_point_rewards() -> Dictionary:
 	var raw := await _call_fn_raw("get_point_rewards", {})
 	if raw["ok"]:
