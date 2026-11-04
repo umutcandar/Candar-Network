@@ -10,84 +10,46 @@ service cloud.firestore {
       return signedIn() && request.auth.uid == uid;
     }
 
-    function changesServerManagedUserFields() {
-      return request.resource.data.diff(resource.data).affectedKeys().hasAny([
-        'points',
-        'currentMultiplier',
-        'boostExpiresAt',
-        'mining',
-        'isPremium',
-        'premium',
-        'premiumExpiresAt',
-        'purchaseExpiresAt',
-        'lastPurchasePlatform',
-        'lastPurchaseProductId',
-        'lastPurchaseStoreProductId',
-        'lastPurchaseProof',
-        'lastPurchaseProofHash',
-        'lastPurchaseAt',
-        'lastMiningStart',
-        'lastMiningAt',
-        'nextMiningAt',
-        'lastMiningReward',
-        'lastRewardDay',
-        'lastLoginDate',
-        'dailyStreak',
-        'streakBonus',
-        'streakShieldCount',
-        'streakShieldEarnedAt',
-        'streakShieldUsedAt',
-        'xp',
-        'level',
-        'achievements',
-        'achievementsUpdatedAt',
-        'lastKnownMiningRate',
-        'lastMiningRateComponents',
-        'rewardedBoostMultiplier',
-        'rewardedBoostDay',
-        'rewardedBoostDailyCount',
-        'rewardedBoostLastAt',
-        'lastRewardedBoostAt',
-        'pointsAdFreeUntil',
-        'pointsBoostUntil',
-        'pointsBoostMultiplier',
-        'profilePrivilege',
-        'profilePrivilegeUnlockedAt',
-        'aiBonusCredits',
-        'lastAiBonusUsedAt',
-        'lastPointRewardId',
-        'lastPointRewardAt',
-        'referralCode',
-        'referredBy',
-        'referredByUid',
-        'referralCount',
-        'referralBonusApplied',
-        'referralRewardStatus',
-        'referralPendingAt',
-        'referralQualifiedAt',
-        'referralInviteeRewardPoints',
-        'referralInviterRewardPoints',
-        'miningReadyNotifiedFor',
-        'miningReadyNotificationSentAt',
-        'miningNeverStartedPushAt',
-        'dailyPointsPushCampaignKey',
-        'dailyPointsPushSentAt',
-        'dailyPointsPushDeliveryKey',
-        'dailyPointsPushClaimKey',
-        'dailyPointsPushClaimedAt',
-        'dailyPointsPushLastErrorCode',
-        'dailyPointsPushLastErrorAt',
-        'pushTokenInvalidAt'
-      ]);
+    // All balances, purchases, reward entitlements, referral counts,
+    // AI quotas and rewarded-ad reservations belong to Cloud Functions.
+    // This allowlist also blocks unknown future fields by default.
+    function editableProfileKeys() {
+      return [
+        'name', 'photoURL', 'language', 'locale',
+        'pushToken', 'pushPlatform', 'pushTokenUpdatedAt',
+        'tutorialSeen', 'lastKnownVersion',
+        // Legacy client-supplied engagement telemetry is NOT authoritative
+        // for rewards or security. Migrate it server-side in a later release.
+        'firstAppOpenAt', 'firstOpenDay', 'lastAppOpenAt',
+        'lastOpenDay', 'appOpenCount', 'retainedDay1',
+        'retainedDay7', 'returningSessionAt'
+      ];
+    }
+
+    function validClientProfile() {
+      return request.resource.data.diff(resource.data)
+          .affectedKeys().hasOnly(editableProfileKeys())
+        && (!('language' in request.resource.data)
+            || (request.resource.data.language is string
+                && request.resource.data.language.size() <= 16))
+        && (!('pushToken' in request.resource.data)
+            || (request.resource.data.pushToken is string
+                && request.resource.data.pushToken.size() <= 4096))
+        && (!('name' in request.resource.data)
+            || (request.resource.data.name is string
+                && request.resource.data.name.size() <= 100));
     }
 
     match /users/{uid} {
       allow read: if owns(uid);
       allow create, delete: if false;
-      allow update: if owns(uid) && !changesServerManagedUserFields();
+      allow update: if owns(uid) && validClientProfile();
 
+      // In particular, chatUsage and every future user subcollection
+      // must not be writable by the client. Admin SDK bypasses these rules.
       match /{subcollection=**} {
-        allow read, write: if owns(uid);
+        allow read: if owns(uid);
+        allow write: if false;
       }
     }
 

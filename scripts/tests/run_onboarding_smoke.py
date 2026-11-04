@@ -43,6 +43,8 @@ func analytics_event(name, params): events.append({"event": name, "params": para
 func apply_safe_area(_scene): pass
 func get_pending_referral_code() -> String: return pending_code
 func save_uid(_uid): pass
+func localized_ui_text(turkish, english):
+	return turkish if TranslationServer.get_locale().begins_with("tr") else english
 func login_or_register(_email, _password, _ref) -> Array:
 	login_calls += 1
 	last_email = _email

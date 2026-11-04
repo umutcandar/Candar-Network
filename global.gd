@@ -22,9 +22,11 @@ signal rewarded_boost_applied(payload: Dictionary)
 var _oauth_file := "user://oauth_callback.txt"
 var _state_file := "user://oauth_state.json"
 
-	# Refresh token kalıcı depolama
+# Legacy plain-text path is migration-only; never written to again.
 const _REFRESH_PATH := "user://refresh_token.txt"
-var _refresh_file := "user://refresh_token.txt"
+const _SECURE_REQUEST_PATH := "user://secure_session_request.json"
+const _SECURE_RESPONSE_PATH := "user://secure_session_response.json"
+var _secure_session_in_flight := false
 const APP_LINK_ANDROID := "https://play.google.com/store/apps/details?id=com.candarnetwork.app"
 const APP_LINK_IOS := "https://apps.apple.com/app/id6756212781"
 const APP_DOWNLOAD_LINK := "https://candarnetwork.com/download"
@@ -86,9 +88,10 @@ func _gsi_log(msg: String) -> void:
 	#                               Y A R D I M C I L A R
 	# ======================================================================
 func _ready() -> void:
-	# --- DİLİ TELEFON DİLİNDEN AYARLA ---
+	# User preference overrides the device locale after the first explicit choice.
 	current_lang = _determine_initial_lang()
 	TranslationServer.set_locale(current_lang)
+	_load_ui_locales()
 	print("CURRENT LANG = ", current_lang, " | OS locale = ", OS.get_locale())
 
 	# --- MEVCUT INIT KODLARIN ---
@@ -593,7 +596,7 @@ func _safe_http_headers_for_log(headers: Array) -> Array:
 	return safe_headers
 
 func http_request(url, method := HTTPClient.METHOD_GET, headers := [], body := "", retries := _max_retries) -> Array:
-	print(">> HTTP İSTEK: ", url, " | Metod: ", method, " | Başlıklar: ", _safe_http_headers_for_log(headers), " | Gövde: ", body)
+	print(">> HTTP request method=", method, " (payload bytes=", body.to_utf8_buffer().size(), ")")
 	var attempt := 0
 
 	while attempt <= retries:
@@ -627,7 +630,7 @@ func http_request(url, method := HTTPClient.METHOD_GET, headers := [], body := "
 		var response_body_bytes = response[3]
 		var response_text = response_body_bytes.get_string_from_utf8()
 
-		print(">> HAM HTTP YANIT (%d): %s" % [response_code, response_text])
+		print(">> HTTP response status=", response_code)
 
 		if status == HTTPRequest.RESULT_SUCCESS:
 			var json_parser = JSON.new()
@@ -659,7 +662,7 @@ func http_request(url, method := HTTPClient.METHOD_GET, headers := [], body := "
 			continue # Bir sonraki denemeye geç
 
 		# Deneme hakkı bittiyse veya hata kalıcıysa (4xx gibi) hata dön
-		return [false, effective_response_code, "HTTP hatasi: " + error_string(status) + " | Yanit: " + response_text]
+		return [false, effective_response_code, "HTTP hatasi: " + error_string(status) + " | Kod: " + str(effective_response_code)]
 
 	return [false, 500, "Bilinmeyen HTTP hata"]
 	# Firebase Bearer header
@@ -766,7 +769,7 @@ func register(email: String, password: String, referral_code := ""):
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("idToken"):
 				_firebase_id_token = str(res_data["idToken"])
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("refreshToken"):
-				_save_refresh_token(String(res_data["refreshToken"]))
+				await _save_refresh_token(String(res_data["refreshToken"]))
 			_is_signed_in = true
 			await save_uid(str(res_data["localId"]))
 			var user_doc_ok := await ensure_user_doc(str(res_data["localId"]), email, referral_code)
@@ -799,7 +802,7 @@ func login(email: String, password: String, referral_code := ""):
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("idToken"):
 				_firebase_id_token = str(res_data["idToken"])
 			if typeof(res_data) == TYPE_DICTIONARY and res_data.has("refreshToken"):
-				_save_refresh_token(String(res_data["refreshToken"]))
+				await _save_refresh_token(String(res_data["refreshToken"]))
 			_is_signed_in = true
 			await save_uid(res_data["localId"])
 			# Var olan hesaba sonradan referans bağlanmaz.
@@ -1010,7 +1013,7 @@ func delete_my_account() -> Array:
 	if not bool(result.get("ok", false)):
 		return [false, str(result.get("error", "DELETE_FAILED"))]
 
-	logout()
+	await logout()
 	return [true, "OK"]
 
 # ======================================================================
@@ -1446,17 +1449,18 @@ func get_uid() -> String:
 	return ""
 
 func logout() -> void:
-	var path := "user://uid.txt"
-	if FileAccess.file_exists(path):
-		var dir := DirAccess.open("user://")
-		if dir:
-			dir.remove(path)
-	if FileAccess.file_exists(_REFRESH_PATH):
-		DirAccess.remove_absolute(_REFRESH_PATH)
+	# Delete the native refresh credential before navigating to the login
+	# screen. The UID is non-secret but must never resurrect a signed-out session.
+	await _clear_refresh_token()
+	if FileAccess.file_exists("user://uid.txt"):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path("user://uid.txt"))
 	_current_uid = ""
 	_firebase_id_token = ""
 	_is_signed_in = false
-	print("[AUTH] Çıkış yapıldı.")
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase and firebase.has_method("set_tokens"):
+		firebase.set_tokens("", "", "")
+	print("[AUTH] Oturum kapatıldı.")
 
 # ======================================================================
 #   Google ile Giriş (PKCE → id_token → Firebase Auth SignIn)
@@ -1660,7 +1664,7 @@ func _firebase_sign_in_with_google_id_token(id_token: String) -> Array:
 	_firebase_refresh_token = str(auth_info.get("refreshToken",""))
 	_current_uid = str(auth_info.get("localId",""))
 	if _firebase_refresh_token != "":
-		_save_refresh_token(_firebase_refresh_token)
+		await _save_refresh_token(_firebase_refresh_token)
 	if _current_uid != "":
 		save_uid(_current_uid)
 	_is_signed_in = (_firebase_id_token != "")
@@ -1766,7 +1770,7 @@ func _firebase_signin_with_google_tokens(id_token: String, access_token: String,
 	var rt := str(data.get("refreshToken", ""))
 
 	if rt != "":
-		_save_refresh_token(rt)
+		await _save_refresh_token(rt)
 
 	if _current_uid != "":
 		save_uid(_current_uid)
@@ -1881,10 +1885,8 @@ func google_sign_in(referral_code: String = "") -> Array:
 	if token_dict.has("email"):
 		email_hint = str(token_dict["email"])
 
-	# refresh_token bazen sadece ilk consent'ta gelir; gelirse kaydet
-	if token_dict.has("refresh_token"):
-		_save_refresh_token(str(token_dict["refresh_token"]))
-
+	# Google OAuth refresh_token, Firebase refreshToken değildir.
+	# Google tokenini Firebase oturum deposuna asla yazma.
 	# ✅ Her durumda Firebase'e Google ile giriş yap
 	return await firebase_sign_in_with_google(id_token, email_hint, referral_code)
 # ======================================================================
@@ -1926,7 +1928,7 @@ func firebase_sign_in_with_google(id_token: String, email_hint: String = "", ref
 				_firebase_id_token = str(data["idToken"])
 
 			if data.has("refreshToken"):
-				_save_refresh_token(str(data["refreshToken"]))
+				await _save_refresh_token(str(data["refreshToken"]))
 
 			var email_val: String = email_hint
 			if data.has("email"):
@@ -1937,7 +1939,7 @@ func firebase_sign_in_with_google(id_token: String, email_hint: String = "", ref
 				if has_node("/root/Firebase"):
 					var firebase := get_node("/root/Firebase")
 					if firebase and firebase.has_method("set_tokens"):
-						firebase.set_tokens(_firebase_id_token, _load_refresh_token(), uid)
+						firebase.set_tokens(_firebase_id_token, await _load_refresh_token(), uid)
 				var is_new_user := bool(data.get("isNewUser", false))
 				await firestore_load_or_create_user(uid, email_val, referral_code if is_new_user else "")
 				if not is_new_user:
@@ -1947,7 +1949,7 @@ func firebase_sign_in_with_google(id_token: String, email_hint: String = "", ref
 
 				var auth_info := {
 					"idToken": _firebase_id_token,
-					"refreshToken": _load_refresh_token(),
+					"refreshToken": await _load_refresh_token(),
 					"localId": uid,
 					"email": email_val,
 					"isNewUser": is_new_user
@@ -2005,7 +2007,7 @@ func firebase_sign_in_with_apple(id_token: String, email_hint: String = "", refe
 				_firebase_id_token = str(data["idToken"])
 
 			if data.has("refreshToken"):
-				_save_refresh_token(str(data["refreshToken"]))
+				await _save_refresh_token(str(data["refreshToken"]))
 
 			var email_val: String = email_hint
 			if data.has("email"):
@@ -2016,7 +2018,7 @@ func firebase_sign_in_with_apple(id_token: String, email_hint: String = "", refe
 				if has_node("/root/Firebase"):
 					var firebase := get_node("/root/Firebase")
 					if firebase and firebase.has_method("set_tokens"):
-						firebase.set_tokens(_firebase_id_token, _load_refresh_token(), uid)
+						firebase.set_tokens(_firebase_id_token, await _load_refresh_token(), uid)
 				var is_new_user := bool(data.get("isNewUser", false))
 				await firestore_load_or_create_user(uid, email_val, referral_code if is_new_user else "")
 				if not is_new_user:
@@ -2027,7 +2029,7 @@ func firebase_sign_in_with_apple(id_token: String, email_hint: String = "", refe
 				# onboarding.gd için auth_info sözlüğü döndürelim
 				var auth_info := {
 					"idToken": _firebase_id_token,
-					"refreshToken": _load_refresh_token(),
+					"refreshToken": await _load_refresh_token(),
 					"localId": uid,
 					"email": email_val,
 					"isNewUser": is_new_user
@@ -2247,28 +2249,111 @@ func _probe_network() -> void:
 #                     O T O M A T İ K  O T U R U M  &  T O K E N
 # ======================================================================
 
-func _save_refresh_token(rt: String) -> void:
-	var f := FileAccess.open(_REFRESH_PATH, FileAccess.WRITE)
-	if f:
-		f.store_string(rt)
-		f.close()
+func _remove_legacy_refresh_file() -> void:
+	if FileAccess.file_exists(_REFRESH_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_REFRESH_PATH))
+
+func _ios_secure_session_exchange(operation: String, token: String = "") -> Dictionary:
+	# Existing Swift bridge handles this on iOS. The IPC files are transient;
+	# the persistent secret belongs to Keychain (never to user://).
+	while _secure_session_in_flight:
+		await get_tree().process_frame
+	_secure_session_in_flight = true
+	if FileAccess.file_exists(_SECURE_RESPONSE_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_SECURE_RESPONSE_PATH))
+	var request_id := str(Time.get_ticks_usec()) + "-" + str(Crypto.new().generate_random_bytes(8).hex_encode())
+	var request: Dictionary = {
+		"operation": operation,
+		"request_id": request_id,
+		"created_at": int(Time.get_unix_time_from_system())
+	}
+	if operation == "save":
+		request["token"] = token
+	var file := FileAccess.open(_SECURE_REQUEST_PATH, FileAccess.WRITE)
+	if file == null:
+		_secure_session_in_flight = false
+		return {"ok": false}
+	file.store_string(JSON.stringify(request))
+	file.close()
+	# Swift removes each input immediately, and Godot removes each output.
+	# Inaccessible Keychain or a missing native bridge must fail closed.
+	var timeout_at := Time.get_ticks_msec() + 6000
+	while Time.get_ticks_msec() < timeout_at:
+		if FileAccess.file_exists(_SECURE_RESPONSE_PATH):
+			var body := FileAccess.get_file_as_string(_SECURE_RESPONSE_PATH)
+			DirAccess.remove_absolute(ProjectSettings.globalize_path(_SECURE_RESPONSE_PATH))
+			var response: Variant = JSON.parse_string(body)
+			if typeof(response) == TYPE_DICTIONARY and str(response.get("request_id", "")) == request_id:
+				_secure_session_in_flight = false
+				return response
+		await get_tree().process_frame
+	# Clear the in-flight plaintext on timeout; do not leak it to logs.
+	if FileAccess.file_exists(_SECURE_REQUEST_PATH):
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(_SECURE_REQUEST_PATH))
+	_secure_session_in_flight = false
+	return {"ok": false}
+
+func _save_refresh_token(rt: String) -> bool:
+	if rt == "":
+		return false
+	_firebase_refresh_token = rt
+	var saved := false
+	if OS.get_name() == "Android":
+		if Engine.has_singleton("CandarSecureStore"):
+			var secure = Engine.get_singleton("CandarSecureStore")
+			if secure.has_method("saveRefreshToken"):
+				saved = bool(secure.call("saveRefreshToken", rt))
+	elif OS.get_name() == "iOS":
+		var reply: Dictionary = await _ios_secure_session_exchange("save", rt)
+		saved = bool(reply.get("ok", false))
+	# No fallbacks to unencrypted or locally derived encryption keys.
+	_remove_legacy_refresh_file()
+	if not saved:
+		push_warning("[AUTH] Güvenli saklama yok: oturum yalnızca uygulama açıkken korunabilir.")
+	return saved
 
 func _load_refresh_token() -> String:
+	if _firebase_refresh_token != "":
+		return _firebase_refresh_token
+	var stored := ""
+	if OS.get_name() == "Android":
+		if Engine.has_singleton("CandarSecureStore"):
+			var secure = Engine.get_singleton("CandarSecureStore")
+			if secure.has_method("loadRefreshToken"):
+				stored = str(secure.call("loadRefreshToken"))
+	elif OS.get_name() == "iOS":
+		var reply: Dictionary = await _ios_secure_session_exchange("load")
+		if bool(reply.get("ok", false)):
+			stored = str(reply.get("token", ""))
+	if stored != "":
+		_firebase_refresh_token = stored
+		_remove_legacy_refresh_file()
+		return stored
+	# Upgrade: a previous release stored Firebase refresh tokens as plain
+	# text. Migrate once, then remove the legacy file even when no native
+	# backend is available (re-login is safer than persisting plaintext).
 	if FileAccess.file_exists(_REFRESH_PATH):
-		var f := FileAccess.open(_REFRESH_PATH, FileAccess.READ)
-		if f:
-			var s := f.get_as_text().strip_edges()
-			f.close()
-			return s
+		var legacy := FileAccess.get_file_as_string(_REFRESH_PATH).strip_edges()
+		if legacy != "":
+			await _save_refresh_token(legacy)
+			return legacy
+		_remove_legacy_refresh_file()
 	return ""
 
 func _clear_refresh_token() -> void:
-	if FileAccess.file_exists(_REFRESH_PATH):
-		DirAccess.remove_absolute(_REFRESH_PATH)
+	_firebase_refresh_token = ""
+	if OS.get_name() == "Android":
+		if Engine.has_singleton("CandarSecureStore"):
+			var secure = Engine.get_singleton("CandarSecureStore")
+			if secure.has_method("clearRefreshToken"):
+				secure.call("clearRefreshToken")
+	elif OS.get_name() == "iOS":
+		await _ios_secure_session_exchange("clear")
+	_remove_legacy_refresh_file()
 
 # Firebase idToken yenileme (Secure Token)
 func firebase_refresh_id_token() -> bool:
-	var rt := _load_refresh_token()
+	var rt := await _load_refresh_token()
 	if rt == "":
 		return false
 	var url := "https://securetoken.googleapis.com/v1/token?key=%s" % firebase_api_key
@@ -2280,13 +2365,18 @@ func firebase_refresh_id_token() -> bool:
 	var res := await http_request(url, HTTPClient.METHOD_POST, headers, body)
 	if res[0] and int(res[1]) == 200 and typeof(res[2]) == TYPE_DICTIONARY:
 		var d: Dictionary = res[2]
+		# Do not accept a refresh response for a different stored UID.
+		var returned_uid := str(d.get("user_id", _current_uid))
+		if _current_uid != "" and returned_uid != _current_uid:
+			await _clear_refresh_token()
+			return false
 		if d.has("id_token"):
 			_firebase_id_token = str(d["id_token"])
 		if d.has("refresh_token"):
-			_save_refresh_token(str(d["refresh_token"]))
+			await _save_refresh_token(str(d["refresh_token"]))
 		var firebase := get_node_or_null("/root/Firebase")
 		if firebase and firebase.has_method("set_tokens"):
-			firebase.set_tokens(_firebase_id_token, _load_refresh_token(), _current_uid)
+			firebase.set_tokens(_firebase_id_token, await _load_refresh_token(), _current_uid)
 		return true
 	return false
 
@@ -2324,7 +2414,7 @@ func ensure_token_fresh(threshold_sec := 120) -> void:
 func try_restore_session() -> void:
 	_current_uid = get_uid()
 	var has_uid := _current_uid != ""
-	var has_rt := _load_refresh_token() != ""
+	var has_rt := await _load_refresh_token() != ""
 
 	if has_uid and has_rt:
 		var ok := await firebase_refresh_id_token()
@@ -2382,16 +2472,56 @@ var SUPPORTED_LANGS := [
 	"hi"  # हिन्दी
 ]
 
+const _UI_CATALOG_PATH := "res://localization/ui_strings.json"
+var _ui_catalog: Dictionary = {}
+var _ui_indexes: Dictionary = {}
+
+func _load_ui_locales() -> void:
+	var raw := FileAccess.get_file_as_string(_UI_CATALOG_PATH)
+	var result: Variant = JSON.parse_string(raw)
+	if typeof(result) != TYPE_DICTIONARY:
+		push_error("[I18N] UI locale catalog unavailable")
+		return
+	_ui_catalog = result
+	_ui_indexes.clear()
+	var keys: Array = _ui_catalog.get("keys", [])
+	for i in range(keys.size()):
+		_ui_indexes[str(keys[i])] = i
+
+func localized_ui_text(turkish: String, english: String) -> String:
+	var locale := TranslationServer.get_locale().replace("-", "_").get_slice("_", 0).to_lower()
+	if locale == "tr":
+		return turkish
+	if locale == "en":
+		return english
+	if _ui_indexes.is_empty():
+		_load_ui_locales()
+	if not _ui_indexes.has(english):
+		return english
+	var entries: Array = _ui_catalog.get(locale, [])
+	var index := int(_ui_indexes[english])
+	if index < entries.size() and str(entries[index]) != "":
+		return str(entries[index])
+	return english
+
+func localized_named_key(key: String) -> String:
+	if _ui_catalog.is_empty():
+		_load_ui_locales()
+	var named: Dictionary = _ui_catalog.get("named", {})
+	if named.has(key):
+		var values: Dictionary = named[key]
+		var lang := TranslationServer.get_locale().replace("-", "_").get_slice("_", 0).to_lower()
+		return str(values.get(lang, values.get("en", key)))
+	return TranslationServer.translate(key)
+
 func _determine_initial_lang() -> String:
-	# SADECE CİHAZ DİLİNE BAK
-	var locale := OS.get_locale() # ör: "tr_TR", "en_US"
-	var code := locale.split("_")[0].to_lower() # "tr", "en", "de", "zh"...
-
-	if code in SUPPORTED_LANGS:
-		return code
-
-	# Desteklenmeyen dilse fallback (istersen "tr" yap)
-	return "en"
+	var saved := ConfigFile.new()
+	if saved.load("user://settings.cfg") == OK:
+		var chosen := str(saved.get_value("general", "lang", "")).to_lower()
+		if chosen in SUPPORTED_LANGS:
+			return chosen
+	var code := OS.get_locale().replace("-", "_").get_slice("_", 0).to_lower()
+	return code if code in SUPPORTED_LANGS else "en"
 
 
 func set_language(lang_code: String) -> void:
@@ -2743,7 +2873,7 @@ func _ads_apply_rewarded_boost_once(uid: String, attempt_at: int, reason: String
 	_ads_reward_apply_result = []
 	_ads_reward_apply_result = await activate_rewarded_boost(uid, attempt_at)
 	_ads_reward_apply_in_flight = false
-	print("[ADS] Rewarded server apply (%s): %s" % [reason, str(_ads_reward_apply_result)])
+	print("[ADS] Rewarded server apply reason=", reason, " ok=", _ads_reward_apply_result.size() > 0 and bool(_ads_reward_apply_result[0]))
 	if _ads_reward_apply_result.size() > 1 and bool(_ads_reward_apply_result[0]):
 		var payload: Dictionary = {}
 		if typeof(_ads_reward_apply_result[1]) == TYPE_DICTIONARY:
@@ -2777,7 +2907,7 @@ func ads_show_rewarded_and_wait(
 		print("[ADS] Rewarded earned (Global)")
 		state.completed = true
 		state.earned_at_ms = Time.get_ticks_msec()
-		_ads_apply_rewarded_boost_once(reward_uid, attempt_at, "earned")
+		# Signed AdMob SSV callback applies the reward on the server.
 
 	ad.full_screen_content_callback.on_ad_dismissed_full_screen_content = func() -> void:
 		print("[ADS] Rewarded dismissed (Global)")
@@ -2800,6 +2930,11 @@ func ads_show_rewarded_and_wait(
 	var started := Time.get_ticks_msec()
 	print("[ADS] Rewarded show and wait (Global)")
 	_rewarded_ad = null
+	if reward_uid != "" and attempt_at > 0:
+		var ssv_options := ServerSideVerificationOptions.new()
+		ssv_options.user_id = reward_uid
+		ssv_options.custom_data = str(attempt_at)
+		ad.set_server_side_verification_options(ssv_options)
 	ad.show(listener)
 
 	var timeout_ms := int(maxf(timeout_seconds, 0.0) * 1000.0)
@@ -3056,11 +3191,11 @@ func get_badge_from_points(points: float) -> String:
 
 func get_badge_display_name(badge: String) -> String:
 	match badge:
-		BADGE_STARTER: return tr("badge_starter")
-		BADGE_PRO: return tr("badge_pro")
-		BADGE_MASTER: return tr("badge_master")
-		BADGE_VETERAN: return tr("badge_veteran")
-		BADGE_LEGEND: return tr("badge_legend")
+		BADGE_STARTER: return localized_named_key("badge_starter")
+		BADGE_PRO: return localized_named_key("badge_pro")
+		BADGE_MASTER: return localized_named_key("badge_master")
+		BADGE_VETERAN: return localized_named_key("badge_veteran")
+		BADGE_LEGEND: return localized_named_key("badge_legend")
 		_: return ""
 
 func get_badge_color(badge: String) -> Color:
@@ -3175,15 +3310,15 @@ func update_daily_streak(uid: String) -> Array:
 		streak_bonus = get_streak_bonus(new_streak)
 
 		if new_streak == 7:
-			bonus_message = tr("streak_7_bonus")
+			bonus_message = localized_named_key("streak_7_bonus")
 		elif new_streak == 30:
-			bonus_message = tr("streak_30_bonus")
+			bonus_message = localized_named_key("streak_30_bonus")
 		elif new_streak == 100:
-			bonus_message = tr("streak_100_bonus")
+			bonus_message = localized_named_key("streak_100_bonus")
 	else:
 		new_streak = 1
 		streak_bonus = 1.0
-		bonus_message = tr("streak_reset")
+		bonus_message = localized_named_key("streak_reset")
 
 	var update_fields := {
 		"lastLoginDate": {"integerValue": now},
@@ -3358,139 +3493,39 @@ func reset_rate_limit(action: String, uid: String = "") -> void:
 #                     G R U P / T E A M   S İ S T E M İ
 # ======================================================================
 
-func create_team(team_name: String, team_code: String) -> Array:
-	await ensure_token_fresh(60)
-
-	var my_uid := get_uid()
-	if my_uid == "":
-		return [false, "Not logged in"]
-
-	var teams_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teams/%s" % team_code
-
-	var fields := {
-		"teamName": {"stringValue": team_name},
-		"teamCode": {"stringValue": team_code},
-		"leaderId": {"stringValue": my_uid},
-		"memberCount": {"integerValue": 1},
-		"totalPoints": {"doubleValue": 0.0},
-		"createdAt": {"integerValue": int(Time.get_unix_time_from_system())}
-	}
-
-	var body := JSON.stringify({"fields": fields})
-	var res := await http_request(teams_url, HTTPClient.METHOD_POST, _auth_headers(), body)
-
-	if res[0] and int(res[1]) in [200, 201]:
-		await join_team(team_code)
-		return [true, {"team_code": team_code}]
-
-	return [false, "Team creation failed"]
+func create_team(team_name: String, _team_code: String = "") -> Array:
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_create"):
+		return [false, "Team service unavailable"]
+	var result: Dictionary = await firebase.team_create(team_name)
+	return [bool(result.get("ok", false)), result]
 
 func join_team(team_code: String) -> Array:
-	await ensure_token_fresh(60)
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_join"):
+		return [false, "Team service unavailable"]
+	var result: Dictionary = await firebase.team_join(team_code)
+	return [bool(result.get("ok", false)), result]
 
-	var my_uid := get_uid()
-	if my_uid == "":
-		return [false, "Not logged in"]
-
-	var team_members_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teamMembers/%s_%s" % [team_code, my_uid]
-
-	var fields := {
-		"teamCode": {"stringValue": team_code},
-		"userId": {"stringValue": my_uid},
-		"joinedAt": {"integerValue": int(Time.get_unix_time_from_system())}
-	}
-
-	var body := JSON.stringify({"fields": fields})
-	var res := await http_request(team_members_url, HTTPClient.METHOD_POST, _auth_headers(), body)
-
-	if res[0] and int(res[1]) in [200, 201]:
-		await _update_team_member_count(team_code, 1)
-		return [true, {"team_code": team_code}]
-
-	return [false, "Join team failed"]
-
-func _update_team_member_count(team_code: String, delta: int) -> Array:
-	await ensure_token_fresh(60)
-
-	var team_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teams/%s" % team_code
-
-	var team_doc := await http_request(team_url, HTTPClient.METHOD_GET, _auth_headers(), "")
-	if not team_doc[0]:
-		return [false, "Team not found"]
-
-	var current_count := 0
-	if team_doc[2].has("fields") and team_doc[2]["fields"].has("memberCount"):
-		current_count = int(team_doc[2]["fields"]["memberCount"]["integerValue"])
-
-	var new_count := current_count + delta
-	var fields := {"memberCount": {"integerValue": new_count}}
-	var masks := ["updateMask.fieldPaths=memberCount"]
-	var url := "%s?%s" % [team_url, "&".join(masks)]
-
-	return await http_request(url, HTTPClient.METHOD_PATCH, _auth_headers(), JSON.stringify({"fields": fields}))
+func leave_team() -> Array:
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_leave"):
+		return [false, "Team service unavailable"]
+	var result: Dictionary = await firebase.team_leave()
+	return [bool(result.get("ok", false)), result]
 
 func get_team_leaderboard(limit := 50) -> Array:
-	await ensure_token_fresh(60)
-
-	var run_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents:runQuery"
-	var query_body := {
-		"structuredQuery": {
-			"from": [{"collectionId": "teams"}],
-			"orderBy": [{"field": {"fieldPath": "totalPoints"}, "direction": "DESCENDING"}],
-			"limit": limit
-		}
-	}
-
-	var res := await http_request(run_url, HTTPClient.METHOD_POST, _auth_headers(), JSON.stringify(query_body))
-	var teams := []
-
-	if res[0] and typeof(res[2]) == TYPE_ARRAY:
-		for item in res[2]:
-			if item.has("document") and item["document"].has("fields"):
-				teams.append(item["document"])
-
-	return teams
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_leaderboard"):
+		return []
+	var result: Dictionary = await firebase.team_leaderboard(limit)
+	return result.get("teams", []) if bool(result.get("ok", false)) else []
 
 func get_my_team() -> Dictionary:
-	await ensure_token_fresh(60)
-
-	var my_uid := get_uid()
-	if my_uid == "":
-		return {}
-
-	var run_url := "https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents:runQuery"
-	var query_body := {
-		"structuredQuery": {
-			"from": [{"collectionId": "teamMembers"}],
-			"where": {
-				"fieldFilter": {
-					"field": {"fieldPath": "userId"},
-					"op": "EQUAL",
-					"value": {"stringValue": my_uid}
-				}
-			},
-			"limit": 1
-		}
-	}
-
-	var res := await http_request(run_url, HTTPClient.METHOD_POST, _auth_headers(), JSON.stringify(query_body))
-
-	if res[0] and typeof(res[2]) == TYPE_ARRAY and res[2].size() > 0:
-		var item: Dictionary = res[2][0]
-		if item.has("document") and item["document"].has("fields"):
-			var fields: Dictionary = item["document"]["fields"]
-			if fields.has("teamCode"):
-				var team_code: String = str(fields["teamCode"]["stringValue"])
-				var team_doc: Array = await http_request(
-					"https://firestore.googleapis.com/v1/projects/candar-network-007/databases/(default)/documents/teams/%s" % team_code,
-					HTTPClient.METHOD_GET,
-					_auth_headers(),
-					""
-				)
-				if team_doc[0]:
-					return team_doc[2]
-
-	return {}
+	var firebase := get_node_or_null("/root/Firebase")
+	if firebase == null or not firebase.has_method("team_info"):
+		return {"ok": false, "error": "Team service unavailable"}
+	return await firebase.team_info()
 
 # ======================================================================
 #                     A C T I V I T Y   F E E D
@@ -4424,23 +4459,32 @@ func reserve_rewarded_boost_attempt() -> Dictionary:
 
 func activate_rewarded_boost(uid: String, attempt_at: int = 0) -> Array:
 	var firebase := get_node_or_null("/root/Firebase")
-	if firebase and firebase.has_method("apply_rewarded_boost"):
-		var backend_result: Dictionary = await firebase.apply_rewarded_boost(attempt_at)
-		if bool(backend_result.get("ok", false)):
+	if firebase == null or not firebase.has_method("apply_rewarded_boost"):
+		return [false, {"ok": false, "error": "rewarded_boost_service_unavailable"}]
+
+	# Local SDK reward callbacks are not trusted. Only a Google-signed AdMob
+	# callback grants the reward; poll the backend to confirm delivery.
+	var last_result: Dictionary = {}
+	for poll in range(20):
+		last_result = await firebase.apply_rewarded_boost(attempt_at)
+		if bool(last_result.get("ok", false)):
 			var latest_doc: Dictionary = await get_user_doc(uid)
 			var latest_fields: Dictionary = latest_doc.get("fields", {}) if latest_doc.has("fields") else {}
 			var components: Dictionary = await get_user_mining_rate_components(uid, latest_fields)
-			var rewarded_multiplier := float(backend_result.get("rewarded_multiplier", components.get("rewarded_multiplier", 1.0)))
+			var rewarded_multiplier := float(last_result.get("rewarded_multiplier", components.get("rewarded_multiplier", 1.0)))
 			return [true, {
 				"rewarded_multiplier": rewarded_multiplier,
-				"total_rate": float(backend_result.get("total_rate", components.get("total_rate", rewarded_multiplier))),
+				"total_rate": float(last_result.get("total_rate", components.get("total_rate", rewarded_multiplier))),
 				"components": components
 			}]
-		var backend_error := str(backend_result.get("error", ""))
-		if _is_rewarded_boost_limit_error(backend_error):
-			return [false, backend_result]
-		push_error("Rewarded boost backend failed: %s" % str(backend_result))
-	return [false, {"ok": false, "error": "rewarded_boost_service_unavailable"}]
+		if str(last_result.get("error", "")) != "rewarded_boost_verification_pending":
+			return [false, last_result]
+		await get_tree().create_timer(2.0).timeout
+	return [false, {
+		"ok": false,
+		"error": "rewarded_boost_verification_pending",
+		"message": "Reklam doğrulaması gecikti. Ödül sunucuda onaylandığında otomatik olarak hesabına işlenecek."
+	}]
 
 func get_rewarded_boost_status(uid: String) -> Dictionary:
 	var user_doc: Dictionary = await get_user_doc(uid)

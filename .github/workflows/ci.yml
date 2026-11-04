@@ -1,0 +1,55 @@
+name: Candar checks
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  functions-and-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: functions/package-lock.json
+      - name: Install Cloud Functions dependencies
+        run: npm ci --prefix functions
+      - name: Test Cloud Functions
+        run: npm test --prefix functions
+      - name: Test acquisition pages
+        run: node --test scripts/tests/acquisition.test.cjs
+      - name: Verify complete 12-language catalog
+        run: node --test scripts/tests/i18n_catalog.test.cjs
+      - name: Check JS syntax
+        run: |
+          node --check functions/index.js
+          node --check functions/admin-config.js
+
+  godot-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Godot 4.6
+        run: |
+          curl -fL --retry 3 "https://github.com/godotengine/godot/releases/download/4.6-stable/Godot_v4.6-stable_linux.x86_64.zip" -o godot.zip
+          unzip -q godot.zip
+          mkdir -p "$HOME/.local/bin"
+          mv Godot_v4.6-stable_linux.x86_64 "$HOME/.local/bin/godot"
+          chmod +x "$HOME/.local/bin/godot"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Onboarding and translation smoke
+        run: python3 scripts/tests/run_onboarding_smoke.py
+      - name: Twelve-language runtime and selectors smoke
+        run: python3 scripts/tests/run_localization_smoke.py
+      - name: Home rewarded-ad smoke
+        run: python3 scripts/tests/run_home_ads_smoke.py
+      - name: SDK ad-manager smoke
+        run: python3 scripts/tests/run_ad_manager_smoke.py
+      - name: Community team UI smoke
+        run: python3 scripts/tests/run_team_center_smoke.py
+      - name: iOS purchase recovery smoke
+        run: python3 scripts/tests/run_iap_recovery_smoke.py
+      - name: Native secure session protocol smoke
+        run: python3 scripts/tests/run_secure_session_smoke.py

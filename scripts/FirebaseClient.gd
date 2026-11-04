@@ -94,21 +94,34 @@ func _http_json(
 # ====================== CALLABLE FUNCTIONS ======================
 
 func _friendly_function_error(status: int, payload: Variant) -> String:
-	var text := str(payload)
-	var lower := text.to_lower()
-	if status in [500, 502, 503, 504] or lower.find("not available") != -1 or lower.find("billing") != -1:
-		return "Sunucu servisi şu anda kullanılamıyor. Lütfen biraz sonra tekrar deneyin."
+	# Firebase callable errors can contain Turkish-only server messages.
+	# Show a translated, stable category rather than raw backend text.
+	var error_code := ""
 	if typeof(payload) == TYPE_DICTIONARY:
-		if payload.has("error"):
-			var err_val = payload["error"]
-			if typeof(err_val) == TYPE_DICTIONARY and err_val.has("message"):
-				return str(err_val["message"])
-			return str(err_val)
-		if payload.has("message"):
-			return str(payload["message"])
-	if text.strip_edges() != "":
-		return text
-	return "Sunucu yanıtı alınamadı."
+		var error_obj: Variant = payload.get("error", {})
+		if typeof(error_obj) == TYPE_DICTIONARY:
+			error_code = str(error_obj.get("status", error_obj.get("code", ""))).to_upper().replace("-", "_")
+	var key := "fn_error_unknown"
+	if status in [500, 502, 503, 504] or error_code in ["UNAVAILABLE", "INTERNAL", "DEADLINE_EXCEEDED"]:
+		key = "fn_error_unavailable"
+	elif status == 401 or error_code == "UNAUTHENTICATED":
+		key = "fn_error_unauthenticated"
+	elif status == 403 or error_code == "PERMISSION_DENIED":
+		key = "fn_error_permission_denied"
+	elif status == 404 or error_code == "NOT_FOUND":
+		key = "fn_error_not_found"
+	elif status == 409 or error_code in ["ALREADY_EXISTS", "ABORTED"]:
+		key = "fn_error_already_exists"
+	elif status == 429 or error_code == "RESOURCE_EXHAUSTED":
+		key = "fn_error_resource_exhausted"
+	elif status == 412 or error_code == "FAILED_PRECONDITION":
+		key = "fn_error_failed_precondition"
+	elif status == 400 or error_code == "INVALID_ARGUMENT":
+		key = "fn_error_invalid_argument"
+	var g := _get_global()
+	if g != null and g.has_method("localized_named_key"):
+		return str(g.localized_named_key(key))
+	return "Unable to complete the request. Please try again."
 
 func _call_fn_raw(fn_name: String, data: Dictionary) -> Dictionary:
 	var url := "https://%s-%s.cloudfunctions.net/%s" % [REGION, project_id, fn_name]
@@ -293,6 +306,29 @@ func get_referrals() -> Dictionary:
 		"error": raw.get("error", "get_referrals hatası"),
 		"status": raw.get("status", 0)
 	}
+
+func _team_function(fn_name: String, payload: Dictionary = {}) -> Dictionary:
+	var raw := await _call_fn_raw(fn_name, payload)
+	if bool(raw.get("ok", false)) and typeof(raw.get("data", {})) == TYPE_DICTIONARY:
+		var result: Dictionary = (raw["data"] as Dictionary).duplicate(true)
+		result["ok"] = bool(result.get("ok", true))
+		return result
+	return {"ok": false, "error": str(raw.get("error", "Team service unavailable"))}
+
+func team_create(name: String) -> Dictionary:
+	return await _team_function("team_create", {"name": name})
+
+func team_join(code: String) -> Dictionary:
+	return await _team_function("team_join", {"code": code})
+
+func team_leave() -> Dictionary:
+	return await _team_function("team_leave")
+
+func team_info() -> Dictionary:
+	return await _team_function("team_info")
+
+func team_leaderboard(limit: int = 10) -> Dictionary:
+	return await _team_function("team_leaderboard", {"limit": clampi(limit, 1, 50)})
 
 func get_point_rewards() -> Dictionary:
 	var raw := await _call_fn_raw("get_point_rewards", {})

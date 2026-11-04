@@ -14,6 +14,7 @@ var is_ready: bool = false
 # --------------------------
 var sk: Object = null
 var _ios_products := {} # product_id -> StoreProduct (object)
+var _ios_recovery_in_flight: Dictionary = {}
 var _product_prices := {} # product_id -> localized display price
 
 # Satın alma akışı için state (Android)
@@ -227,7 +228,7 @@ func _extract_ios_display_price(product) -> String:
 	return ""
 
 func _on_ios_purchase_completed(transaction, status: int, error_message: String) -> void:
-	print("[IAP] iOS purchase_completed status=", status, " err=", error_message, " tx=", transaction)
+	print("[IAP] iOS purchase_completed status=", status)
 
 	# Miguel plugininde StoreKitStatus.ok genelde 0 olur.
 	if status != 0:
@@ -284,10 +285,47 @@ func _on_ios_purchase_completed(transaction, status: int, error_message: String)
 	})
 
 func _on_ios_restore_completed(status: int, error_message: String) -> void:
-	print("[IAP] iOS restore_completed status=", status, " err=", error_message)
+	print("[IAP] iOS restore_completed status=", status)
 
 func _on_ios_transaction_updated(transaction) -> void:
-	print("[IAP] iOS transaction_updated: ", transaction)
+	# StoreKit may deliver an entitlement on launch, after interrupted
+	# purchases, or while restoring. The Apple server must verify every
+	# transaction before its entitlement is reflected in the app.
+	var transaction_id := _ios_extract_tx_id(transaction)
+	if transaction_id == "" or _ios_recovery_in_flight.has(transaction_id):
+		return
+
+	var store_product_id := ""
+	if transaction is Dictionary:
+		store_product_id = str(transaction.get("product_id", transaction.get("productId", "")))
+	elif transaction != null:
+		if "product_id" in transaction:
+			store_product_id = str(transaction.product_id)
+		elif "productId" in transaction:
+			store_product_id = str(transaction.productId)
+
+	var product_id := _app_product_id_from_store_id(store_product_id)
+	if not BOOST_PRODUCTS.has(product_id) and not PREMIUM_PRODUCTS.has(product_id):
+		return
+
+	_ios_recovery_in_flight[transaction_id] = true
+	var is_premium := PREMIUM_PRODUCTS.has(product_id)
+	var result: Dictionary = await _apply_purchase_via_backend(
+		"ios", product_id, transaction_id, is_premium, transaction_id
+	)
+	_ios_recovery_in_flight.erase(transaction_id)
+	if not bool(result.get("ok", false)):
+		# A canceled or expired transaction must not grant entitlements.
+		print("[IAP] iOS transaction reconciliation was not applied.")
+		return
+
+	var payload := result.duplicate(true)
+	payload["ok"] = true
+	payload["product_id"] = product_id
+	payload["is_premium"] = is_premium
+	payload["restored"] = true
+	payload["message"] = "Premium doğrulandı" if is_premium else "Boost doğrulandı"
+	emit_signal("purchase_applied", payload)
 
 
 # ============================================================
@@ -346,7 +384,7 @@ func _extract_android_display_price(item: Dictionary) -> String:
 	return ""
 
 func _on_query_purchases_response(response: Dictionary) -> void:
-	print("[IAP] query_purchases_response: ", response)
+	print("[IAP] purchase query status=", response.get("response_code", "unknown"), " count=", (response.get("result_array", []) as Array).size())
 
 	var code: int = int(response.get("response_code", BillingClient.BillingResponseCode.ERROR))
 	if code != BillingClient.BillingResponseCode.OK:
@@ -408,14 +446,14 @@ func _extract_token(d: Dictionary) -> String:
 # FINALIZE CALLBACKS (ANDROID)
 # ============================================================
 func _on_consume_purchase_response(response: Dictionary) -> void:
-	print("[IAP] consume_purchase_response: ", response)
+	print("[IAP] consume status=", response.get("response_code", "unknown"))
 	var tok := _extract_token(response)
 	if _finalize_wait_kind == "consume" and tok == _finalize_wait_token:
 		_finalize_done_flag = true
 		_finalize_last_res = {"ok": true, "kind": "consume", "raw": response}
 
 func _on_acknowledge_purchase_response(response: Dictionary) -> void:
-	print("[IAP] acknowledge_purchase_response: ", response)
+	print("[IAP] acknowledge status=", response.get("response_code", "unknown"))
 	var tok := _extract_token(response)
 	if _finalize_wait_kind == "ack" and tok == _finalize_wait_token:
 		_finalize_done_flag = true
@@ -504,7 +542,7 @@ func _buy_and_apply(product_id: String, is_premium: bool) -> Dictionary:
 
 	var store_product_id_a := _store_product_id(product_id)
 	var launch_res: Dictionary = billing.purchase(store_product_id_a)
-	print("[IAP] purchase() result: ", launch_res)
+	print("[IAP] purchase() returned status=", launch_res.get("status", launch_res.get("response_code", "unknown")))
 	if launch_res.is_empty():
 		return {"ok": false, "error": "purchase_launch_failed"}
 	if launch_res.has("status") and int(launch_res.get("status", OK)) != OK:
@@ -553,7 +591,7 @@ func _buy_and_apply(product_id: String, is_premium: bool) -> Dictionary:
 # ANDROID PURCHASE CALLBACK
 # ============================================================
 func _on_purchase_updated(response: Dictionary) -> void:
-	print("[IAP] on_purchase_updated: ", response)
+	print("[IAP] purchase update status=", response.get("response_code", "unknown"))
 
 	var code: int = int(response.get("response_code", BillingClient.BillingResponseCode.ERROR))
 	if code != BillingClient.BillingResponseCode.OK:
@@ -561,7 +599,7 @@ func _on_purchase_updated(response: Dictionary) -> void:
 			"ok": false,
 			"error": "billing_response",
 			"response_code": code,
-			"raw": response
+			"message": "Billing purchase update was unsuccessful"
 		})
 		return
 
@@ -585,7 +623,7 @@ func _on_purchase_updated(response: Dictionary) -> void:
 
 	var state: int = int(picked.get("purchase_state", BillingClient.PurchaseState.UNSPECIFIED_STATE))
 	if state != BillingClient.PurchaseState.PURCHASED:
-		emit_signal("purchase_done", {"ok": false, "error": "not_purchased", "state": state, "raw": picked})
+		emit_signal("purchase_done", {"ok": false, "error": "not_purchased", "state": state})
 		return
 
 	var token := String(picked.get("purchase_token", ""))
@@ -593,7 +631,7 @@ func _on_purchase_updated(response: Dictionary) -> void:
 		token = String(picked.get("purchaseToken", ""))
 
 	if token == "":
-		emit_signal("purchase_done", {"ok": false, "error": "missing_token_in_callback", "raw": picked})
+		emit_signal("purchase_done", {"ok": false, "error": "missing_token_in_callback"})
 		return
 
 	var pids2: PackedStringArray = picked.get("product_ids", PackedStringArray())
@@ -672,4 +710,4 @@ func _finalize_purchase(purchase: Dictionary, is_premium: bool) -> Dictionary:
 	if _finalize_done_flag:
 		return _finalize_last_res
 
-	return {"ok": false, "error": "finalize_timeout", "kind": _finalize_wait_kind, "token": token}
+	return {"ok": false, "error": "finalize_timeout", "kind": _finalize_wait_kind}

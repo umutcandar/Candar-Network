@@ -6,7 +6,7 @@
     "node": "20"
   },
   "scripts": {
-    "test": "node retention.test.js && node rewarded-window.test.js && node rewarded-reservation.test.js && node referral.test.js && node notifications.test.js && node candar-ai.test.js"
+    "test": "node retention.test.js && node rewarded-window.test.js && node rewarded-reservation.test.js && node referral.test.js && node notifications.test.js && node candar-ai.test.js && node admin-config.test.js && node admob-ssv.test.js && node team-domain.test.js && node purchase-refunds.test.js && node purchase-refunds.integration.test.js"
   },
   "dependencies": {
     "firebase-admin": "^12.7.0",

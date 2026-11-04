@@ -280,7 +280,7 @@ func _is_tr() -> bool:
 	return locale.begins_with("tr") if locale != "" else OS.get_locale().begins_with("tr")
 
 func _ui_text(tr_text: String, en_text: String) -> String:
-	return tr_text if _is_tr() else en_text
+	return Global.localized_ui_text(tr_text, en_text)
 
 func _create_value_card() -> void:
 	if value_card and is_instance_valid(value_card):

@@ -7,6 +7,7 @@ import FirebaseMessaging
 import ObjectiveC
 import StoreKit
 import UserNotifications
+import Security
 
 private let candarGoogleClientID = "170015852669-362693n16e88llrtodo6f0b9saem6fp4.apps.googleusercontent.com"
 
@@ -117,6 +118,7 @@ final class CandarNativeBridge: NSObject {
 
     private var signInTimer: Timer?
     private var receiptTimer: Timer?
+    private var secureSessionTimer: Timer?
     private var shareTimer: Timer?
     private var receiptRefreshRequest: SKReceiptRefreshRequest?
     private var urlHandlerTimer: Timer?
@@ -139,9 +141,12 @@ final class CandarNativeBridge: NSObject {
         removeFileFromCandidateDirs("signin_request.tmp")
         removeFileFromCandidateDirs("receipt_request.tmp")
         removeFileFromCandidateDirs("app_store_receipt.txt")
+        // An interrupted Keychain response must not retain a previous session token.
+        removeFileFromCandidateDirs("secure_session_response.json")
 		removeFileFromCandidateDirs("share_request.json")
         startSignInRequestWatcher()
         startReceiptRequestWatcher()
+        startSecureSessionRequestWatcher()
 		startShareRequestWatcher()
         startURLHandlerInstaller()
 
@@ -241,6 +246,103 @@ final class CandarNativeBridge: NSObject {
 
         if let signInTimer {
             RunLoop.main.add(signInTimer, forMode: .common)
+        }
+    }
+
+    // A transport for the existing Godot runtime, which cannot call Swift
+    // Keychain APIs directly without a separately compiled iOS Godot plugin.
+    // Only the Keychain persists the token. The short-lived request/response
+    // files are removed immediately and excluded from backup.
+    // A future compiled native Godot plugin should replace this file IPC.
+    private func keychainQuery() -> [CFString: Any] {
+        return [
+            kSecClass: kSecClassGenericPassword,
+            kSecAttrService: "com.candarnetwork.app.firebase_refresh_v1",
+            kSecAttrAccount: "firebase"
+        ]
+    }
+
+    private func saveToKeychain(_ token: String) -> Bool {
+        guard token.utf8.count >= 16 && token.utf8.count <= 8192 else { return false }
+        let query = keychainQuery()
+        let update: [CFString: Any] = [kSecValueData: Data(token.utf8)]
+        let existing = SecItemUpdate(query as CFDictionary, update as CFDictionary)
+        if existing == errSecSuccess { return true }
+        if existing != errSecItemNotFound { return false }
+        var creation = query
+        creation[kSecValueData] = Data(token.utf8)
+        creation[kSecAttrAccessible] = kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+        return SecItemAdd(creation as CFDictionary, nil) == errSecSuccess
+    }
+
+    private func loadFromKeychain() -> String {
+        var query = keychainQuery()
+        query[kSecReturnData] = kCFBooleanTrue
+        query[kSecMatchLimit] = kSecMatchLimitOne
+        var item: CFTypeRef?
+        guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess,
+              let data = item as? Data,
+              let token = String(data: data, encoding: .utf8) else {
+            return ""
+        }
+        return token
+    }
+
+    private func clearKeychainToken() -> Bool {
+        let status = SecItemDelete(keychainQuery() as CFDictionary)
+        return status == errSecSuccess || status == errSecItemNotFound
+    }
+
+    private func startSecureSessionRequestWatcher() {
+        secureSessionTimer?.invalidate()
+        secureSessionTimer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
+            self.processSecureSessionRequest()
+        }
+        if let secureSessionTimer {
+            RunLoop.main.add(secureSessionTimer, forMode: .common)
+        }
+    }
+
+    private func processSecureSessionRequest() {
+        guard let requestURL = findExistingFile(named: "secure_session_request.json"),
+              let raw = try? Data(contentsOf: requestURL) else { return }
+
+        // Remove any plaintext input before touching Keychain. Do not log it.
+        try? FileManager.default.removeItem(at: requestURL)
+        guard let request = try? JSONSerialization.jsonObject(with: raw) as? [String: Any],
+              let requestId = request["request_id"] as? String,
+              requestId.count >= 8 && requestId.count <= 128,
+              let operation = request["operation"] as? String,
+              let createdAt = request["created_at"] as? Int,
+              abs(Int(Date().timeIntervalSince1970) - createdAt) <= 30 else { return }
+
+        let response: [String: Any]
+        switch operation {
+        case "save":
+            let token = request["token"] as? String ?? ""
+            response = ["request_id": requestId, "ok": saveToKeychain(token)]
+        case "load":
+            let token = loadFromKeychain()
+            response = ["request_id": requestId, "ok": !token.isEmpty, "token": token]
+        case "clear":
+            response = ["request_id": requestId, "ok": clearKeychainToken()]
+        default:
+            response = ["request_id": requestId, "ok": false]
+        }
+
+        guard let encoded = try? JSONSerialization.data(withJSONObject: response) else { return }
+        let responseURL = requestURL.deletingLastPathComponent()
+            .appendingPathComponent("secure_session_response.json")
+        // File protection applies while locked; these brief IPC artifacts
+        // never belong in the user's backup.
+        do {
+            try encoded.write(to: responseURL, options: [.atomic, .completeFileProtection])
+            var url = responseURL
+            var values = URLResourceValues()
+            values.isExcludedFromBackup = true
+            try? url.setResourceValues(values)
+        } catch {
+            // Fail closed. The caller will require an interactive login.
         }
     }
 

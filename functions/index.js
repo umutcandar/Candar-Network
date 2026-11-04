@@ -1,9 +1,9 @@
-const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onCall, onRequest, HttpsError } = require("firebase-functions/v2/https");
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const { defineSecret } = require("firebase-functions/params");
 const { initializeApp } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
-const { getFirestore, FieldValue, Timestamp } = require("firebase-admin/firestore");
+const { getFirestore, FieldValue, FieldPath, Timestamp } = require("firebase-admin/firestore");
 const { getMessaging } = require("firebase-admin/messaging");
 const { GoogleAuth } = require("google-auth-library");
 const crypto = require("crypto");
@@ -38,6 +38,15 @@ initializeApp();
 const db = getFirestore();
 const candarAiConfig = defineSecret("CANDAR_AI_CONFIG");
 const { generateAnswer } = require("./candar-ai");
+const { normalizeMiningRate } = require("./admin-config");
+const { fetchVerifyingKeys, verifyCallback, AdmobVerificationError } = require("./admob-ssv");
+const { TEAM_CAPACITY, normalizeTeamName, normalizeTeamCode, addMember, removeMember } = require("./team-domain");
+const {
+  readAppleRefundHint,
+  normalizeGoogleVoidedPurchase,
+  googleVoidedUrl,
+  revokeUserFields,
+} = require("./purchase-refunds");
 const appleIssuerId = defineSecret("APPLE_ISSUER_ID");
 const appleKeyId = defineSecret("APPLE_KEY_ID");
 const applePrivateKey = defineSecret("APPLE_PRIVATE_KEY");
@@ -68,6 +77,7 @@ const ACHIEVEMENT_DEFINITIONS = [
 ];
 const OWNER_EMAIL_HASHES = new Set([
   "2d01b5f016fddbb0ec5131fc8771d6b81f425f1d1dc8805020d4c5d59e791751",
+  "34d4392ae7769c7f9fda45f9ac816dbc0f31de9cd42fcfa6837a04f897403b19",
 ]);
 const BOOST_PRODUCT_MULTIPLIERS = {
   "candar.boost.basic.30d": 2,
@@ -568,9 +578,10 @@ async function verifyGooglePlayPurchase(receipt, rawProductId) {
       method: "GET",
     });
   } catch (error) {
+    // Google API errors can include the purchase token in request URLs.
     console.error("Google Play verification failed", {
       status: error?.response?.status,
-      message: error?.message,
+      code: error?.code,
     });
     throw new HttpsError(
       "failed-precondition",
@@ -630,6 +641,9 @@ async function applyPurchaseToUser(uid, data, isPremium) {
     throw new HttpsError("invalid-argument", "Geçersiz mağaza ürünü.");
   }
 
+  // External store verification happens first. All internal changes are then
+  // committed in a single transaction, so concurrent retries cannot grant
+  // the same purchase twice or leave an orphaned ledger record.
   const verification = await verifyStorePurchase(
     platform,
     receipt,
@@ -637,130 +651,141 @@ async function applyPurchaseToUser(uid, data, isPremium) {
     productId,
     transactionId
   );
-  const eventId = purchaseEventId(
-    platform,
-    productId,
-    verification.transactionId
-  );
+  const eventId = purchaseEventId(platform, productId, verification.transactionId);
   const eventRef = db.collection("purchase_events").doc(eventId);
-  const existingEvent = await eventRef.get();
-  if (existingEvent.exists) {
-    const eventData = existingEvent.data() || {};
-    if (String(eventData.uid || "") !== uid) {
-      throw new HttpsError(
-        "already-exists",
-        "Bu mağaza işlemi başka bir hesapta kullanılmış."
-      );
-    }
-    return {
-      ok: true,
-      alreadyApplied: true,
-      productId,
-      rawProductId,
-      platform,
-      isPremium,
-      expiresAt: eventData.expiresAt?.toDate?.()?.toISOString?.() || "",
-    };
-  }
-
   const userRef = db.collection("users").doc(uid);
-  const userSnap = await userRef.get();
-  const existingUserData = userSnap.exists ? userSnap.data() || {} : {};
-  const expiresAt = verification.expiresAt;
-  const update = {
-    lastPurchasePlatform: platform,
-    lastPurchaseProductId: productId,
-    lastPurchaseStoreProductId: rawProductId,
-    lastPurchaseProofHash: sha256(receipt),
-    lastPurchaseAt: FieldValue.serverTimestamp(),
-    purchaseExpiresAt: Timestamp.fromDate(expiresAt),
-    updatedAt: FieldValue.serverTimestamp(),
-  };
 
-  if (isPremium) {
-    update.isPremium = true;
-    update.premiumExpiresAt = Timestamp.fromDate(expiresAt);
-    update.premium = {
-      is_active: true,
-      expires_at: Timestamp.fromDate(expiresAt),
+  return db.runTransaction(async (tx) => {
+    // A Google refund may arrive before the purchase's first Firebase grant.
+    // Tombstones are read IN THE SAME transaction, so racing refunds win.
+    const googleOrderId = platform === "android"
+      ? String(verification.orderId || "") : "";
+    const googleTokenHash = platform === "android" ? sha256(receipt) : "";
+    const orderVoidRef = googleOrderId
+      ? db.collection("purchase_revocations").doc(sha256("android:order:" + googleOrderId))
+      : null;
+    const tokenVoidRef = googleTokenHash
+      ? db.collection("purchase_revocations").doc(sha256("android:token:" + googleTokenHash))
+      : null;
+    const [existingEvent, userSnap, orderVoid, tokenVoid] = await Promise.all([
+      tx.get(eventRef),
+      tx.get(userRef),
+      orderVoidRef ? tx.get(orderVoidRef) : Promise.resolve(null),
+      tokenVoidRef ? tx.get(tokenVoidRef) : Promise.resolve(null),
+    ]);
+    if (orderVoid?.exists || tokenVoid?.exists) {
+      throw new HttpsError("failed-precondition", "Bu satın alma iade edilmiş veya iptal edilmiş.");
+    }
+    if (existingEvent.exists) {
+      const eventData = existingEvent.data() || {};
+      if (String(eventData.uid || "") !== uid) {
+        throw new HttpsError("already-exists", "Bu mağaza işlemi başka bir hesapta kullanılmış.");
+      }
+      if (eventData.revoked === true) {
+        throw new HttpsError("failed-precondition", "Bu satın alma iade edilmiş veya iptal edilmiş.");
+      }
+      return {
+        ok: true,
+        alreadyApplied: true,
+        productId,
+        rawProductId,
+        platform,
+        isPremium,
+        expiresAt: eventData.expiresAt?.toDate?.()?.toISOString?.() || "",
+      };
+    }
+    if (!userSnap.exists) {
+      throw new HttpsError("not-found", "Satın alma için kullanıcı profili bulunamadı.");
+    }
+
+    const existingUserData = userSnap.data() || {};
+    const expiresAt = verification.expiresAt;
+    const update = {
+      lastPurchasePlatform: platform,
+      lastPurchaseProductId: productId,
+      lastPurchaseStoreProductId: rawProductId,
+      lastPurchaseProofHash: sha256(receipt),
+      lastPurchaseAt: FieldValue.serverTimestamp(),
+      purchaseExpiresAt: Timestamp.fromDate(expiresAt),
+      updatedAt: FieldValue.serverTimestamp(),
     };
-  } else {
-    const multiplier = BOOST_PRODUCT_MULTIPLIERS[productId];
-    update.currentMultiplier = multiplier;
-    update.boostExpiresAt = Timestamp.fromDate(expiresAt);
-    update.mining = {
-      active_multiplier: multiplier,
-      boost_expires_at: Timestamp.fromDate(expiresAt),
+    if (isPremium) {
+      update.lastPremiumPurchaseEventId = eventId;
+      update.isPremium = true;
+      update.premiumExpiresAt = Timestamp.fromDate(expiresAt);
+      update.premium = {
+        is_active: true,
+        expires_at: Timestamp.fromDate(expiresAt),
+      };
+    } else {
+      update.lastBoostPurchaseEventId = eventId;
+      const multiplier = BOOST_PRODUCT_MULTIPLIERS[productId];
+      update.currentMultiplier = multiplier;
+      update.boostExpiresAt = Timestamp.fromDate(expiresAt);
+      update.mining = {
+        active_multiplier: multiplier,
+        boost_expires_at: Timestamp.fromDate(expiresAt),
+      };
+    }
+
+    const nextData = {
+      ...existingUserData,
+      ...update,
+      mining: {
+        ...(existingUserData.mining || {}),
+        ...(update.mining || {}),
+      },
     };
-  }
+    const rateComponents = isPremium ? null : calculateMiningRateComponents(nextData);
+    let boostCatchup = null;
 
-  let nextData = {
-    ...existingUserData,
-    ...update,
-    mining: {
-      ...(existingUserData.mining || {}),
-      ...(update.mining || {}),
-    },
-  };
-  const rateComponents = isPremium ? null : calculateMiningRateComponents(nextData);
-  let boostCatchup = null;
-
-  if (!isPremium && rateComponents) {
-    const nowSeconds = Math.trunc(Date.now() / 1000);
-    const lastMiningStart = intField(existingUserData, "lastMiningStart", 0);
-    const previousReward = numberField(
-      existingUserData,
-      "lastMiningReward",
-      numberField(existingUserData, "lastKnownMiningRate", 0)
-    );
-    const alreadyCaughtUp = String(existingUserData.lastBoostCatchupPurchaseEventId || "") === eventId;
-
-    if (
-      lastMiningStart > 0 &&
-      nowSeconds - lastMiningStart >= 0 &&
-      nowSeconds - lastMiningStart < DAILY_REWARD_SECONDS &&
-      previousReward > 0 &&
-      !alreadyCaughtUp
-    ) {
-      const catchupDelta = Number((rateComponents.totalRate - previousReward).toFixed(2));
-      if (catchupDelta > 0) {
-        const currentPoints = numberField(existingUserData, "points", 0);
-        const nextPoints = Number((currentPoints + catchupDelta).toFixed(2));
-        boostCatchup = {
-          delta: catchupDelta,
-          previousReward,
-          adjustedReward: Number((previousReward + catchupDelta).toFixed(2)),
-          points: nextPoints,
-        };
-        update.points = nextPoints;
-        update.lastMiningReward = boostCatchup.adjustedReward;
-        update.lastKnownMiningRate = rateComponents.totalRate;
-        update.lastBoostCatchupDelta = catchupDelta;
-        update.lastBoostCatchupPurchaseEventId = eventId;
-        update.lastBoostCatchupAt = FieldValue.serverTimestamp();
+    if (!isPremium && rateComponents) {
+      const nowSeconds = Math.trunc(Date.now() / 1000);
+      const lastMiningStart = intField(existingUserData, "lastMiningStart", 0);
+      const previousReward = numberField(
+        existingUserData,
+        "lastMiningReward",
+        numberField(existingUserData, "lastKnownMiningRate", 0)
+      );
+      const alreadyCaughtUp =
+        String(existingUserData.lastBoostCatchupPurchaseEventId || "") === eventId;
+      if (
+        lastMiningStart > 0 &&
+        nowSeconds - lastMiningStart >= 0 &&
+        nowSeconds - lastMiningStart < DAILY_REWARD_SECONDS &&
+        previousReward > 0 &&
+        !alreadyCaughtUp
+      ) {
+        const catchupDelta = Number((rateComponents.totalRate - previousReward).toFixed(2));
+        if (catchupDelta > 0) {
+          const currentPoints = numberField(existingUserData, "points", 0);
+          const nextPoints = Number((currentPoints + catchupDelta).toFixed(2));
+          boostCatchup = {
+            delta: catchupDelta,
+            previousReward,
+            adjustedReward: Number((previousReward + catchupDelta).toFixed(2)),
+            points: nextPoints,
+          };
+          update.points = nextPoints;
+          update.lastMiningReward = boostCatchup.adjustedReward;
+          update.lastKnownMiningRate = rateComponents.totalRate;
+          update.lastBoostCatchupDelta = catchupDelta;
+          update.lastBoostCatchupPurchaseEventId = eventId;
+          update.lastBoostCatchupAt = FieldValue.serverTimestamp();
+        }
       }
     }
-  }
 
-  await userRef.set(update, { merge: true });
-
-  nextData = {
-    ...nextData,
-    ...update,
-    mining: {
-      ...(nextData.mining || {}),
-      ...(update.mining || {}),
-    },
-  };
-
-  await eventRef.set(
-    {
+    tx.set(userRef, update, { merge: true });
+    tx.create(eventRef, {
       uid,
       productId,
       rawProductId,
       platform,
       storeTransactionId: verification.transactionId,
       storeOrderId: verification.orderId,
+      storeTokenHash: platform === "android" ? sha256(receipt) : null,
+      revoked: false,
       storeEnvironment: verification.environment,
       storePurchaseAt: Timestamp.fromDate(verification.purchaseDate),
       isPremium,
@@ -771,31 +796,204 @@ async function applyPurchaseToUser(uid, data, isPremium) {
       source: "iap_callable",
       verifiedByStoreServer: true,
       updatedAt: FieldValue.serverTimestamp(),
-    },
-    { merge: true }
-  );
+    });
 
-  console.log("Purchase applied", {
-    productId,
-    rawProductId,
-    platform,
-    isPremium,
-    multiplier: isPremium ? null : BOOST_PRODUCT_MULTIPLIERS[productId],
-    rateComponents,
-    eventId,
+    return {
+      ok: true,
+      productId,
+      rawProductId,
+      platform,
+      isPremium,
+      multiplier: isPremium ? null : BOOST_PRODUCT_MULTIPLIERS[productId],
+      rateComponents,
+      boostCatchup,
+      expiresAt: expiresAt.toISOString(),
+    };
   });
+}
 
-  return {
-    ok: true,
-    productId,
-    rawProductId,
-    platform,
-    isPremium,
-    multiplier: isPremium ? null : BOOST_PRODUCT_MULTIPLIERS[productId],
-    rateComponents,
-    boostCatchup,
-    expiresAt: expiresAt.toISOString(),
-  };
+// The ledger, current user entitlement and refund receipt are updated together.
+// A revoked historical order cannot disable an unrelated newer purchase.
+async function revokePurchaseEvent(eventRef, source, voidedAtMs) {
+  const knownEvent = await eventRef.get();
+  if (!knownEvent.exists) return { status: "unmatched" };
+  const uid = String(knownEvent.data()?.uid || "");
+  const userRef = uid ? db.collection("users").doc(uid) : null;
+
+  return db.runTransaction(async (tx) => {
+    const [eventSnap, userSnap] = await Promise.all([
+      tx.get(eventRef),
+      userRef ? tx.get(userRef) : Promise.resolve(null),
+    ]);
+    if (!eventSnap.exists) return { status: "unmatched" };
+    const event = eventSnap.data() || {};
+    if (event.revoked === true) return { status: "already_revoked" };
+    const nowMs = Date.now();
+    const dateMs = Math.max(0, Math.min(nowMs, Number(voidedAtMs) || nowMs));
+    tx.set(eventRef, {
+      revoked: true,
+      revokedAt: Timestamp.fromMillis(dateMs),
+      revocationSource: String(source).slice(0, 48),
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+
+    if (userSnap?.exists && userSnap.id === event.uid) {
+      const userData = userSnap.data() || {};
+      const patch = revokeUserFields({
+        user: userData,
+        eventId: eventSnap.id,
+        event,
+        nowMs,
+      });
+      if (patch) {
+        const next = {
+          ...userData,
+          ...patch,
+          mining: patch.mining || userData.mining,
+        };
+        patch.lastKnownMiningRate = calculateMiningRate(next, Math.floor(nowMs / 1000));
+        patch.updatedAt = FieldValue.serverTimestamp();
+        tx.set(userRef, patch, { merge: true });
+        return { status: "revoked_current" };
+      }
+    }
+    return { status: "revoked_historical" };
+  });
+}
+
+async function lookupStoreEvent(field, value, platform) {
+  if (!value) return null;
+  const matches = await db.collection("purchase_events")
+    .where(field, "==", value)
+    .limit(6)
+    .get();
+  return matches.docs.find((doc) =>
+    String(doc.data()?.platform || "") === platform) || null;
+}
+
+async function applyGoogleVoidedPurchase(raw) {
+  const item = normalizeGoogleVoidedPurchase(raw);
+  if (!item) return { status: "ignored" };
+  const orderVoidRef = item.orderId
+    ? db.collection("purchase_revocations")
+      .doc(sha256("android:order:" + item.orderId))
+    : null;
+  const tokenVoidRef = db.collection("purchase_revocations")
+    .doc(sha256("android:token:" + item.tokenHash));
+
+  const matched = await lookupStoreEvent("storeOrderId", item.orderId, "android")
+    || await lookupStoreEvent("storeTokenHash", item.tokenHash, "android")
+    || await lookupStoreEvent("storeTransactionId", item.tokenHash, "android");
+  const eventRef = matched?.ref || null;
+  const userId = String(matched?.data()?.uid || "");
+  const userRef = userId ? db.collection("users").doc(userId) : null;
+
+  // Both identifiers become permanent deny-list receipts. This is also
+  // idempotent when Google replays the same order from overlapping scans.
+  return db.runTransaction(async (tx) => {
+    const [orderVoid, tokenVoid, eventSnap, userSnap] = await Promise.all([
+      orderVoidRef ? tx.get(orderVoidRef) : Promise.resolve(null),
+      tx.get(tokenVoidRef),
+      eventRef ? tx.get(eventRef) : Promise.resolve(null),
+      userRef ? tx.get(userRef) : Promise.resolve(null),
+    ]);
+    if (orderVoidRef && !orderVoid.exists) {
+      tx.create(orderVoidRef, {
+        platform: "android", orderHash: sha256(item.orderId),
+        voidedAt: Timestamp.fromMillis(item.voidedAtMs),
+        reason: item.reason, createdAt: FieldValue.serverTimestamp(),
+      });
+    }
+    if (!tokenVoid.exists) {
+      tx.create(tokenVoidRef, {
+        platform: "android", tokenHash: item.tokenHash,
+        voidedAt: Timestamp.fromMillis(item.voidedAtMs),
+        reason: item.reason, createdAt: FieldValue.serverTimestamp(),
+      });
+    }
+    if (!eventSnap?.exists || eventSnap.data()?.revoked === true) {
+      return { status: eventSnap?.exists ? "already_revoked" : "tombstoned_unmatched" };
+    }
+    const event = eventSnap.data() || {};
+    tx.set(eventRef, {
+      revoked: true, revokedAt: Timestamp.fromMillis(item.voidedAtMs),
+      revocationSource: "google_voided_purchases",
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    if (userSnap?.exists && userSnap.id === event.uid) {
+      const user = userSnap.data() || {};
+      const patch = revokeUserFields({
+        user, eventId: eventSnap.id, event, voidedTokenHash: item.tokenHash,
+      });
+      if (patch) {
+        const next = { ...user, ...patch, mining: patch.mining || user.mining };
+        patch.lastKnownMiningRate = calculateMiningRate(next);
+        patch.updatedAt = FieldValue.serverTimestamp();
+        tx.set(userRef, patch, { merge: true });
+        return { status: "revoked_current" };
+      }
+    }
+    return { status: "revoked_historical" };
+  });
+}
+
+async function scanGoogleVoidedPurchases() {
+  // The official Voided Purchases API limits lookback to 30 days. Scan a
+  // 48-hour overlap each run and continue from a saved page token when needed.
+  const stateRef = db.collection("purchase_refund_scan_state").doc("google_play");
+  const saved = (await stateRef.get()).data() || {};
+  const nowMs = Date.now();
+  const dayMs = 24 * 60 * 60 * 1000;
+  const startMs = Number(saved.pageStartMs || 0) > 0 && saved.nextPageToken
+    ? Math.max(nowMs - 29 * dayMs, Number(saved.pageStartMs))
+    : Math.max(nowMs - 29 * dayMs, Number(saved.completedAtMs || 0) - 2 * dayMs);
+  let pageToken = String(saved.nextPageToken || "");
+  const client = await googlePlayAuth.getClient();
+  let pages = 0;
+  let inspected = 0;
+  let revoked = 0;
+
+  while (pages < 4) {
+    const url = googleVoidedUrl({ startMs, pageToken });
+    let response;
+    try {
+      response = await client.request({ url, method: "GET" });
+    } catch (error) {
+      console.error("Google Play refund scan failed", {
+        status: error?.response?.status,
+        code: error?.code,
+      });
+      throw new Error("Google Play refund scan unavailable");
+    }
+    const body = response?.data || {};
+    if (body.voidedPurchases != null && !Array.isArray(body.voidedPurchases)) {
+      throw new Error("Google voided-purchases response invalid");
+    }
+    for (const entry of body.voidedPurchases || []) {
+      const applied = await applyGoogleVoidedPurchase(entry);
+      inspected += 1;
+      if (applied.status === "revoked_current") revoked++;
+    }
+    pages += 1;
+    const nextToken = String(body.tokenPagination?.nextPageToken || "");
+    if (!nextToken) {
+      await stateRef.set({
+        completedAtMs: nowMs,
+        nextPageToken: FieldValue.delete(),
+        pageStartMs: FieldValue.delete(),
+        lastPages: pages, lastInspected: inspected, lastRevoked: revoked,
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
+      return { pages, inspected, revoked, completed: true };
+    }
+    await stateRef.set({
+      nextPageToken: nextToken,
+      pageStartMs: startMs,
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    pageToken = nextToken;
+  }
+  return { pages, inspected, revoked, completed: false };
 }
 
 async function applyRewardedBoostToUser(uid, requestData = {}) {
@@ -1324,7 +1522,7 @@ exports.ensure_user_profile = onCall(
     }
 
     const uid = request.auth.uid;
-    const email = String(request.data?.email || request.auth.token?.email || "").trim();
+    const email = String(request.auth.token?.email || "").trim();
     const referralCode = sanitizeReferralCode(request.data?.referralCode);
     const userRef = db.collection("users").doc(uid);
     const snap = await userRef.get();
@@ -1338,6 +1536,10 @@ exports.ensure_user_profile = onCall(
     if (snap.exists) {
       await userRef.set(loginData, { merge: true });
     } else {
+      const configSnap = await db.collection("config").doc("general").get();
+      const initialRate = normalizeMiningRate(configSnap.data()?.mining_rate, 1.0);
+      const newReferralCode = `C${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
+      const newReferralRef = db.collection("referral_codes").doc(newReferralCode);
       created = await db.runTransaction(async (tx) => {
         const latestUser = await tx.get(userRef);
         if (latestUser.exists) {
@@ -1345,11 +1547,17 @@ exports.ensure_user_profile = onCall(
           return false;
         }
 
+        const codeSnap = await tx.get(newReferralRef);
+        if (codeSnap.exists) {
+          throw new HttpsError("aborted", "Davet kodu çakıştı. Lütfen tekrar deneyin.");
+        }
+        tx.create(newReferralRef, { uid, createdAt: FieldValue.serverTimestamp() });
         tx.set(
           userRef,
           {
             ...loginData,
-            referralCode: String(Math.floor(100000 + Math.random() * 900000)),
+            referralCode: newReferralCode,
+            base_rate: initialRate,
             referredBy: "",
             referralBonusApplied: false,
             points: 0,
@@ -1567,46 +1775,226 @@ exports.get_leaderboard = onCall(
     }
 
     const requestedLimit = Math.max(1, Math.min(80, Number(request.data?.limit || 25)));
-    const usersSnap = await db.collection("users").limit(500).get();
-    const referralCounts = new Map();
-    for (const doc of usersSnap.docs) {
-      const referredBy = String(doc.data()?.referredBy || "");
-      if (referredBy) referralCounts.set(referredBy, (referralCounts.get(referredBy) || 0) + 1);
-    }
+    // Query an indexed, globally ordered leaderboard rather than sorting an
+    // arbitrary first 500 users in memory.
+    const usersSnap = await db.collection("users")
+      .orderBy("referralCount", "desc")
+      .orderBy("points", "desc")
+      .limit(requestedLimit)
+      .get();
 
-    const rows = usersSnap.docs
-      .map((doc) => {
-        const data = doc.data() || {};
-        const referralCode = String(data.referralCode || "");
-        return {
-          uid: doc.id,
-          email: doc.id === request.auth.uid ? String(data.email || "") : maskEmail(data.email),
-          points: numberField(data, "points", 0),
-          referrals: Math.max(
-            intField(data, "referralCount", 0),
-            referralCounts.get(referralCode) || 0
-          ),
-        };
-      })
-      .sort((a, b) => b.referrals - a.referrals || b.points - a.points)
-      .slice(0, requestedLimit)
-      .map((row) => ({
+    const rows = usersSnap.docs.map((doc) => {
+      const data = doc.data() || {};
+      return {
         fields: {
-          email: { stringValue: row.email },
-          points: { doubleValue: row.points },
-          referralCount: { integerValue: row.referrals },
+          email: {
+            stringValue: doc.id === request.auth.uid
+              ? String(data.email || "")
+              : maskEmail(data.email),
+          },
+          points: { doubleValue: numberField(data, "points", 0) },
+          referralCount: { integerValue: Math.max(0, intField(data, "referralCount", 0)) },
         },
-      }));
+      };
+    });
 
     return { users: rows, count: rows.length };
   }
 );
 
+// Team membership lives on /users/{uid}.teamCode and
+// /teams/{code}.members. Both documents change in a Firestore transaction;
+// clients cannot write either field using firestore.rules.
+function requireSignedIn(request) {
+  if (!request.auth?.uid) {
+    throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
+  }
+  return request.auth.uid;
+}
+
+function teamSummary(code, data, uid = "") {
+  const members = Array.isArray(data?.members) ? data.members : [];
+  return {
+    code,
+    name: String(data?.name || ""),
+    memberCount: members.length,
+    maxMembers: TEAM_CAPACITY,
+    isOwner: String(data?.ownerUid || "") === uid,
+    isMember: members.includes(uid),
+  };
+}
+
+async function leaveTeamForUser(uid) {
+  const userRef = db.collection("users").doc(uid);
+  // A retry is safe. The caller may delete the account after this completes.
+  const profile = await userRef.get();
+  const code = normalizeTeamCode(profile.data()?.teamCode);
+  if (!code) return { ok: true, left: false };
+
+  const teamRef = db.collection("teams").doc(code);
+  return db.runTransaction(async (tx) => {
+    const [userSnap, teamSnap] = await Promise.all([
+      tx.get(userRef), tx.get(teamRef),
+    ]);
+    if (!userSnap.exists) return { ok: true, left: false };
+    if (normalizeTeamCode(userSnap.data()?.teamCode) !== code) {
+      return { ok: true, left: false };
+    }
+    if (!teamSnap.exists) {
+      tx.update(userRef, { teamCode: FieldValue.delete() });
+      return { ok: true, left: true, missingTeam: true };
+    }
+
+    const change = removeMember(teamSnap.data(), uid);
+    if (change.disbanded) {
+      tx.delete(teamRef);
+    } else if (change.wasMember) {
+      tx.update(teamRef, {
+        members: change.members,
+        memberCount: change.members.length,
+        ownerUid: change.ownerUid,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+    }
+    tx.update(userRef, { teamCode: FieldValue.delete() });
+    return { ok: true, left: true, disbanded: Boolean(change.disbanded) };
+  });
+}
+
+exports.team_create = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    const uid = requireSignedIn(request);
+    const name = normalizeTeamName(request.data?.name);
+    if (!name) throw new HttpsError("invalid-argument", "Takım adı 3–40 karakter olmalı.");
+    const code = "T" + crypto.randomBytes(6).toString("hex").toUpperCase();
+    const userRef = db.collection("users").doc(uid);
+    const teamRef = db.collection("teams").doc(code);
+    return db.runTransaction(async (tx) => {
+      const [user, team] = await Promise.all([tx.get(userRef), tx.get(teamRef)]);
+      if (!user.exists) throw new HttpsError("not-found", "Kullanıcı profili bulunamadı.");
+      if (normalizeTeamCode(user.data()?.teamCode)) {
+        throw new HttpsError("failed-precondition", "Zaten bir takımdasın.");
+      }
+      if (team.exists) throw new HttpsError("aborted", "Takım kodu çakıştı. Tekrar deneyin.");
+      tx.create(teamRef, {
+        name, code, members: [uid], ownerUid: uid, memberCount: 1,
+        createdAt: FieldValue.serverTimestamp(), updatedAt: FieldValue.serverTimestamp(),
+      });
+      tx.update(userRef, { teamCode: code });
+      return { ok: true, team: { code, name, memberCount: 1, maxMembers: TEAM_CAPACITY, isOwner: true } };
+    });
+  }
+);
+
+exports.team_join = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    const uid = requireSignedIn(request);
+    const code = normalizeTeamCode(request.data?.code);
+    if (!code) throw new HttpsError("invalid-argument", "Takım kodu geçersiz.");
+    const userRef = db.collection("users").doc(uid);
+    const teamRef = db.collection("teams").doc(code);
+    return db.runTransaction(async (tx) => {
+      const [user, teamSnap] = await Promise.all([tx.get(userRef), tx.get(teamRef)]);
+      if (!user.exists) throw new HttpsError("not-found", "Kullanıcı profili bulunamadı.");
+      if (!teamSnap.exists) throw new HttpsError("not-found", "Takım bulunamadı.");
+      const currentCode = normalizeTeamCode(user.data()?.teamCode);
+      const teamData = teamSnap.data() || {};
+      if (currentCode) {
+        if (currentCode === code && Array.isArray(teamData.members) && teamData.members.includes(uid)) {
+          return { ok: true, alreadyJoined: true, team: teamSummary(code, teamData, uid) };
+        }
+        throw new HttpsError("failed-precondition", "Önce mevcut takımından ayrılmalısın.");
+      }
+      const joined = addMember(teamData, uid);
+      if (joined.full) throw new HttpsError("resource-exhausted", "Takım dolu (30 kişi).");
+      if (joined.alreadyMember) throw new HttpsError("failed-precondition", "Takım kayıtları uyuşmuyor.");
+      tx.update(teamRef, {
+        members: joined.members, memberCount: joined.members.length,
+        updatedAt: FieldValue.serverTimestamp(),
+      });
+      tx.update(userRef, { teamCode: code });
+      return { ok: true, team: { ...teamSummary(code, teamData, uid), memberCount: joined.members.length, isMember: true } };
+    });
+  }
+);
+
+exports.team_leave = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => leaveTeamForUser(requireSignedIn(request))
+);
+
+exports.team_info = onCall(
+  { region: "europe-west1", timeoutSeconds: 15, memory: "256MiB" },
+  async (request) => {
+    const uid = requireSignedIn(request);
+    const profile = await db.collection("users").doc(uid).get();
+    if (!profile.exists) throw new HttpsError("not-found", "Profil bulunamadı.");
+    const code = normalizeTeamCode(profile.data()?.teamCode);
+    if (!code) return { ok: true, inTeam: false };
+    const snap = await db.collection("teams").doc(code).get();
+    if (!snap.exists || !Array.isArray(snap.data()?.members) ||
+        !snap.data().members.includes(uid)) {
+      // Recover orphaned membership without racing a concurrent team join.
+      const profileRef = db.collection("users").doc(uid);
+      await db.runTransaction(async (tx) => {
+        const latest = await tx.get(profileRef);
+        if (latest.exists && normalizeTeamCode(latest.data()?.teamCode) === code) {
+          tx.update(profileRef, { teamCode: FieldValue.delete() });
+        }
+      });
+      return { ok: true, inTeam: false, repairedOrphan: true };
+    }
+    return { ok: true, inTeam: true, team: teamSummary(code, snap.data(), uid) };
+  }
+);
+
+exports.team_leaderboard = onCall(
+  { region: "europe-west1", timeoutSeconds: 20, memory: "256MiB" },
+  async (request) => {
+    requireSignedIn(request);
+    const limit = Math.min(50, Math.max(1, Number(request.data?.limit || 10)));
+    const snap = await db.collection("teams").orderBy("memberCount", "desc").limit(limit).get();
+    return {
+      ok: true,
+      teams: snap.docs.map((doc) => teamSummary(doc.id, doc.data())),
+    };
+  }
+);
+
+// Delete account-associated records held outside /users/{uid} as well as
+// the user document and its nested collections. Purchase ledger rows keep
+// their transaction identity for anti-replay while removing the account UID.
+async function removeUserRelatedRows(collectionName, uid, anonymize = false) {
+  let removed = 0;
+  while (true) {
+    const snap = await db.collection(collectionName)
+      .where("uid", "==", uid)
+      .limit(200)
+      .get();
+    if (snap.empty) return removed;
+    const batch = db.batch();
+    for (const doc of snap.docs) {
+      if (anonymize) {
+        batch.update(doc.ref, {
+          uid: FieldValue.delete(),
+          accountDeletedAt: FieldValue.serverTimestamp(),
+        });
+      } else {
+        batch.delete(doc.ref);
+      }
+    }
+    await batch.commit();
+    removed += snap.size;
+  }
+}
+
 exports.delete_account = onCall(
   {
     region: "europe-west1",
-    timeoutSeconds: 60,
-    memory: "256MiB",
+    timeoutSeconds: 300,
+    memory: "512MiB",
   },
   async (request) => {
     if (!request.auth) {
@@ -1615,13 +2003,30 @@ exports.delete_account = onCall(
 
     const uid = request.auth.uid;
     const userRef = db.collection("users").doc(uid);
-
     try {
+      const userSnap = await userRef.get();
+      const referralCode = String(userSnap.data()?.referralCode || "");
+      await leaveTeamForUser(uid);
+      await db.recursiveDelete(db.collection("chats").doc(uid));
+      await removeUserRelatedRows("analytics_events", uid);
+      await removeUserRelatedRows("purchase_events", uid, true);
+      await removeUserRelatedRows("admob_ssv_transactions", uid, true);
+      if (referralCode.startsWith("C")) {
+        const codeRef = db.collection("referral_codes").doc(referralCode);
+        const codeSnap = await codeRef.get();
+        if (codeSnap.exists && codeSnap.data()?.uid === uid) {
+          await codeRef.set({
+            uid: FieldValue.delete(),
+            deactivated: true,
+            deactivatedAt: FieldValue.serverTimestamp(),
+          }, { merge: true });
+        }
+      }
       await db.recursiveDelete(userRef);
       await getAuth().deleteUser(uid);
       return { ok: true };
     } catch (error) {
-      console.error("delete_account failed", { uid, error });
+      console.error("delete_account failed", { uid, code: error?.code });
       throw new HttpsError(
         "internal",
         "Hesap tamamen silinemedi. Lütfen tekrar deneyin."
@@ -1704,12 +2109,25 @@ async function sendDailyPointsNotifications(options = {}) {
   // Tokenı olmayan hesapları baştan elemek hem Firestore okumasını azaltır hem
   // de eski profillerde lastMiningStart alanı bulunmasa bile ilk-kazım
   // hatırlatmasının değerlendirilmesini sağlar.
-  const query = db
-    .collection("users")
+  const cursorRef = db.collection("notification_scan_state").doc("daily_points_ready");
+  const cursorSnap = await cursorRef.get();
+  const cursor = cursorSnap.data() || {};
+  // Resume at the next token/uid on the following run. Without a cursor the
+  // first 400 accounts would monopolize every scheduled notification run.
+  const query = db.collection("users")
     .where("pushToken", ">", "")
+    .orderBy("pushToken", "asc")
+    .orderBy(FieldPath.documentId(), "asc")
     .limit(limit);
-
-  const querySnap = await query.get();
+  let pagedQuery = query;
+  if (cursor.lastToken && cursor.lastUid) {
+    pagedQuery = query.startAfter(cursor.lastToken, cursor.lastUid);
+  }
+  let querySnap = await pagedQuery.get();
+  if (querySnap.empty && cursor.lastUid) {
+    // Reached the end: begin a new scan from the first eligible account.
+    querySnap = await query.get();
+  }
   let sent = 0;
   let skipped = 0;
   let failed = 0;
@@ -1839,6 +2257,15 @@ async function sendDailyPointsNotifications(options = {}) {
   }
 
   await Promise.all(writes);
+
+  if (!querySnap.empty) {
+    const lastDoc = querySnap.docs[querySnap.docs.length - 1];
+    await cursorRef.set({
+      lastToken: String(lastDoc.data()?.pushToken || ""),
+      lastUid: lastDoc.id,
+      updatedAt: FieldValue.serverTimestamp(),
+    });
+  }
 
   const result = {
     scanned: querySnap.size,
@@ -2359,17 +2786,184 @@ exports.apply_premium = onCall(
   }
 );
 
-exports.apply_rewarded_boost = onCall(
+// Apple notifications V2: the outer JWS is untrusted here. The body is
+// only used to locate our own ledger entry; an Apple API call over TLS is
+// REQUIRED to establish the authoritative revoked transaction state.
+exports.apple_store_refund_notification = onRequest(
   {
     region: "europe-west1",
-    timeoutSeconds: 30,
+    timeoutSeconds: 40,
     memory: "256MiB",
+    cors: false,
+    secrets: [appleIssuerId, appleKeyId, applePrivateKey, appleBundleId],
   },
+  async (request, response) => {
+    if (request.method !== "POST") {
+      response.status(405).send("Method not allowed");
+      return;
+    }
+    const signed = request.body?.signedPayload;
+    if (typeof signed !== "string" || signed.length > 32768) {
+      response.status(400).send("Invalid Apple notification");
+      return;
+    }
+    const hint = readAppleRefundHint(signed);
+    if (!hint) {
+      // Other Apple notifications require no entitlement changes here.
+      response.status(200).send("Ignored");
+      return;
+    }
+    try {
+      const event = await lookupStoreEvent("storeTransactionId", hint.transactionId, "ios");
+      if (!event) {
+        response.status(200).send("Unknown transaction");
+        return;
+      }
+      if (event.data()?.revoked === true) {
+        response.status(200).send("Already revoked");
+        return;
+      }
+
+      const token = createAppleServerApiToken();
+      let lookup = await requestAppleTransaction(
+        "https://api.storekit.apple.com", hint.transactionId, token);
+      if (lookup.response.status === 404) {
+        lookup = await requestAppleTransaction(
+          "https://api.storekit-sandbox.apple.com", hint.transactionId, token);
+      }
+      if (lookup.response.status === 404) {
+        response.status(200).send("Not found in App Store");
+        return;
+      }
+      if (!lookup.response.ok) {
+        response.status(503).send("Apple lookup unavailable");
+        return;
+      }
+      const transaction = decodeAppleJwsPayload(lookup.body?.signedTransactionInfo);
+      if (String(transaction.bundleId || "") !== APP_BUNDLE_ID ||
+          String(transaction.transactionId || "") !== hint.transactionId ||
+          normalizeProductId(transaction.productId) !== String(event.data()?.productId || "")) {
+        response.status(200).send("Transaction mismatch");
+        return;
+      }
+
+      const revocationDate = Number(transaction.revocationDate || 0);
+      if (!Number.isSafeInteger(revocationDate) || revocationDate <= 0) {
+        // A fake event cannot revoke a valid purchase. Apple may not yet
+        // have updated its state; retries are safe and no grant occurs.
+        response.status(503).send("Revocation not confirmed");
+        return;
+      }
+      await revokePurchaseEvent(event.ref, "apple_store_notification", revocationDate);
+      response.status(200).send("Refund recorded");
+    } catch (error) {
+      console.error("Apple refund handler failed", { code: error?.code || "lookup" });
+      response.status(503).send("Temporary failure");
+    }
+  }
+);
+
+// Google Play supports a server-to-server Voided Purchases API. This hourly
+// sweep uses a 48-hour overlap and a persisted page token to be restart-safe.
+// A Play Console service account with financial-data read access is required.
+exports.reconcile_google_play_refunds = onSchedule(
+  {
+    region: "europe-west1",
+    schedule: "every 60 minutes",
+    timeZone: "Etc/UTC",
+    timeoutSeconds: 540,
+    memory: "512MiB",
+    maxInstances: 1,
+  },
+  async () => {
+    const result = await scanGoogleVoidedPurchases();
+    console.info("Google refund sweep", {
+      pages: result.pages, inspected: result.inspected,
+      revoked: result.revoked, completed: result.completed,
+    });
+  }
+);
+
+// Client callbacks must never grant points or permanent boosts. Only the
+// signed AdMob server-to-server callback can apply a rewarded boost.
+exports.apply_rewarded_boost = onCall(
+  { region: "europe-west1", timeoutSeconds: 15, memory: "256MiB" },
   async (request) => {
     if (!request.auth) {
       throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
     }
-    return applyRewardedBoostToUser(request.auth.uid, request.data || {});
+    const attemptAt = Number(request.data?.attempt_at || 0);
+    if (!Number.isSafeInteger(attemptAt) || attemptAt <= 0) {
+      throw new HttpsError("invalid-argument", "Reklam denemesi eksik.");
+    }
+    const userSnap = await db.collection("users").doc(request.auth.uid).get();
+    if (!userSnap.exists) throw new HttpsError("not-found", "Kullanıcı bulunamadı.");
+    const data = userSnap.data() || {};
+    const lastApplied = intField(data, "rewardedBoostLastAppliedAttemptAt", 0);
+    if (lastApplied < attemptAt) {
+      return { ok: false, error: "rewarded_boost_verification_pending" };
+    }
+    return {
+      ok: true,
+      idempotent: true,
+      attempt_at: attemptAt,
+      rewarded_multiplier: numberField(data, "rewardedBoostMultiplier", 1.0),
+      total_rate: calculateMiningRate(data),
+      daily_count: Math.max(0, intField(data, "rewardedBoostDailyCount", 0)),
+      daily_limit: REWARDED_BOOST_DAILY_LIMIT,
+    };
+  }
+);
+
+exports.admob_ssv = onRequest(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB", cors: false },
+  async (request, response) => {
+    if (request.method !== "GET") {
+      response.status(405).send("Method not allowed");
+      return;
+    }
+    let reward;
+    try {
+      const keys = await fetchVerifyingKeys();
+      reward = verifyCallback(request.originalUrl, keys);
+    } catch (error) {
+      if (error instanceof AdmobVerificationError) {
+        response.status(403).send("Invalid callback");
+      } else {
+        console.error("AdMob verifier unavailable", { code: error?.code });
+        response.status(503).send("Verification unavailable");
+      }
+      return;
+    }
+
+    const receiptRef = db.collection("admob_ssv_transactions").doc(reward.transactionId);
+    try {
+      if ((await receiptRef.get()).exists) {
+        response.status(200).send("Already applied");
+        return;
+      }
+      const applied = await applyRewardedBoostToUser(reward.uid, {
+        attempt_at: reward.attemptAt,
+      });
+      if (!applied.ok) {
+        response.status(403).send("Unrecognized reward attempt");
+        return;
+      }
+      try {
+        await receiptRef.create({
+          uid: reward.uid,
+          attemptAt: reward.attemptAt,
+          adUnit: reward.adUnit,
+          receivedAt: FieldValue.serverTimestamp(),
+        });
+      } catch (error) {
+        if (error?.code !== 6 && error?.code !== "already-exists") throw error;
+      }
+      response.status(200).send("OK");
+    } catch (error) {
+      console.error("AdMob reward processing failed", { code: error?.code });
+      response.status(503).send("Temporary failure");
+    }
   }
 );
 
@@ -2400,6 +2994,49 @@ exports.sendMiningReadyNotifications = onSchedule(
   }
 );
 
+function requireOwner(request) {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
+  }
+  const emailHash = sha256(String(request.auth.token?.email || "").trim().toLowerCase());
+  if (request.auth.token?.email_verified !== true || !OWNER_EMAIL_HASHES.has(emailHash)) {
+    throw new HttpsError("permission-denied", "Yönetici yetkisi gerekli.");
+  }
+}
+
+exports.admin_get_overview = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    requireOwner(request);
+    const [configSnap, totalUsersSnap] = await Promise.all([
+      db.collection("config").doc("general").get(),
+      db.collection("users").count().get(),
+    ]);
+    return {
+      ok: true,
+      miningRate: normalizeMiningRate(configSnap.data()?.mining_rate, 1.0),
+      userCount: totalUsersSnap.data().count,
+    };
+  }
+);
+
+exports.admin_update_config = onCall(
+  { region: "europe-west1", timeoutSeconds: 30, memory: "256MiB" },
+  async (request) => {
+    requireOwner(request);
+    const rate = normalizeMiningRate(request.data?.miningRate, null);
+    if (rate === null) {
+      throw new HttpsError("invalid-argument", "Temel puan oranı 1 ile 5 arasında olmalı.");
+    }
+    await db.collection("config").doc("general").set({
+      mining_rate: rate,
+      updatedByUid: request.auth.uid,
+      updatedAt: FieldValue.serverTimestamp(),
+    }, { merge: true });
+    return { ok: true, miningRate: rate };
+  }
+);
+
 exports.send_daily_points_push_now = onCall(
   {
     region: "europe-west1",
@@ -2411,10 +3048,7 @@ exports.send_daily_points_push_now = onCall(
       throw new HttpsError("unauthenticated", "Giriş yapmanız gerekiyor.");
     }
 
-    const emailHash = sha256(String(request.auth.token?.email || "").toLowerCase());
-    if (!OWNER_EMAIL_HASHES.has(emailHash)) {
-      throw new HttpsError("permission-denied", "Bu bildirimi sadece uygulama sahibi gönderebilir.");
-    }
+    requireOwner(request);
 
     const campaignKey = String(request.data?.campaignKey || `daily_points_${todayKey()}`);
     const limit = Number(request.data?.limit || MAX_NOTIFICATION_BATCH);

@@ -69,6 +69,7 @@ var btn_leader: Button
 var btn_achievements: Button
 var btn_share: Button
 var btn_reset: Button
+var btn_language: Button
 var btn_logout: Button
 var btn_back: Button
 var footer: Label
@@ -124,6 +125,7 @@ func _ready() -> void:
 	btn_achievements.pressed.connect(_open_achievements)
 	btn_share.pressed.connect(_on_share_pressed)
 	btn_reset.pressed.connect(_on_reset_pressed)
+	btn_language.pressed.connect(_show_language_dialog)
 	btn_back.pressed.connect(_go_home)
 	btn_logout.pressed.connect(_on_logout_pressed)
 	delete_btn.text = tr("delete_account_button")
@@ -284,8 +286,7 @@ func _do_delete_account() -> void:
 	var res: Array = await Global.delete_my_account()
 	var ok := res.size() > 0 and bool(res[0])
 	if ok:
-		if Global.has_method("logout"):
-			Global.logout()
+		# delete_my_account already awaits the native secure logout.
 		if FileAccess.file_exists("user://uid.txt"):
 			var d := DirAccess.open("user://")
 			if d:
@@ -485,10 +486,11 @@ func _build_ui() -> void:
 	btn_achievements = _mk_dark_btn(_ui_text("Başarılarım", "My Achievements"), true)
 	btn_share  = _mk_dark_btn(tr("invite_action"), true)
 	btn_reset  = _mk_dark_btn(_ui_text("Şifre Sıfırlama E-postası", "Password Reset Email"), true)
+	btn_language = _mk_dark_btn(_ui_text("🌐 Dil / Language", "🌐 App Language"), true)
 	btn_logout = _mk_dark_btn(tr("btn_logout"), false)
 
 	_add_action_group(actions_box, _ui_text("Topluluk", "Community"), [btn_share, btn_achievements, btn_leader])
-	var all_btns: Array = [btn_reset, btn_logout]
+	var all_btns: Array = [btn_language, btn_reset, btn_logout]
 	if is_instance_valid(delete_btn):
 		if delete_btn.get_parent() != null:
 			delete_btn.get_parent().remove_child(delete_btn)
@@ -631,7 +633,7 @@ func _is_tr() -> bool:
 	return locale.begins_with("tr") if locale != "" else OS.get_locale().begins_with("tr")
 
 func _ui_text(tr_text: String, en_text: String) -> String:
-	return tr_text if _is_tr() else en_text
+	return Global.localized_ui_text(tr_text, en_text)
 
 func _go_home() -> void:
 	Global.analytics_event("profile_back", {"screen": "profile"})
@@ -1213,10 +1215,38 @@ func _on_reset_pressed() -> void:
 	else:
 		_show_info_dialog(tr("dialog_reset_failed"))
 
+func _show_language_dialog() -> void:
+	var popup := AcceptDialog.new()
+	popup.title = _ui_text("Uygulama Dili", "App Language")
+	popup.get_ok_button().text = tr("common_close")
+	add_child(popup)
+	popup.confirmed.connect(func() -> void: popup.queue_free())
+	var selector := OptionButton.new()
+	selector.custom_minimum_size = Vector2(280, 50)
+	var language_names := [
+		"English", "Türkçe", "Deutsch", "Français", "Español",
+		"Português", "Русский", "简体中文", "日本語", "한국어",
+		"العربية", "हिन्दी"
+	]
+	for i in range(Global.SUPPORTED_LANGS.size()):
+		selector.add_item(language_names[i], i)
+	var selected := Global.SUPPORTED_LANGS.find(Global.current_lang)
+	if selected >= 0:
+		selector.select(selected)
+	selector.item_selected.connect(func(index: int) -> void:
+		var next_language: String = Global.SUPPORTED_LANGS[index]
+		if next_language != Global.current_lang:
+			Global.set_language(next_language)
+			# Recreate the screen to update dynamically built UI and tr() nodes.
+			get_tree().call_deferred("reload_current_scene")
+	)
+	popup.add_child(selector)
+	popup.popup_centered()
+
 func _on_logout_pressed() -> void:
 	if _account_busy:
 		return
-	Global.logout()
+	await Global.logout()
 	get_tree().change_scene_to_file("res://onboarding.tscn")
 
 
