@@ -2261,7 +2261,11 @@ func _ios_secure_session_exchange(operation: String, token: String = "") -> Dict
 	if FileAccess.file_exists(_SECURE_RESPONSE_PATH):
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(_SECURE_RESPONSE_PATH))
 	var request_id := str(Time.get_ticks_usec()) + "-" + str(Crypto.new().generate_random_bytes(8).hex_encode())
-	var request: Dictionary = {"operation": operation, "request_id": request_id}
+	var request: Dictionary = {
+		"operation": operation,
+		"request_id": request_id,
+		"created_at": int(Time.get_unix_time_from_system())
+	}
 	if operation == "save":
 		request["token"] = token
 	var file := FileAccess.open(_SECURE_REQUEST_PATH, FileAccess.WRITE)

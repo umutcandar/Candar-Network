@@ -312,7 +312,9 @@ final class CandarNativeBridge: NSObject {
         guard let request = try? JSONSerialization.jsonObject(with: raw) as? [String: Any],
               let requestId = request["request_id"] as? String,
               requestId.count >= 8 && requestId.count <= 128,
-              let operation = request["operation"] as? String else { return }
+              let operation = request["operation"] as? String,
+              let createdAt = request["created_at"] as? Int,
+              abs(Int(Date().timeIntervalSince1970) - createdAt) <= 30 else { return }
 
         let response: [String: Any]
         switch operation {

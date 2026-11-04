@@ -12,7 +12,8 @@
   Firebase refresh token in Keychain with
   `kSecAttrAccessibleWhenUnlockedThisDeviceOnly`. A
   `secure_session_response.json` mirrors the request id. GDScript deletes
-  responses immediately.
+  responses immediately. Requests include a 30-second timestamp validity
+  window so crash leftovers cannot be replayed later.
 - Both: `global.gd` uses in-memory cache while the process is alive.
   `user://refresh_token.txt` is **never written again**. On first launch
   the old unencrypted token is read once, migrated, and removed. If secure
