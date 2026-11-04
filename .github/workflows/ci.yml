@@ -43,3 +43,5 @@ jobs:
         run: python3 scripts/tests/run_home_ads_smoke.py
       - name: SDK ad-manager smoke
         run: python3 scripts/tests/run_ad_manager_smoke.py
+      - name: Community team UI smoke
+        run: python3 scripts/tests/run_team_center_smoke.py

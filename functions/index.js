@@ -1720,7 +1720,18 @@ exports.team_info = onCall(
     const code = normalizeTeamCode(profile.data()?.teamCode);
     if (!code) return { ok: true, inTeam: false };
     const snap = await db.collection("teams").doc(code).get();
-    if (!snap.exists) return { ok: true, inTeam: false, staleCode: true };
+    if (!snap.exists || !Array.isArray(snap.data()?.members) ||
+        !snap.data().members.includes(uid)) {
+      // Recover orphaned membership without racing a concurrent team join.
+      const profileRef = db.collection("users").doc(uid);
+      await db.runTransaction(async (tx) => {
+        const latest = await tx.get(profileRef);
+        if (latest.exists && normalizeTeamCode(latest.data()?.teamCode) === code) {
+          tx.update(profileRef, { teamCode: FieldValue.delete() });
+        }
+      });
+      return { ok: true, inTeam: false, repairedOrphan: true };
+    }
     return { ok: true, inTeam: true, team: teamSummary(code, snap.data(), uid) };
   }
 );
@@ -1785,6 +1796,7 @@ exports.delete_account = onCall(
       await db.recursiveDelete(db.collection("chats").doc(uid));
       await removeUserRelatedRows("analytics_events", uid);
       await removeUserRelatedRows("purchase_events", uid, true);
+      await removeUserRelatedRows("admob_ssv_transactions", uid, true);
       if (referralCode.startsWith("C")) {
         const codeRef = db.collection("referral_codes").doc(referralCode);
         const codeSnap = await codeRef.get();
