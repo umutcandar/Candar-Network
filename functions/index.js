@@ -630,6 +630,9 @@ async function applyPurchaseToUser(uid, data, isPremium) {
     throw new HttpsError("invalid-argument", "Geçersiz mağaza ürünü.");
   }
 
+  // External store verification happens first. All internal changes are then
+  // committed in a single transaction, so concurrent retries cannot grant
+  // the same purchase twice or leave an orphaned ledger record.
   const verification = await verifyStorePurchase(
     platform,
     receipt,
@@ -637,124 +640,112 @@ async function applyPurchaseToUser(uid, data, isPremium) {
     productId,
     transactionId
   );
-  const eventId = purchaseEventId(
-    platform,
-    productId,
-    verification.transactionId
-  );
+  const eventId = purchaseEventId(platform, productId, verification.transactionId);
   const eventRef = db.collection("purchase_events").doc(eventId);
-  const existingEvent = await eventRef.get();
-  if (existingEvent.exists) {
-    const eventData = existingEvent.data() || {};
-    if (String(eventData.uid || "") !== uid) {
-      throw new HttpsError(
-        "already-exists",
-        "Bu mağaza işlemi başka bir hesapta kullanılmış."
-      );
-    }
-    return {
-      ok: true,
-      alreadyApplied: true,
-      productId,
-      rawProductId,
-      platform,
-      isPremium,
-      expiresAt: eventData.expiresAt?.toDate?.()?.toISOString?.() || "",
-    };
-  }
-
   const userRef = db.collection("users").doc(uid);
-  const userSnap = await userRef.get();
-  const existingUserData = userSnap.exists ? userSnap.data() || {} : {};
-  const expiresAt = verification.expiresAt;
-  const update = {
-    lastPurchasePlatform: platform,
-    lastPurchaseProductId: productId,
-    lastPurchaseStoreProductId: rawProductId,
-    lastPurchaseProofHash: sha256(receipt),
-    lastPurchaseAt: FieldValue.serverTimestamp(),
-    purchaseExpiresAt: Timestamp.fromDate(expiresAt),
-    updatedAt: FieldValue.serverTimestamp(),
-  };
 
-  if (isPremium) {
-    update.isPremium = true;
-    update.premiumExpiresAt = Timestamp.fromDate(expiresAt);
-    update.premium = {
-      is_active: true,
-      expires_at: Timestamp.fromDate(expiresAt),
+  return db.runTransaction(async (tx) => {
+    const [existingEvent, userSnap] = await Promise.all([
+      tx.get(eventRef),
+      tx.get(userRef),
+    ]);
+    if (existingEvent.exists) {
+      const eventData = existingEvent.data() || {};
+      if (String(eventData.uid || "") !== uid) {
+        throw new HttpsError("already-exists", "Bu mağaza işlemi başka bir hesapta kullanılmış.");
+      }
+      return {
+        ok: true,
+        alreadyApplied: true,
+        productId,
+        rawProductId,
+        platform,
+        isPremium,
+        expiresAt: eventData.expiresAt?.toDate?.()?.toISOString?.() || "",
+      };
+    }
+    if (!userSnap.exists) {
+      throw new HttpsError("not-found", "Satın alma için kullanıcı profili bulunamadı.");
+    }
+
+    const existingUserData = userSnap.data() || {};
+    const expiresAt = verification.expiresAt;
+    const update = {
+      lastPurchasePlatform: platform,
+      lastPurchaseProductId: productId,
+      lastPurchaseStoreProductId: rawProductId,
+      lastPurchaseProofHash: sha256(receipt),
+      lastPurchaseAt: FieldValue.serverTimestamp(),
+      purchaseExpiresAt: Timestamp.fromDate(expiresAt),
+      updatedAt: FieldValue.serverTimestamp(),
     };
-  } else {
-    const multiplier = BOOST_PRODUCT_MULTIPLIERS[productId];
-    update.currentMultiplier = multiplier;
-    update.boostExpiresAt = Timestamp.fromDate(expiresAt);
-    update.mining = {
-      active_multiplier: multiplier,
-      boost_expires_at: Timestamp.fromDate(expiresAt),
+    if (isPremium) {
+      update.isPremium = true;
+      update.premiumExpiresAt = Timestamp.fromDate(expiresAt);
+      update.premium = {
+        is_active: true,
+        expires_at: Timestamp.fromDate(expiresAt),
+      };
+    } else {
+      const multiplier = BOOST_PRODUCT_MULTIPLIERS[productId];
+      update.currentMultiplier = multiplier;
+      update.boostExpiresAt = Timestamp.fromDate(expiresAt);
+      update.mining = {
+        active_multiplier: multiplier,
+        boost_expires_at: Timestamp.fromDate(expiresAt),
+      };
+    }
+
+    const nextData = {
+      ...existingUserData,
+      ...update,
+      mining: {
+        ...(existingUserData.mining || {}),
+        ...(update.mining || {}),
+      },
     };
-  }
+    const rateComponents = isPremium ? null : calculateMiningRateComponents(nextData);
+    let boostCatchup = null;
 
-  let nextData = {
-    ...existingUserData,
-    ...update,
-    mining: {
-      ...(existingUserData.mining || {}),
-      ...(update.mining || {}),
-    },
-  };
-  const rateComponents = isPremium ? null : calculateMiningRateComponents(nextData);
-  let boostCatchup = null;
-
-  if (!isPremium && rateComponents) {
-    const nowSeconds = Math.trunc(Date.now() / 1000);
-    const lastMiningStart = intField(existingUserData, "lastMiningStart", 0);
-    const previousReward = numberField(
-      existingUserData,
-      "lastMiningReward",
-      numberField(existingUserData, "lastKnownMiningRate", 0)
-    );
-    const alreadyCaughtUp = String(existingUserData.lastBoostCatchupPurchaseEventId || "") === eventId;
-
-    if (
-      lastMiningStart > 0 &&
-      nowSeconds - lastMiningStart >= 0 &&
-      nowSeconds - lastMiningStart < DAILY_REWARD_SECONDS &&
-      previousReward > 0 &&
-      !alreadyCaughtUp
-    ) {
-      const catchupDelta = Number((rateComponents.totalRate - previousReward).toFixed(2));
-      if (catchupDelta > 0) {
-        const currentPoints = numberField(existingUserData, "points", 0);
-        const nextPoints = Number((currentPoints + catchupDelta).toFixed(2));
-        boostCatchup = {
-          delta: catchupDelta,
-          previousReward,
-          adjustedReward: Number((previousReward + catchupDelta).toFixed(2)),
-          points: nextPoints,
-        };
-        update.points = nextPoints;
-        update.lastMiningReward = boostCatchup.adjustedReward;
-        update.lastKnownMiningRate = rateComponents.totalRate;
-        update.lastBoostCatchupDelta = catchupDelta;
-        update.lastBoostCatchupPurchaseEventId = eventId;
-        update.lastBoostCatchupAt = FieldValue.serverTimestamp();
+    if (!isPremium && rateComponents) {
+      const nowSeconds = Math.trunc(Date.now() / 1000);
+      const lastMiningStart = intField(existingUserData, "lastMiningStart", 0);
+      const previousReward = numberField(
+        existingUserData,
+        "lastMiningReward",
+        numberField(existingUserData, "lastKnownMiningRate", 0)
+      );
+      const alreadyCaughtUp =
+        String(existingUserData.lastBoostCatchupPurchaseEventId || "") === eventId;
+      if (
+        lastMiningStart > 0 &&
+        nowSeconds - lastMiningStart >= 0 &&
+        nowSeconds - lastMiningStart < DAILY_REWARD_SECONDS &&
+        previousReward > 0 &&
+        !alreadyCaughtUp
+      ) {
+        const catchupDelta = Number((rateComponents.totalRate - previousReward).toFixed(2));
+        if (catchupDelta > 0) {
+          const currentPoints = numberField(existingUserData, "points", 0);
+          const nextPoints = Number((currentPoints + catchupDelta).toFixed(2));
+          boostCatchup = {
+            delta: catchupDelta,
+            previousReward,
+            adjustedReward: Number((previousReward + catchupDelta).toFixed(2)),
+            points: nextPoints,
+          };
+          update.points = nextPoints;
+          update.lastMiningReward = boostCatchup.adjustedReward;
+          update.lastKnownMiningRate = rateComponents.totalRate;
+          update.lastBoostCatchupDelta = catchupDelta;
+          update.lastBoostCatchupPurchaseEventId = eventId;
+          update.lastBoostCatchupAt = FieldValue.serverTimestamp();
+        }
       }
     }
-  }
 
-  await userRef.set(update, { merge: true });
-
-  nextData = {
-    ...nextData,
-    ...update,
-    mining: {
-      ...(nextData.mining || {}),
-      ...(update.mining || {}),
-    },
-  };
-
-  await eventRef.set(
-    {
+    tx.set(userRef, update, { merge: true });
+    tx.create(eventRef, {
       uid,
       productId,
       rawProductId,
@@ -771,31 +762,20 @@ async function applyPurchaseToUser(uid, data, isPremium) {
       source: "iap_callable",
       verifiedByStoreServer: true,
       updatedAt: FieldValue.serverTimestamp(),
-    },
-    { merge: true }
-  );
+    });
 
-  console.log("Purchase applied", {
-    productId,
-    rawProductId,
-    platform,
-    isPremium,
-    multiplier: isPremium ? null : BOOST_PRODUCT_MULTIPLIERS[productId],
-    rateComponents,
-    eventId,
+    return {
+      ok: true,
+      productId,
+      rawProductId,
+      platform,
+      isPremium,
+      multiplier: isPremium ? null : BOOST_PRODUCT_MULTIPLIERS[productId],
+      rateComponents,
+      boostCatchup,
+      expiresAt: expiresAt.toISOString(),
+    };
   });
-
-  return {
-    ok: true,
-    productId,
-    rawProductId,
-    platform,
-    isPremium,
-    multiplier: isPremium ? null : BOOST_PRODUCT_MULTIPLIERS[productId],
-    rateComponents,
-    boostCatchup,
-    expiresAt: expiresAt.toISOString(),
-  };
 }
 
 async function applyRewardedBoostToUser(uid, requestData = {}) {
