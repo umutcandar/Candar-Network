@@ -572,9 +572,10 @@ async function verifyGooglePlayPurchase(receipt, rawProductId) {
       method: "GET",
     });
   } catch (error) {
+    // Google API errors can include the purchase token in request URLs.
     console.error("Google Play verification failed", {
       status: error?.response?.status,
-      message: error?.message,
+      code: error?.code,
     });
     throw new HttpsError(
       "failed-precondition",
